@@ -195,14 +195,26 @@ unavailable items are handled; client prices are ignored; cart tests pass.
 
 ## Phase 5 — Shipping, checkout, and orders
 
-**Status: Ready to start.** Dependencies: Phase 4.
+**Status: Completed.** Dependencies: Phase 4.
 
-Work: validated Iran address with Tehran-city distinction, configurable two-rate
+### Progress and verification
+- Added configurable Tehran/outside-Tehran rates, customer-selected region input,
+  immutable order/line snapshots, and pending-payment order history.
+- Checkout locks variants, validates current cart prices/stock, reserves stock for
+  120 seconds, clears the cart, and records order totals. Expired reservations are
+  released idempotently with `release_expired_reservations`.
+- Added checkout and order-history UI. Payment remains intentionally deferred to
+  Phase 6; orders created here are pending payment.
+- Thirty backend tests, Ruff, Django checks, frontend lint/typecheck/build pass;
+  the orders migration is applied to PostgreSQL.
+
+Work: customer-selected Tehran/outside-Tehran region, configurable two-rate
 shipping operation, server-validated totals without tax calculation, immutable
 purchase snapshots, order history/detail, Admin management, atomic 120-second
 reservations, retry-safe checkout, and idempotent expiry/release operation.
 
-Completion: both shipping regions calculate correct IRR totals; catalog edits do
+Completion: both shipping regions calculate correct IRR totals; order snapshots
+retain the customer-selected region and rate; catalog edits do
 not affect historical orders; concurrent checkouts cannot reserve the same unit;
 expired allocations are reusable; retries cannot duplicate orders; ownership,
 totals, lifecycle, and PostgreSQL concurrency tests pass.

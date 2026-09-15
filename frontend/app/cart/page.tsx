@@ -70,7 +70,7 @@ export default function CartPage() {
             <button className="remove-item" type="button" disabled={pending === item.id} onClick={() => remove(item.id)}>حذف</button>
           </article>)}
         </section>
-        <aside className="cart-total"><span>جمع کالاها</span><strong>{formatIrr(cart.subtotal_irr)}</strong><p>هزینه ارسال در مرحله بعد محاسبه می‌شود.</p><button disabled>ادامه برای پرداخت</button></aside>
+        <aside className="cart-total"><span>جمع کالاها</span><strong>{formatIrr(cart.subtotal_irr)}</strong><p>هزینه ارسال در مرحله بعد محاسبه می‌شود.</p><Link className="checkout-link" href="/checkout">ادامه برای پرداخت</Link></aside>
       </>}
     </main>
   );

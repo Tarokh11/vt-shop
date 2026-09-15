@@ -1,6 +1,6 @@
 # Session State
 
-- Current phase: Phase 4 cart completed; Phase 5 shipping/checkout/orders is ready.
+- Current phase: Phase 5 shipping/checkout/orders completed; Phase 6 Zarinpal is ready.
 - Completed: persistent account carts, server-priced cart API, CSRF-protected item
   mutations, availability validation, product-detail add flow, and cart page.
 - Decisions: carts never reserve stock; prices/totals use current integer-IRR
@@ -10,4 +10,4 @@
   and `frontend/app/products/[slug]/page.tsx`.
 - Checks: 28 backend tests, Ruff, migration drift, Django checks, PostgreSQL cart
   migration, frontend lint/typecheck/build all pass.
-- Next task: implement Phase 5 Iran shipping, checkout, and orders.
+- Next task: implement Zarinpal payment request, callback, and server verification.

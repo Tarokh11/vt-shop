@@ -19,6 +19,7 @@ form { display: grid; gap: 1rem; margin-top: 1.5rem; }
 label { display: grid; gap: .45rem; font-size: .86rem; font-weight: 700; }
 input { width: 100%; padding: .85rem .9rem; border: 1px solid #b8b4aa; border-radius: .3rem; background: white; color: inherit; font: inherit; outline: none; }
 select { padding: .75rem; border: 1px solid #b8b4aa; border-radius: .3rem; background: white; color: inherit; font: inherit; }
+textarea { min-height: 6rem; padding: .85rem .9rem; border: 1px solid #b8b4aa; border-radius: .3rem; font: inherit; }
 input:focus { border-color: #145c3f; box-shadow: 0 0 0 3px rgba(20, 92, 63, .12); }
 .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 button { border: 0; border-radius: .3rem; padding: .9rem 1rem; background: #145c3f; color: white; font: inherit; font-weight: 800; cursor: pointer; }
@@ -71,7 +72,11 @@ button.variant.active { border-color: #145c3f; background: #e4f1eb; color: #145c
 .remove-item { width: auto; padding: .45rem .7rem; background: transparent; color: #8b3232; border: 1px solid #d4baba; }
 .cart-total { display: grid; grid-template-columns: 1fr auto; gap: 1rem; margin: 2rem 0 0 auto; padding: 1.25rem; max-width: 26rem; border: 1px solid #d5d0c5; border-radius: .5rem; background: #fbfaf6; }
 .cart-total p, .cart-total button { grid-column: 1 / -1; margin: 0; }
+.checkout-link { grid-column: 1 / -1; padding: .9rem 1rem; border-radius: .3rem; background: #145c3f; color: white; font-weight: 800; text-align: center; text-decoration: none; }
 .empty-cart { padding: 2rem 0; }
+.order-list { display: grid; gap: 1rem; margin-top: 2rem; }
+.order-card { padding: 1.25rem; border: 1px solid #d5d0c5; border-radius: .5rem; background: #fbfaf6; }
+.order-card ul { margin-bottom: 0; padding-right: 1.2rem; }
 @media (max-width: 560px) { .site-header { padding: 0 1rem; } main { margin: 3vh auto; padding: 1rem; } .field-row { grid-template-columns: 1fr; } }
 @media (max-width: 850px) { .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .product-page { grid-template-columns: 1fr; } }
 @media (max-width: 560px) { .site-header nav { gap: .7rem; font-size: .85rem; } .catalog-heading { align-items: stretch; flex-direction: column; } .product-grid { grid-template-columns: 1fr; } }

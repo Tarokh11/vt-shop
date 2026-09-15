@@ -21,7 +21,7 @@ store projects after the core purchase flow is complete and verified.
 - Zarinpal payment integration for an Iranian merchant, with server-verified payment confirmation.
 - Stock tracking and concurrency-safe, two-minute checkout reservations.
 - Physical products shipped within Iran only.
-- Two configurable fixed shipping rates: Tehran city and outside Tehran.
+- Two configurable fixed shipping rates: Tehran and outside Tehran by post.
 - No tax calculation in the initial core.
 - Staff catalog, order, and fulfillment management through Django Admin.
 - Functional storefront, focused automated checks, and reproducible setup docs.
@@ -63,8 +63,10 @@ explicitly removed from the initial core; this narrows scope without changing ar
   cannot expose verified refund information, surface that limitation before
   choosing a synchronization fallback.
 - Shipping prices are store configuration in IRR, not invented core defaults.
-  Initial Tehran classification means Tehran city, not all of Tehran province;
-  use validated address identifiers when implementing checkout.
+  For the MVP, customers select `TEHRAN` or `OUTSIDE_TEHRAN` during checkout;
+  the selected region and quoted rate are snapped on the order. Postal-code rules,
+  address APIs, and automatic city verification are deferred. Keep quotation behind
+  a small operation so an address-validation provider can replace this input later.
 - Keep shipping behind a small quoting operation; do not build a plugin framework.
 - Customer self-service cancellations/returns are deferred. Staff refund and
   inventory restock are separate operations; refund alone does not imply a return.
