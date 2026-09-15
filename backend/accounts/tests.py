@@ -39,6 +39,16 @@ class AccountApiTests(TestCase):
         self.assertNotIn("password", response.json())
         self.assertEqual(self.client.get("/api/v1/accounts/me/").status_code, 200)
 
+    def test_registration_accepts_127_loopback_origin_in_development(self):
+        response = self.client.post(
+            "/api/v1/accounts/register/",
+            {"email": "loopback@example.com", "password": "Valid-pass-903"},
+            format="json",
+            HTTP_X_CSRFTOKEN=self.csrf_token(),
+            HTTP_ORIGIN="http://127.0.0.1:3000",
+        )
+        self.assertEqual(response.status_code, 201)
+
     def test_duplicate_email_is_rejected_case_insensitively(self):
         self.create_customer()
         response = self.post_with_csrf(

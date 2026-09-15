@@ -14,6 +14,10 @@ ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").sp
 CSRF_TRUSTED_ORIGINS = [
     origin for origin in os.environ.get("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",") if origin
 ]
+if DEBUG:
+    for local_origin in ("http://localhost:3000", "http://127.0.0.1:3000"):
+        if local_origin not in CSRF_TRUSTED_ORIGINS:
+            CSRF_TRUSTED_ORIGINS.append(local_origin)
 FRONTEND_ORIGIN = os.environ.get("FRONTEND_ORIGIN", "http://localhost:3000").rstrip("/")
 
 INSTALLED_APPS = [
