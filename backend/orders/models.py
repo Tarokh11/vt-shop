@@ -1,6 +1,7 @@
 import uuid
 
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 from django.db import models
 
@@ -67,3 +68,20 @@ class StockReservation(models.Model):
                 fields=("order", "variant"), name="orders_one_reservation_per_variant"
             )
         ]
+
+
+class Shipment(models.Model):
+    class Status(models.TextChoices):
+        READY = "READY", "Ready to ship"
+        SHIPPED = "SHIPPED", "Shipped"
+        DELIVERED = "DELIVERED", "Delivered"
+
+    order = models.OneToOneField(Order, related_name="shipment", on_delete=models.PROTECT)
+    status = models.CharField(max_length=12, choices=Status.choices, default=Status.READY)
+    tracking_code = models.CharField(max_length=100, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def clean(self):
+        if self.order_id and self.order.status != Order.Status.PAID:
+            raise ValidationError("Only paid orders can be fulfilled.")

@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.utils import timezone
 from rest_framework.test import APIClient
@@ -8,7 +9,7 @@ from accounts.models import User
 from cart.models import Cart, CartItem
 from catalog.models import Product, ProductVariant
 
-from .models import Order, ShippingRate, StockReservation
+from .models import Order, Shipment, ShippingRate, StockReservation
 from .services import release_expired_reservations
 
 
@@ -59,3 +60,15 @@ class CheckoutTests(TestCase):
         self.assertEqual(release_expired_reservations(), 0)
         self.variant.refresh_from_db()
         self.assertEqual(self.variant.stock_quantity, 3)
+
+    def test_shipment_requires_paid_order_and_is_visible_to_customer(self):
+        self.checkout()
+        order = Order.objects.get()
+        shipment = Shipment(order=order)
+        with self.assertRaisesMessage(ValidationError, "Only paid orders can be fulfilled."):
+            shipment.full_clean()
+        order.status = Order.Status.PAID
+        order.save(update_fields=("status",))
+        Shipment.objects.create(order=order, status=Shipment.Status.SHIPPED, tracking_code="POST-1")
+        response = self.client.get("/api/v1/orders/")
+        self.assertEqual(response.json()[0]["shipment"]["tracking_code"], "POST-1")

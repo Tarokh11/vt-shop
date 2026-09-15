@@ -1,12 +1,18 @@
 from rest_framework import serializers
 
-from .models import Order, OrderLine
+from .models import Order, OrderLine, Shipment
 
 
 class OrderLineSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderLine
         fields = ("product_name", "variant_name", "quantity", "line_total_irr")
+
+
+class ShipmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Shipment
+        fields = ("status", "tracking_code")
 
 
 class CheckoutSerializer(serializers.Serializer):
@@ -18,6 +24,7 @@ class CheckoutSerializer(serializers.Serializer):
 
 class OrderSerializer(serializers.ModelSerializer):
     lines = OrderLineSerializer(many=True, read_only=True)
+    shipment = ShipmentSerializer(read_only=True)
 
     class Meta:
         model = Order
@@ -30,4 +37,5 @@ class OrderSerializer(serializers.ModelSerializer):
             "total_irr",
             "created_at",
             "lines",
+            "shipment",
         )

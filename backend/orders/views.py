@@ -20,7 +20,7 @@ class OrderListView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        orders = request.user.orders.prefetch_related("lines")
+        orders = request.user.orders.prefetch_related("lines").select_related("shipment")
         return Response(OrderSerializer(orders, many=True).data)
 
 
