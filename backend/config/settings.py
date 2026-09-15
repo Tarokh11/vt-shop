@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     "cart",
     "catalog",
     "orders",
+    "payments",
     "core",
 ]
 MIDDLEWARE = [
@@ -105,3 +106,7 @@ CSRF_FAILURE_VIEW = "core.csrf.csrf_failure"
 # Business defaults are not provider request units or frontend display units.
 STORE_CURRENCY = "IRR"
 STOCK_RESERVATION_SECONDS = 120
+ZARINPAL_MERCHANT_ID = os.environ.get("ZARINPAL_MERCHANT_ID", "")
+ZARINPAL_SANDBOX = os.environ.get("ZARINPAL_SANDBOX", "true").lower() == "true"
+ZARINPAL_MOCK = os.environ.get("ZARINPAL_MOCK", "false").lower() == "true"
+ZARINPAL_CALLBACK_URL = os.environ.get("ZARINPAL_CALLBACK_URL", "http://localhost:8000/api/v1/payments/zarinpal/callback/")

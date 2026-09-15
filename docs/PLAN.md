@@ -221,7 +221,7 @@ totals, lifecycle, and PostgreSQL concurrency tests pass.
 
 ## Phase 6 — Zarinpal integration
 
-**Status: Not started.** Dependencies: Phase 5 and provider capability checkpoint.
+**Status: Deferred pending Zarinpal credentials.** Dependencies: Phase 5 and provider capability checkpoint.
 
 Work: request/redirect/callback/server verification flow, separate payment attempts,
 explicit IRR/provider units, idempotent and out-of-order processing, stock
@@ -232,6 +232,19 @@ Completion: supported test payment works end to end; redirects cannot mark order
 paid; repeated confirmations cannot consume stock twice; amount/order mismatches
 are rejected; late success with/without stock is tested; refund synchronization
 uses demonstrated provider capabilities; integration checks pass.
+
+### Current implementation and blocker
+- Added an uncommitted Zarinpal v4 request/verify scaffold, payment attempts,
+  callback handling, pending-payment start/retry UI, and payment lifecycle states.
+- Live integration is deferred until a Zarinpal merchant ID and sandbox/test access
+  are available. Before committing Phase 6, confirm current provider request/verify
+  units, test payment flow, callback URL reachability, duplicate verification, and
+  refund query/event capabilities. Do not assume refund webhooks exist.
+- Do not start Phase 7 fulfillment: physical shipment must depend on verified paid
+  orders, not the current unverified scaffold.
+- Development-only local simulation is permitted with `ZARINPAL_MOCK=true` and
+  `DJANGO_DEBUG=true`. It uses the same attempt/callback/verify lifecycle but is
+  not evidence of Zarinpal compatibility and must never be enabled in production.
 
 ## Phase 7 — Physical fulfillment
 

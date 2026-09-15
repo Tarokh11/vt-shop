@@ -18,6 +18,7 @@ class ShippingRate(models.Model):
 class Order(models.Model):
     class Status(models.TextChoices):
         PENDING_PAYMENT = "PENDING_PAYMENT", "Pending payment"
+        PAID = "PAID", "Paid"
         CANCELLED = "CANCELLED", "Cancelled"
 
     number = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
@@ -51,6 +52,7 @@ class OrderLine(models.Model):
 class StockReservation(models.Model):
     class Status(models.TextChoices):
         ACTIVE = "ACTIVE", "Active"
+        CONSUMED = "CONSUMED", "Consumed"
         RELEASED = "RELEASED", "Released"
 
     order = models.ForeignKey(Order, related_name="reservations", on_delete=models.PROTECT)
