@@ -17,6 +17,8 @@ Requirements: Python 3.12+, Node.js 22+, npm, and PostgreSQL 17+ (or Docker).
 8. Install frontend dependencies from `frontend/`: `npm install`.
 9. Start Next.js from `frontend/`: `npm run dev`.
 
+Restore repeatable local demo data with `.venv/bin/python backend/manage.py seed_demo`.
+
 The storefront is available at `http://localhost:3000`, Admin at
 `http://127.0.0.1:8000/admin/`, and health endpoints at
 `/api/v1/health/` and `/api/v1/ready/`.
@@ -31,6 +33,7 @@ cd frontend && npm run lint && npm run typecheck && npm run build
 ```
 
 See `docs/PROJECT_SCOPE.md` and `docs/PLAN.md` for scope, decisions, and phase status.
+See `docs/RELEASE_CHECKLIST.md` before local release or production deployment.
 
 `.env` is intentionally not loaded by Django. Explicit shell loading keeps runtime
 configuration dependency-free and makes deployment environment handling unambiguous.

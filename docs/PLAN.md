@@ -245,6 +245,8 @@ uses demonstrated provider capabilities; integration checks pass.
 - Development-only local simulation is permitted with `ZARINPAL_MOCK=true` and
   `DJANGO_DEBUG=true`. It uses the same attempt/callback/verify lifecycle but is
   not evidence of Zarinpal compatibility and must never be enabled in production.
+- Payment mock request/callback/idempotency tests now cover the local lifecycle;
+  real provider behavior is still intentionally unverified.
 
 ## Phase 7 — Physical fulfillment
 
@@ -266,7 +268,7 @@ cannot duplicate fulfillment; fulfillment tests pass.
 
 ## Phase 8 — Reusable-core release and branching gate
 
-**Status: Not started.** Dependencies: Phases 1–7.
+**Status: Completed locally; real Zarinpal gate pending.** Dependencies: Phases 1–7.
 
 Work: verify account-to-purchase-to-shipment flow for both shipping regions,
 payment failures/retries, two-minute expiry, late success, refunds, and stock
@@ -276,6 +278,23 @@ recovery, customization points, and reproducible demo data.
 Completion: clean deployment works from docs; backend tests, frontend checks,
 production build, and purchase flows pass; Admin supports core operations; no
 store-specific branding/data is needed; no blocker remains in the purchase flow.
+
+### Progress and verification
+- Added repeatable `seed_demo` management command for the four clothing products,
+  inventory, and both demo shipping rates.
+- Added `docs/RELEASE_CHECKLIST.md` for local demo, verification, production
+  security, media, scheduling, and real Zarinpal requirements.
+- Local core is usable end to end with mock payments: account, catalog, cart,
+  checkout, reservation expiry, simulated payment, paid order, and shipment status.
+- Real Zarinpal sandbox verification, provider unit confirmation, public callback
+  reachability, and refund capability remain the production payment gate.
+
+### Branching decision
+
+The reusable core is suitable for local store-specific branches and UI/catalog
+customization. Do not treat it as production-ready until the real Zarinpal gate,
+HTTPS callback, refund capability, and production media/email configuration are
+verified. Keep `ZARINPAL_MOCK=false` in production.
 
 ## Minimum core before branching
 

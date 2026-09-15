@@ -39,6 +39,8 @@ class ZarinpalCallbackView(APIView):
         attempt = PaymentAttempt.objects.select_related("order").filter(authority=authority).first()
         if not attempt or request.query_params.get("Status") != "OK":
             return HttpResponseRedirect(f"{settings.FRONTEND_ORIGIN}/orders?payment=failed")
+        if attempt.status == PaymentAttempt.Status.SUCCEEDED:
+            return HttpResponseRedirect(f"{settings.FRONTEND_ORIGIN}/orders?payment=success")
         try:
             reference = verify_payment(attempt.order, authority)
         except ZarinpalError:
