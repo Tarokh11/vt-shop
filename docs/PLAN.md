@@ -248,7 +248,14 @@ uses demonstrated provider capabilities; integration checks pass.
 
 ## Phase 7 — Physical fulfillment
 
-**Status: Not started.** Dependencies: Phase 6.
+**Status: Completed locally; real payment verification pending.** Dependencies: Phase 6.
+
+### Progress and verification
+- Added paid-order-only shipment records with ready, shipped, and delivered states,
+  optional tracking codes, Django Admin management, and customer order-history display.
+- Shipment validation and customer visibility are covered by the backend suite.
+- Phase 7 can be exercised with the development-only local payment simulation.
+  Before production use, complete the deferred real Zarinpal sandbox checkpoint.
 
 Work: staff shipment status/optional tracking in Admin, customer shipment view,
 and agreed refund/restock operations. No digital product support.
