@@ -62,3 +62,10 @@ cart. Current catalog prices and availability are recalculated by the backend on
 every cart response. Adding an item does not reserve inventory; checkout will do
 that later. Items whose stock or publication state changes are surfaced as
 unavailable and cannot be increased until corrected or removed.
+
+## Shipping rates
+
+Checkout requires one active `ShippingRate` for each region in Django Admin:
+`TEHRAN` and `OUTSIDE_TEHRAN`. Rates are stored as whole IRR amounts. The local
+demo database uses `100000` IRR for Tehran and `150000` IRR for outside Tehran by
+post. Change these values in Admin for each store.
