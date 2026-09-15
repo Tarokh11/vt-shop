@@ -18,6 +18,7 @@ class CheckoutSerializer(serializers.Serializer):
 
 class OrderSerializer(serializers.ModelSerializer):
     lines = OrderLineSerializer(many=True, read_only=True)
+
     class Meta:
         model = Order
         fields = (
