@@ -137,7 +137,7 @@ users cannot access private resources; authentication/permission tests pass.
 
 ## Phase 3 — Catalog and inventory
 
-**Status: Ready to start.** Dependencies: Phase 1; independent of Phase 2.
+**Status: Completed.** Dependencies: Phase 1; independent of Phase 2.
 
 Work: categories, products, variants/SKUs, images, publication, integer IRR prices,
 stock adjustments, Admin management, storefront listing/detail/variant selection,
@@ -146,9 +146,31 @@ and transactional inventory operations.
 Completion: staff manage catalog; only published items and valid variants are
 public; invalid prices/stock are rejected; availability and inventory tests pass.
 
+### Progress and verification
+- Added flat categories, products, ordered images, and SKU variants with JSON
+  option labels, whole-IRR prices, publication state, and public availability.
+- Published products require an active default variant. Database constraints
+  enforce at most one default and prevent an inactive default variant.
+- Added append-only staff inventory adjustments. Each adjustment locks its SKU,
+  rejects zero/negative-result changes, records resulting stock and actor, and
+  cannot be changed/deleted through the model or Admin. Direct stock edits are
+  read-only in Admin.
+- Added public paginated product list/detail and active category APIs. Drafts,
+  inactive variants/categories, exact stock quantities, and invalid products are
+  not exposed.
+- Added responsive RTL catalog/category filtering, pagination, product images,
+  IRR price display, detail pages, availability, and variant selection.
+- Added Pillow only because validated catalog image uploads require it; no search,
+  option-schema engine, or inventory abstraction was introduced.
+- Twenty-two backend tests pass. Ruff, migration drift check, Django system check,
+  frontend lint/typecheck, and production build pass. Both catalog migrations
+  applied to PostgreSQL and their partial/check constraints were verified there.
+- Production catalog media needs persistent storage configuration before launch;
+  local filesystem media is sufficient for development and does not block Phase 4.
+
 ## Phase 4 — Cart
 
-**Status: Not started.** Dependencies: Phases 2 and 3.
+**Status: Ready to start.** Dependencies: Phases 2 and 3.
 
 Work: persistent account-owned cart, quantity editing/removal, backend pricing,
 availability handling, and cart screens. Cart does not reserve inventory.
@@ -225,5 +247,6 @@ and plugin/workflow engines. Derived stores own branding and specialized rules.
 - Foundation implementation and PostgreSQL runtime checks completed.
 - Environment verification: Python 3.12, Node 24, PostgreSQL 16, and Docker 29
   are available. Do not treat SQLite checks as concurrency verification.
-- Phase 2 account implementation and verification completed. Next: Phase 3
-  catalog and inventory.
+- Phase 2 account implementation and verification completed.
+- Phase 3 catalog/inventory implementation and verification completed. Next:
+  Phase 4 customer cart.

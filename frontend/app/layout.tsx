@@ -11,7 +11,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return <html lang="fa" dir="rtl"><body>
     <header className="site-header">
       <Link className="brand" href="/">فروشگاه</Link>
-      <nav aria-label="حساب کاربری"><Link href="/login">ورود</Link><Link href="/account">حساب من</Link></nav>
+      <nav aria-label="ناوبری اصلی"><Link href="/products">محصولات</Link><Link href="/login">ورود</Link><Link href="/account">حساب من</Link></nav>
     </header>
     {children}
   </body></html>;

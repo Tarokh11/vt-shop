@@ -27,7 +27,7 @@ export default function Home() {
       <h1>زیرساخت فروشگاه</h1>
       <p>راه‌اندازی اولیه فروشگاه تکمیل شده است. امکانات خرید در مراحل بعد اضافه می‌شوند.</p>
       <p role="status" className="status">{status}</p>
-      <div className="home-actions"><Link href="/register">ساخت حساب مشتری</Link><Link href="/login">ورود</Link></div>
+      <div className="home-actions"><Link href="/products">مشاهده محصولات</Link><Link href="/register">ساخت حساب مشتری</Link><Link href="/login">ورود</Link></div>
     </main>
   );
 }

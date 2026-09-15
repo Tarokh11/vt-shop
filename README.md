@@ -38,3 +38,19 @@ configuration dependency-free and makes deployment environment handling unambigu
 Development password-reset emails and links are printed in the Django terminal.
 Production deployments must configure a real Django email backend and must use a
 strong `DJANGO_SECRET_KEY`, `DJANGO_DEBUG=false`, HTTPS redirects, and HSTS.
+
+## Catalog administration
+
+Catalog pages are available at `/products`. Staff manage categories, products,
+variants, product images, and inventory in Django Admin.
+
+1. Create a product as a draft.
+2. Add at least one active variant and mark exactly one as the default.
+3. Add stock through **Inventory adjustments**; variant stock is read-only so
+   every manual change has a staff member, reason, delta, and resulting quantity.
+4. Add product images and categories, then publish the product.
+
+Prices and inventory are stored as whole IRR amounts and units. Inventory
+adjustments cannot be edited or deleted. Product media under `backend/media/` is
+local development storage; production deployments must configure persistent
+public object/media storage before accepting uploads.
