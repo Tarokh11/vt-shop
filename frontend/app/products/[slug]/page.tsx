@@ -3,15 +3,20 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { formatIrr, Product, ProductVariant } from "@/lib/catalog";
+import { api, ApiError } from "@/lib/api";
 
 export default function ProductPage() {
   const { slug } = useParams<{ slug: string }>();
+  const router = useRouter();
   const [product, setProduct] = useState<Product | null>(null);
   const [variant, setVariant] = useState<ProductVariant | null>(null);
   const [error, setError] = useState("");
+  const [cartMessage, setCartMessage] = useState("");
+  const [adding, setAdding] = useState(false);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -30,6 +35,26 @@ export default function ProductPage() {
       .catch((reason) => { if (reason.name !== "AbortError") setError("محصول پیدا نشد یا منتشر نشده است."); });
     return () => controller.abort();
   }, [slug]);
+
+  async function addToCart() {
+    if (!variant) return;
+    setAdding(true);
+    setCartMessage("");
+    try {
+      await api("/api/v1/cart/items/", {
+        method: "POST", body: JSON.stringify({ variant_id: variant.id, quantity: 1 }),
+      });
+      setCartMessage("به سبد خرید افزوده شد.");
+    } catch (reason) {
+      if (reason instanceof ApiError && reason.status === 403) {
+        router.push("/login");
+      } else {
+        setCartMessage(reason instanceof Error ? reason.message : "افزودن به سبد ناموفق بود.");
+      }
+    } finally {
+      setAdding(false);
+    }
+  }
 
   if (error) return <main><p className="error" role="alert">{error}</p><Link href="/products">بازگشت به محصولات</Link></main>;
   if (!product) return <main><p role="status">در حال دریافت محصول…</p></main>;
@@ -52,6 +77,8 @@ export default function ProductPage() {
           <strong>{formatIrr(variant.price_irr)}</strong>
           <span className={variant.available ? "in-stock" : "out-of-stock"}>{variant.available ? "آماده سفارش" : "در حال حاضر ناموجود"}</span>
           {Object.keys(variant.options).length > 0 && <dl>{Object.entries(variant.options).map(([key, value]) => <div key={key}><dt>{key}</dt><dd>{value}</dd></div>)}</dl>}
+          <button type="button" disabled={!variant.available || adding} onClick={addToCart}>{adding ? "در حال افزودن…" : "افزودن به سبد خرید"}</button>
+          {cartMessage && <p className={cartMessage === "به سبد خرید افزوده شد." ? "success" : "error"} role="status">{cartMessage}</p>}
         </div>}
       </section>
     </main>

@@ -60,6 +60,19 @@ button.variant.active { border-color: #145c3f; background: #e4f1eb; color: #145c
 .selected-variant dl div { display: flex; gap: 1rem; padding: .45rem 0; border-top: 1px solid #e3ded3; }
 .selected-variant dt { color: #68746d; }
 .selected-variant dd { margin: 0; }
+.cart-page { max-width: 62rem; }
+.cart-items { margin-top: 2rem; border-top: 1px solid #d5d0c5; }
+.cart-item { display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto; align-items: center; gap: 1.5rem; padding: 1.25rem 0; border-bottom: 1px solid #d5d0c5; }
+.cart-item a { color: inherit; font-weight: 800; text-decoration: none; }
+.cart-item p { margin: .3rem 0 0; color: #68746d; font-size: .86rem; }
+.quantity-control { display: flex; align-items: center; border: 1px solid #b8b4aa; border-radius: .3rem; }
+.quantity-control button { width: 2rem; padding: .35rem; border-radius: 0; background: transparent; color: inherit; }
+.quantity-control span { min-width: 2rem; text-align: center; }
+.remove-item { width: auto; padding: .45rem .7rem; background: transparent; color: #8b3232; border: 1px solid #d4baba; }
+.cart-total { display: grid; grid-template-columns: 1fr auto; gap: 1rem; margin: 2rem 0 0 auto; padding: 1.25rem; max-width: 26rem; border: 1px solid #d5d0c5; border-radius: .5rem; background: #fbfaf6; }
+.cart-total p, .cart-total button { grid-column: 1 / -1; margin: 0; }
+.empty-cart { padding: 2rem 0; }
 @media (max-width: 560px) { .site-header { padding: 0 1rem; } main { margin: 3vh auto; padding: 1rem; } .field-row { grid-template-columns: 1fr; } }
 @media (max-width: 850px) { .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .product-page { grid-template-columns: 1fr; } }
 @media (max-width: 560px) { .site-header nav { gap: .7rem; font-size: .85rem; } .catalog-heading { align-items: stretch; flex-direction: column; } .product-grid { grid-template-columns: 1fr; } }
+@media (max-width: 560px) { .cart-item { grid-template-columns: 1fr auto; gap: 1rem; } .cart-item strong { grid-column: 1; } .quantity-control { grid-column: 2; grid-row: 2; } .remove-item { grid-column: 1; width: max-content; } }

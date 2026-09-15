@@ -54,3 +54,11 @@ Prices and inventory are stored as whole IRR amounts and units. Inventory
 adjustments cannot be edited or deleted. Product media under `backend/media/` is
 local development storage; production deployments must configure persistent
 public object/media storage before accepting uploads.
+
+## Cart behavior
+
+Customers must sign in before adding a published product option to their persistent
+cart. Current catalog prices and availability are recalculated by the backend on
+every cart response. Adding an item does not reserve inventory; checkout will do
+that later. Items whose stock or publication state changes are surfaced as
+unavailable and cannot be increased until corrected or removed.

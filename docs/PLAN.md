@@ -170,7 +170,7 @@ public; invalid prices/stock are rejected; availability and inventory tests pass
 
 ## Phase 4 — Cart
 
-**Status: Ready to start.** Dependencies: Phases 2 and 3.
+**Status: Completed.** Dependencies: Phases 2 and 3.
 
 Work: persistent account-owned cart, quantity editing/removal, backend pricing,
 availability handling, and cart screens. Cart does not reserve inventory.
@@ -178,9 +178,24 @@ availability handling, and cart screens. Cart does not reserve inventory.
 Completion: persistence and ownership isolation work; invalid quantities and
 unavailable items are handled; client prices are ignored; cart tests pass.
 
+### Progress and verification
+- Added one persistent cart per customer and one row per product variant.
+- Added authenticated cart read, add, quantity update, and removal REST operations.
+  All mutations use the existing session/CSRF protection.
+- Catalog prices and line/subtotals are computed from current backend variants;
+  submitted price fields are ignored. Public cart data omits exact stock quantities.
+- Cart changes lock the target variant and reject drafts, inactive variants, and
+  quantities above current stock. Cart changes never decrement or reserve stock.
+- Added product-detail add-to-cart flow, account-only cart page, quantity controls,
+  removal, current availability warnings, and checkout-disabled total summary.
+- Twenty-eight backend tests pass, including CSRF, ownership isolation, current
+  price calculation, availability, stock non-reservation, updates, and removal.
+  Ruff, migration drift, Django checks, frontend lint/typecheck/build pass; the
+  cart migration is applied to PostgreSQL.
+
 ## Phase 5 — Shipping, checkout, and orders
 
-**Status: Not started.** Dependencies: Phase 4.
+**Status: Ready to start.** Dependencies: Phase 4.
 
 Work: validated Iran address with Tehran-city distinction, configurable two-rate
 shipping operation, server-validated totals without tax calculation, immutable
@@ -248,5 +263,6 @@ and plugin/workflow engines. Derived stores own branding and specialized rules.
 - Environment verification: Python 3.12, Node 24, PostgreSQL 16, and Docker 29
   are available. Do not treat SQLite checks as concurrency verification.
 - Phase 2 account implementation and verification completed.
-- Phase 3 catalog/inventory implementation and verification completed. Next:
-  Phase 4 customer cart.
+- Phase 3 catalog/inventory implementation and verification completed.
+- Phase 4 cart implementation and verification completed. Next: Phase 5 shipping,
+  checkout, and orders.
