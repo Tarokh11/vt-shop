@@ -1,43 +1,57 @@
 # Project Instructions
 
-## Project
-This repository implements a reusable single-store e-commerce starter platform.
-
-Before planning or implementing features, read:
-
-- docs/PROJECT_SCOPE.md
-- docs/PLAN.md if it exists
-
 ## Architecture
 
-- Backend: Django + Django REST Framework
-- Frontend: Next.js + TypeScript
-- Database: PostgreSQL
-- Architecture: Modular Monolith
-- API style: REST
+- Reusable single-store e-commerce starter.
+- Django + DRF backend, Next.js + TypeScript frontend, PostgreSQL, REST.
+- Modular monolith; use Django Admin for initial staff operations.
 
-## Development Rules
+## Required Context
 
-- Keep domains separated.
-- Do not introduce business-specific features into the core unless required.
-- Prefer simple implementations over premature abstractions.
-- Do not add new dependencies without a clear reason.
-- Do not redesign existing architecture unless necessary.
-- Do not implement features outside PROJECT_SCOPE.md.
+At session start, read `AGENTS.md`, `docs/SESSION_STATE.md`, and the relevant
+part of `docs/PLAN.md`. Read `docs/PROJECT_SCOPE.md` when scope decisions matter.
 
-## Workflow
+## Engineering Rules
 
-For substantial work:
+- Keep domains separate and changes minimal.
+- Do not implement outside `PROJECT_SCOPE.md`.
+- Prefer direct, simple solutions over premature abstractions or dependencies.
+- Do not redesign architecture or refactor unrelated code without a concrete need.
+- Update only the affected plan section; do not repeat existing documentation.
 
-1. Inspect the existing repository.
-2. Read PROJECT_SCOPE.md.
-3. Update or create docs/PLAN.md.
-4. Implement one logical phase at a time.
-5. Run relevant tests/checks.
-6. Update PLAN.md with completed work and next steps.
-7. Commit the completed phase after checks pass and documentation is updated.
+## Phase Workflow
 
-Use one focused commit per completed phase. Do not combine unfinished work with a
-phase commit, and do not amend or rewrite existing commits unless explicitly requested.
+1. Inspect relevant files and confirm the current plan.
+2. Implement one logical phase at a time.
+3. Run relevant tests, checks, and migrations.
+4. Update `docs/PLAN.md` and concise `docs/SESSION_STATE.md`.
+5. Review, stage, and commit the completed logical change.
 
-If an architectural decision is unclear, document the assumption before implementation.
+Keep commits focused. Do not commit broken, incomplete, secret, generated, or
+unrelated changes. Do not amend/rewrite commits unless explicitly requested.
+
+## Scope Changes
+
+For a behavior, requirement, or boundary change: explain the issue, proposal,
+and impact; wait for user approval; then update scope, plan, and session state.
+Minor implementation details do not need scope approval.
+
+## Efficiency
+
+- Read and test only relevant files/components unless a full check is needed.
+- Use targeted search and reuse existing conventions.
+- Keep responses concise: changes, checks, blockers, next step.
+- Avoid duplicate planning, broad scans, unrelated refactors, and alternative
+  implementations without a real tradeoff.
+
+## Session State
+
+Keep `docs/SESSION_STATE.md` short: current phase, completed work, key decisions,
+blockers, relevant files, checks, and next task. It is not a development log.
+
+## Model Guidance
+
+Use Luna for mechanical low-risk work, Terra for routine scoped implementation,
+Sol for normal multi-file/domain work, and Astra only for unusually difficult
+architecture, debugging, or risky refactors. Recommend a different model only
+when it materially improves the task.
