@@ -4,14 +4,17 @@
   Zarinpal remains deferred.
 - Completed: logged-in navigation hides auth prompts and shows the customer name;
   login/register route to products; account profile stores optional phone/address;
-  checkout starts payment directly; order history lists paid orders.
+  checkout starts payment directly; order history lists paid orders; local dev
+  redirects now consistently use `127.0.0.1`.
 - Decisions: order history is paid-order-only; pending-payment orders are created
-  during checkout and immediately handed to the payment start flow.
+  during checkout and immediately handed to the payment start flow; use
+  `http://127.0.0.1:3000` locally to keep session cookies across payment redirects.
 - Blockers: Zarinpal merchant ID and sandbox/test access. Production media also
   needs persistent storage.
 - Relevant files: `backend/accounts/`, `backend/orders/`, `frontend/components/site-header.tsx`,
   `frontend/app/account/`, `frontend/app/checkout/`, and `frontend/app/orders/`.
 - Checks: 13 targeted backend tests, backend Ruff, migration drift, frontend
-  lint/typecheck/build all pass.
+  lint/typecheck/build, and a headless Chrome login/navbar/payment/orders smoke
+  flow all pass.
 - Next task: branch for store-specific work, or resume real Zarinpal verification
   when merchant credentials and a domain are available.

@@ -19,7 +19,7 @@ Requirements: Python 3.12+, Node.js 22+, npm, and PostgreSQL 17+ (or Docker).
 
 Restore repeatable local demo data with `.venv/bin/python backend/manage.py seed_demo`.
 
-The storefront is available at `http://localhost:3000`, Admin at
+The storefront is available at `http://127.0.0.1:3000`, Admin at
 `http://127.0.0.1:8000/admin/`, and health endpoints at
 `/api/v1/health/` and `/api/v1/ready/`.
 

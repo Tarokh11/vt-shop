@@ -18,7 +18,7 @@ if DEBUG:
     for local_origin in ("http://localhost:3000", "http://127.0.0.1:3000"):
         if local_origin not in CSRF_TRUSTED_ORIGINS:
             CSRF_TRUSTED_ORIGINS.append(local_origin)
-FRONTEND_ORIGIN = os.environ.get("FRONTEND_ORIGIN", "http://localhost:3000").rstrip("/")
+FRONTEND_ORIGIN = os.environ.get("FRONTEND_ORIGIN", "http://127.0.0.1:3000").rstrip("/")
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -113,4 +113,4 @@ STOCK_RESERVATION_SECONDS = 120
 ZARINPAL_MERCHANT_ID = os.environ.get("ZARINPAL_MERCHANT_ID", "")
 ZARINPAL_SANDBOX = os.environ.get("ZARINPAL_SANDBOX", "true").lower() == "true"
 ZARINPAL_MOCK = os.environ.get("ZARINPAL_MOCK", "false").lower() == "true"
-ZARINPAL_CALLBACK_URL = os.environ.get("ZARINPAL_CALLBACK_URL", "http://localhost:8000/api/v1/payments/zarinpal/callback/")
+ZARINPAL_CALLBACK_URL = os.environ.get("ZARINPAL_CALLBACK_URL", "http://127.0.0.1:8000/api/v1/payments/zarinpal/callback/")
