@@ -27,7 +27,8 @@ export default function RegisterPage() {
           last_name: form.get("last_name"),
         }),
       });
-      router.replace("/account");
+      window.dispatchEvent(new Event("customer-auth-changed"));
+      router.replace("/products");
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "ثبت‌نام انجام نشد.");
     } finally {

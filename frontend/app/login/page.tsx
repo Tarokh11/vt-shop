@@ -22,7 +22,8 @@ export default function LoginPage() {
         method: "POST",
         body: JSON.stringify({ email: form.get("email"), password: form.get("password") }),
       });
-      router.replace("/account");
+      window.dispatchEvent(new Event("customer-auth-changed"));
+      router.replace("/products");
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "ورود انجام نشد.");
     } finally {

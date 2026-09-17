@@ -69,13 +69,22 @@ class AccountApiTests(TestCase):
         self.assertEqual(response.status_code, 200)
         update = self.client.patch(
             "/api/v1/accounts/me/",
-            {"first_name": "Updated", "email": "ignored@example.com"},
+            {
+                "first_name": "Updated",
+                "email": "ignored@example.com",
+                "phone": "09120000000",
+                "address": "Tehran",
+                "shipping_region": "TEHRAN",
+            },
             format="json",
             HTTP_X_CSRFTOKEN=self.client.cookies["csrftoken"].value,
         )
         self.assertEqual(update.status_code, 200)
         self.assertEqual(update.json()["first_name"], "Updated")
         self.assertEqual(update.json()["email"], "customer@example.com")
+        self.assertEqual(update.json()["phone"], "09120000000")
+        self.assertEqual(update.json()["address"], "Tehran")
+        self.assertEqual(update.json()["shipping_region"], "TEHRAN")
 
         logout_response = self.client.post(
             "/api/v1/accounts/logout/",

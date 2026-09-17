@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { SiteHeader } from "@/components/site-header";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -9,10 +9,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return <html lang="fa" dir="rtl"><body>
-    <header className="site-header">
-      <Link className="brand" href="/">فروشگاه</Link>
-      <nav aria-label="ناوبری اصلی"><Link href="/products">محصولات</Link><Link href="/cart">سبد خرید</Link><Link href="/orders">سفارش‌ها</Link><Link href="/login">ورود</Link><Link href="/account">حساب من</Link></nav>
-    </header>
+    <SiteHeader />
     {children}
   </body></html>;
 }

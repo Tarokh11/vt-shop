@@ -3,6 +3,9 @@ export type Customer = {
   email: string;
   first_name: string;
   last_name: string;
+  phone: string;
+  address: string;
+  shipping_region: string;
 };
 
 export class ApiError extends Error {

@@ -286,6 +286,9 @@ store-specific branding/data is needed; no blocker remains in the purchase flow.
   security, media, scheduling, and real Zarinpal requirements.
 - Local core is usable end to end with mock payments: account, catalog, cart,
   checkout, reservation expiry, simulated payment, paid order, and shipment status.
+- Storefront account flow now hides auth prompts after login, labels the account
+  link with the customer name, stores optional profile address details, starts
+  payment directly after checkout, and lists paid orders in order history.
 - Real Zarinpal sandbox verification, provider unit confirmation, public callback
   reachability, and refund capability remain the production payment gate.
 
