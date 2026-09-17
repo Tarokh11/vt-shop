@@ -1,14 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 
 import { AccountShell } from "@/components/account-shell";
 import { api, Customer } from "@/lib/api";
 
 export default function RegisterPage() {
-  const router = useRouter();
   const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
 
@@ -27,8 +25,7 @@ export default function RegisterPage() {
           last_name: form.get("last_name"),
         }),
       });
-      window.dispatchEvent(new Event("customer-auth-changed"));
-      router.replace("/products");
+      window.location.assign(new URL("/products", window.location.href).toString());
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "ثبت‌نام انجام نشد.");
     } finally {

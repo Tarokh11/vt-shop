@@ -1,14 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 
 import { AccountShell } from "@/components/account-shell";
 import { api, Customer } from "@/lib/api";
 
 export default function LoginPage() {
-  const router = useRouter();
   const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
 
@@ -22,8 +20,7 @@ export default function LoginPage() {
         method: "POST",
         body: JSON.stringify({ email: form.get("email"), password: form.get("password") }),
       });
-      window.dispatchEvent(new Event("customer-auth-changed"));
-      router.replace("/products");
+      window.location.assign(new URL("/products", window.location.href).toString());
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "ورود انجام نشد.");
     } finally {
