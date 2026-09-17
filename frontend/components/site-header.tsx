@@ -21,7 +21,7 @@ function savedCustomer(): Customer | null {
 }
 
 export function SiteHeader() {
-  const [customer, setCustomer] = useState<Customer | null>(savedCustomer);
+  const [customer, setCustomer] = useState<Customer | null>(null);
 
   useEffect(() => {
     function loadCustomer() {
@@ -36,6 +36,7 @@ export function SiteHeader() {
         });
     }
 
+    queueMicrotask(() => setCustomer(savedCustomer()));
     loadCustomer();
     window.addEventListener("customer-auth-changed", loadCustomer);
     return () => window.removeEventListener("customer-auth-changed", loadCustomer);
