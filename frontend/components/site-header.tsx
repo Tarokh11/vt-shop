@@ -10,14 +10,30 @@ function customerName(customer: Customer): string {
   return name || customer.email;
 }
 
+function savedCustomer(): Customer | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const customer = window.localStorage.getItem("customer");
+    return customer ? JSON.parse(customer) as Customer : null;
+  } catch {
+    return null;
+  }
+}
+
 export function SiteHeader() {
-  const [customer, setCustomer] = useState<Customer | null>(null);
+  const [customer, setCustomer] = useState<Customer | null>(savedCustomer);
 
   useEffect(() => {
     function loadCustomer() {
       api<Customer>("/api/v1/accounts/me/")
-      .then(setCustomer)
-      .catch(() => setCustomer(null));
+        .then((customer) => {
+          window.localStorage.setItem("customer", JSON.stringify(customer));
+          setCustomer(customer);
+        })
+        .catch(() => {
+          window.localStorage.removeItem("customer");
+          setCustomer(null);
+        });
     }
 
     loadCustomer();

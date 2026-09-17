@@ -16,7 +16,7 @@ export default function RegisterPage() {
     setError("");
     const form = new FormData(event.currentTarget);
     try {
-      await api<Customer>("/api/v1/accounts/register/", {
+      const customer = await api<Customer>("/api/v1/accounts/register/", {
         method: "POST",
         body: JSON.stringify({
           email: form.get("email"),
@@ -25,6 +25,7 @@ export default function RegisterPage() {
           last_name: form.get("last_name"),
         }),
       });
+      window.localStorage.setItem("customer", JSON.stringify(customer));
       window.location.assign(new URL("/products", window.location.href).toString());
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "ثبت‌نام انجام نشد.");

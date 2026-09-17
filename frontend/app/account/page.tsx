@@ -35,6 +35,8 @@ export default function AccountPage() {
         }),
       });
       setCustomer(updated);
+      window.localStorage.setItem("customer", JSON.stringify(updated));
+      window.dispatchEvent(new Event("customer-auth-changed"));
       setMessage("اطلاعات حساب ذخیره شد.");
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "ذخیره انجام نشد.");
@@ -43,6 +45,7 @@ export default function AccountPage() {
 
   async function signOut() {
     await api("/api/v1/accounts/logout/", { method: "POST" });
+    window.localStorage.removeItem("customer");
     window.dispatchEvent(new Event("customer-auth-changed"));
     router.replace("/login");
   }

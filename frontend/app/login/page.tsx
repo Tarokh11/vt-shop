@@ -16,10 +16,11 @@ export default function LoginPage() {
     setError("");
     const form = new FormData(event.currentTarget);
     try {
-      await api<Customer>("/api/v1/accounts/login/", {
+      const customer = await api<Customer>("/api/v1/accounts/login/", {
         method: "POST",
         body: JSON.stringify({ email: form.get("email"), password: form.get("password") }),
       });
+      window.localStorage.setItem("customer", JSON.stringify(customer));
       window.location.assign(new URL("/products", window.location.href).toString());
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "ورود انجام نشد.");
