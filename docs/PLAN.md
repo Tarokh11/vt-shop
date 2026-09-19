@@ -289,6 +289,9 @@ store-specific branding/data is needed; no blocker remains in the purchase flow.
 - Storefront account flow now hides auth prompts after login, labels the account
   link with the customer name, stores optional profile address details, starts
   payment directly after checkout, and lists paid orders in order history.
+- Frontend responsive pass now covers the shared navigation, all storefront and
+  account pages, catalog/product cards, forms, cart/order cards, touch targets,
+  image sizing, and long-content overflow at mobile, tablet, and desktop widths.
 - Real Zarinpal sandbox verification, provider unit confirmation, public callback
   reachability, and refund capability remain the production payment gate.
 

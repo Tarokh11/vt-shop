@@ -22,6 +22,7 @@ function savedCustomer(): Customer | null {
 
 export function SiteHeader() {
   const [customer, setCustomer] = useState<Customer | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     function loadCustomer() {
@@ -45,7 +46,17 @@ export function SiteHeader() {
   return (
     <header className="site-header">
       <Link className="brand" href="/">فروشگاه</Link>
-      <nav aria-label="ناوبری اصلی">
+      <button
+        className="menu-toggle"
+        type="button"
+        aria-expanded={menuOpen}
+        aria-controls="main-navigation"
+        onClick={() => setMenuOpen((open) => !open)}
+      >
+        <span className="sr-only">نمایش منوی اصلی</span>
+        <span aria-hidden="true">☰</span>
+      </button>
+      <nav id="main-navigation" className={menuOpen ? "site-nav open" : "site-nav"} aria-label="ناوبری اصلی">
         <Link href="/products">محصولات</Link>
         <Link href="/cart">سبد خرید</Link>
         <Link href="/orders">سفارش‌ها</Link>
