@@ -49,7 +49,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 
 main { width: min(100% - 3rem, 78rem); margin: 0 auto; padding: 5.5rem 0 7rem; }
 h1, h2, h3, p { overflow-wrap: anywhere; }
-h1 { font-size: clamp(2.5rem, 5vw, 5rem); line-height: 1.13; margin: .55rem 0 1.25rem; letter-spacing: -.06em; }
+h1 { font-size: clamp(2rem, 4vw, 3.5rem); line-height: 1.16; margin: .55rem 0 1.25rem; letter-spacing: -.055em; }
 h2 { line-height: 1.3; margin: 0; letter-spacing: -.035em; }
 p { line-height: 1.9; }
 .eyebrow { margin: 0; color: var(--orange); font-size: .72rem; font-weight: 800; letter-spacing: .08em; }
@@ -94,7 +94,7 @@ p { line-height: 1.9; }
 
 .account-shell { max-width: 34rem; padding-top: 6rem; }
 .account-card { padding: clamp(1.5rem, 5vw, 3.25rem); border: 1px solid var(--line); border-radius: 1.25rem; background: rgba(255, 254, 251, .84); box-shadow: var(--shadow); }
-.account-card h1 { margin-top: .5rem; font-size: clamp(2rem, 5vw, 3rem); }
+.account-card h1 { margin-top: .5rem; font-size: clamp(1.8rem, 4vw, 2.5rem); }
 form { display: grid; gap: 1rem; margin-top: 1.8rem; }
 label { display: grid; gap: .45rem; min-width: 0; color: var(--ink); font-size: .8rem; font-weight: 700; }
 input, select, textarea { width: 100%; border: 1px solid var(--line); border-radius: .65rem; background: #fff; color: inherit; font: inherit; transition: border-color .2s ease, box-shadow .2s ease; }
@@ -136,7 +136,7 @@ button.secondary { width: 100%; margin-top: 1rem; background: transparent; color
 .image-placeholder { display: grid; place-items: center; color: var(--muted); }
 .product-info { padding-top: 1rem; }
 .product-info > a { color: var(--muted); font-size: .8rem; text-decoration: none; }
-.product-info h1 { margin-top: .65rem; font-size: clamp(2.25rem, 4vw, 4rem); }
+.product-info h1 { margin-top: .65rem; font-size: clamp(2rem, 3.5vw, 3.2rem); }
 .product-info > p { color: var(--muted); }
 .variant-list { display: flex; flex-wrap: wrap; gap: .6rem; margin: 2rem 0 1rem; }
 button.variant { width: auto; background: transparent; border: 1px solid var(--line); color: inherit; }
@@ -194,7 +194,7 @@ button.variant.active { border-color: var(--green); background: var(--green-ligh
   main { width: min(100% - 2rem, 78rem); padding-top: 3rem; padding-bottom: 4rem; }
   .home-page { padding-top: 1.5rem; }
   .hero-section { display: flex; flex-direction: column; align-items: stretch; min-height: 0; }
-  .hero-copy h1 { font-size: clamp(2.45rem, 12vw, 4rem); }
+  .hero-copy h1 { font-size: clamp(2rem, 10vw, 2.8rem); }
   .hero-lede { font-size: .95rem; }
   .hero-art { min-height: 19rem; }
   .hero-art-card { bottom: 1.3rem; left: 1.3rem; }
