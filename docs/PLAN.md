@@ -292,6 +292,9 @@ store-specific branding/data is needed; no blocker remains in the purchase flow.
 - Frontend responsive pass now covers the shared navigation, all storefront and
   account pages, catalog/product cards, forms, cart/order cards, touch targets,
   image sizing, and long-content overflow at mobile, tablet, and desktop widths.
+- Storefront UI now uses a cohesive RTL ecommerce system with a branded header,
+  editorial homepage hero, value strip, elevated cards, structured product detail,
+  and responsive cart/account surfaces.
 - Real Zarinpal sandbox verification, provider unit confirmation, public callback
   reachability, and refund capability remain the production payment gate.
 

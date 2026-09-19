@@ -44,8 +44,14 @@ export function SiteHeader() {
   }, []);
 
   return (
-    <header className="site-header">
-      <Link className="brand" href="/">فروشگاه</Link>
+    <>
+      <div className="announcement-bar">ارسال سریع و مطمئن در سراسر ایران</div>
+      <header className="site-header">
+        <div className="site-header-inner">
+          <Link className="brand" href="/">
+            <span className="brand-mark" aria-hidden="true">ن</span>
+            <span><strong>نورا</strong><small>فروشگاه انتخاب‌های خاص</small></span>
+          </Link>
       <button
         className="menu-toggle"
         type="button"
@@ -56,16 +62,17 @@ export function SiteHeader() {
         <span className="sr-only">نمایش منوی اصلی</span>
         <span aria-hidden="true">☰</span>
       </button>
-      <nav id="main-navigation" className={menuOpen ? "site-nav open" : "site-nav"} aria-label="ناوبری اصلی">
-        <Link href="/products">محصولات</Link>
-        <Link href="/cart">سبد خرید</Link>
-        <Link href="/orders">سفارش‌ها</Link>
-        {customer ? (
-          <Link href="/account">{customerName(customer)}</Link>
-        ) : (
-          <Link href="/login">ساخت حساب کاربری و ورود</Link>
-        )}
-      </nav>
-    </header>
+          <nav id="main-navigation" className={menuOpen ? "site-nav open" : "site-nav"} aria-label="ناوبری اصلی">
+            <Link href="/">خانه</Link>
+            <Link href="/products">محصولات</Link>
+            <Link href="/orders">پیگیری سفارش</Link>
+            {customer ? <Link href="/account">{customerName(customer)}</Link> : <Link href="/login">ورود / عضویت</Link>}
+          </nav>
+          <div className="header-actions">
+            <Link className="header-cart" href="/cart" aria-label="سبد خرید"><span aria-hidden="true">سبد</span><b>خرید</b></Link>
+          </div>
+        </div>
+      </header>
+    </>
   );
 }
