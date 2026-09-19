@@ -20,7 +20,8 @@ export default function ProductPage() {
 
   useEffect(() => {
     const controller = new AbortController();
-    fetch(`/api/v1/catalog/products/${encodeURIComponent(slug)}/`, {
+    const decodedSlug = decodeURIComponent(slug);
+    fetch(`/api/v1/catalog/products/${encodeURIComponent(decodedSlug)}/`, {
       cache: "no-store",
       signal: controller.signal,
     })
