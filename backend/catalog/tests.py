@@ -236,3 +236,117 @@ class LegacyOptionMigrationTests(TestCase):
         self.assertEqual(variant.option_values.count(), 2)
         self.assertEqual(product.option_definitions.count(), 2)
         self.assertEqual(category.attribute_definitions.count(), 2)
+
+
+class CatalogFilteringTests(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.writing = Category.objects.create(name="Writing", slug="writing")
+        self.pens = Category.objects.create(name="Pens", slug="pens", parent=self.writing)
+        self.notebooks = Category.objects.create(
+            name="Notebooks", slug="notebooks", parent=self.writing
+        )
+        self.acme = Brand.objects.create(name="Acme", slug="acme")
+        self.other = Brand.objects.create(name="Other", slug="other")
+        self.color = AttributeDefinition.objects.create(
+            name="Color", slug="color", is_filterable=True, is_searchable=True
+        )
+        self.blue = AttributeValue.objects.create(definition=self.color, label="Blue", slug="blue")
+        self.black = AttributeValue.objects.create(
+            definition=self.color, label="Black", slug="black", position=1
+        )
+        for category in (self.pens, self.notebooks):
+            CategoryAttributeDefinition.objects.create(category=category, definition=self.color)
+
+        self.pen, self.pen_variant = self.create_product(
+            name="Blue pen",
+            slug="blue-pen",
+            sku="PEN-BLUE",
+            category=self.pens,
+            brand=self.acme,
+            stock=3,
+        )
+        pen_option = ProductOptionDefinition.objects.create(product=self.pen, definition=self.color)
+        VariantOptionValue.objects.create(
+            variant=self.pen_variant, option=pen_option, value=self.blue
+        )
+
+        self.notebook, self.notebook_variant = self.create_product(
+            name="Black notebook",
+            slug="black-notebook",
+            sku="NOTEBOOK-BLACK",
+            category=self.notebooks,
+            brand=self.other,
+            stock=0,
+        )
+        ProductAttributeValue.objects.create(product=self.notebook, value=self.black)
+        self.collection = Collection.objects.create(name="Featured", slug="featured")
+        CollectionProduct.objects.create(collection=self.collection, product=self.pen)
+
+    def create_product(self, name, slug, sku, category, brand, stock):
+        product = Product.objects.create(name=name, slug=slug, brand=brand, is_published=True)
+        product.categories.add(category)
+        variant = ProductVariant.objects.create(
+            product=product,
+            sku=sku,
+            options={"color": name.split()[0].lower()},
+            price_irr=100_000,
+            stock_quantity=stock,
+            is_default=True,
+        )
+        return product, variant
+
+    def test_category_brand_collection_attribute_and_stock_filters(self):
+        response = self.client.get("/api/v1/catalog/products/?category=writing")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["count"], 2)
+        self.assertEqual(
+            len(self.client.get("/api/v1/catalog/products/?page_size=1").json()["results"]), 1
+        )
+
+        self.assertEqual(
+            self.client.get("/api/v1/catalog/products/?brand=acme").json()["count"], 1
+        )
+        self.assertEqual(
+            self.client.get("/api/v1/catalog/products/?collection=featured").json()["count"], 1
+        )
+        self.assertEqual(
+            self.client.get("/api/v1/catalog/products/?attribute=color:blue").json()["count"], 1
+        )
+        self.assertEqual(
+            self.client.get("/api/v1/catalog/products/?attribute=color:black").json()["count"], 1
+        )
+        self.assertEqual(
+            self.client.get("/api/v1/catalog/products/?in_stock=true").json()["count"], 1
+        )
+        self.assertEqual(
+            self.client.get("/api/v1/catalog/products/?in_stock=false").json()["count"], 1
+        )
+
+    def test_search_and_invalid_filters_are_validated(self):
+        self.assertEqual(self.client.get("/api/v1/catalog/products/?q=blue").json()["count"], 1)
+        self.assertEqual(
+            self.client.get("/api/v1/catalog/products/?q=NOTEBOOK-BLACK").json()["count"], 1
+        )
+        self.assertEqual(
+            self.client.get("/api/v1/catalog/products/?attribute=color").status_code, 400
+        )
+        self.assertEqual(
+            self.client.get("/api/v1/catalog/products/?in_stock=yes").status_code, 400
+        )
+        self.assertEqual(self.client.get("/api/v1/catalog/products/?unknown=x").status_code, 400)
+
+    def test_filter_metadata_and_normalized_option_output(self):
+        filters = self.client.get("/api/v1/catalog/filters/")
+        self.assertEqual(filters.status_code, 200)
+        self.assertEqual(filters.json()["attributes"][0]["slug"], "color")
+        self.assertEqual(
+            [value["slug"] for value in filters.json()["attributes"][0]["values"]],
+            ["blue", "black"],
+        )
+
+        product = self.client.get("/api/v1/catalog/products/blue-pen/").json()
+        self.assertEqual(product["brand"]["slug"], "acme")
+        self.assertEqual(product["option_definitions"][0]["definition"]["slug"], "color")
+        self.assertEqual(product["variants"][0]["options"], {"color": "blue"})
+        self.assertEqual(product["variants"][0]["option_values"][0]["value"]["slug"], "blue")

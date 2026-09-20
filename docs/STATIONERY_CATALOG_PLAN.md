@@ -1,8 +1,8 @@
 # Stationery Catalog Model Plan
 
-Status: Generic schema and legacy JSON option migration complete. Catalog
-API/filtering, storefront controls, and stationery-specific configuration remain
-pending.
+Status: Generic schema, legacy JSON option migration, and public catalog
+API/filtering are complete. Storefront controls and stationery-specific
+configuration remain pending.
 
 This document is the working reference for the stationery catalog expansion.
 Read it before changing catalog models, catalog APIs, catalog Admin, seed data,
@@ -15,7 +15,8 @@ stationery-specific data/configuration whenever possible.
 - Phase 2 generic schema: complete in catalog migration `0003`.
 - Phase 3 JSON option migration: complete in catalog migration `0004`.
 - Phase 4 Admin workflow polish: pending; base Admin management is present.
-- Phases 5-8 API, storefront, stationery data, and full verification: pending.
+- Phase 5 public API/filtering: complete.
+- Phases 6-8 storefront, stationery data, and full verification: pending.
 
 ## Current Baseline
 
@@ -30,9 +31,11 @@ The current catalog already provides:
   active/default state.
 - Ordered product images.
 - Append-only, locked `InventoryAdjustment` records.
-- Public published-product and active-category APIs.
-- Exact category filtering through `?category=`.
-- Product detail and flat variant selection in the storefront.
+- Public category, product, detail, and filter-metadata APIs.
+- Descendant category, brand, collection, attribute, stock, and basic text
+  search filters.
+- Product detail and flat variant selection in the storefront; grouped option
+  controls remain pending.
 - Existing cart, checkout, reservation, payment, and order flows tied directly
   to `ProductVariant` rows.
 
@@ -234,6 +237,15 @@ without updating the other during this transition.
 - Add validated search/filter parameters and filter metadata.
 - Add descendant category behavior.
 - Add focused query, visibility, and pagination tests.
+
+Status: complete. Product responses now add brand, collections, visible product
+attributes, product option definitions, and normalized variant option values
+without removing legacy fields. `GET /api/v1/catalog/filters/` exposes active
+filter metadata. `GET /api/v1/catalog/products/` accepts `category`, repeated
+`brand`, repeated `collection`, repeated `attribute=definition-slug:value-slug`,
+`in_stock=true|false`, `q`, `page`, and `page_size`; unsupported or invalid
+filters return validation errors. Attribute search/filter eligibility comes from
+definition flags, so stationery configuration must explicitly enable it.
 
 ### Phase 6: Storefront
 
