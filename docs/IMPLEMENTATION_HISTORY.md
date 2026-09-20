@@ -155,7 +155,7 @@ Use `SESSION_STATE.md` for current handoff context, not historical detail.
   drift, frontend lint/typecheck/build, live filter coverage audit, and Chrome
   catalogue smoke checks at 375px, 768px, and 1440px.
 
-### `NEXT` Verify stationery catalog interactions
+### `47d0f5e` Verify stationery catalog interactions
 
 - Verified URL-backed stock filtering and grouped normalized variant selection in
   headless Chrome with the seeded stationery catalog.
