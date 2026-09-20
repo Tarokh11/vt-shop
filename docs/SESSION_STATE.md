@@ -12,7 +12,9 @@
   `0004` copied legacy variant JSON options and `0005` removed the legacy field;
   Admin workflows cover the normalized catalog models; public
   catalog search/filter APIs, category-aware filter metadata, URL-backed catalogue
-  controls, and normalized option selection are available; five sample stationery products make
+  controls, normalized option selection, and four-item related product previews
+  are available; the orders page now presents payment, preparation, shipment,
+  and delivery progress; five sample stationery products make
   every configured category, brand, collection, and attribute filter visible;
   URL filter interaction and grouped variant selection pass in Chrome.
 - Decisions: order history is paid-order-only; pending-payment orders are created
@@ -30,9 +32,10 @@
   `backend/catalog/management/commands/seed_stationery.py`,
   `frontend/app/products/page.tsx`, `frontend/app/products/[slug]/page.tsx`,
   and `docs/STATIONERY_CATALOG_PLAN.md`.
-- Checks: backend Ruff, migration drift, Django system check, frontend
-  lint/typecheck/build, responsive Chrome catalogue smoke checks at 375px, 768px,
-  and 1440px, URL filter interaction, and grouped option selection pass.
+- Checks: backend catalog and order tests under SQLite test settings, backend
+  Ruff, migration drift, Django system check, frontend lint/typecheck/build,
+  responsive Chrome catalogue smoke checks at 375px, 768px, and 1440px, URL
+  filter interaction, and grouped option selection pass.
 - Next task: run backend regression tests with a permitted PostgreSQL test role,
   including category-aware attribute filter coverage, then review and commit the
   completed catalog cutover.
