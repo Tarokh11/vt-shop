@@ -1,8 +1,8 @@
 # Stationery Catalog Model Plan
 
-Status: Generic schema, legacy JSON option migration, and public catalog
-API/filtering are complete. Storefront controls and stationery-specific
-configuration remain pending.
+Status: Generic schema, legacy JSON option migration, public catalog API/filtering,
+and storefront controls are complete. Stationery-specific configuration and final
+browser verification remain pending.
 
 This document is the working reference for the stationery catalog expansion.
 Read it before changing catalog models, catalog APIs, catalog Admin, seed data,
@@ -16,7 +16,8 @@ stationery-specific data/configuration whenever possible.
 - Phase 3 JSON option migration: complete in catalog migration `0004`.
 - Phase 4 Admin workflow polish: pending; base Admin management is present.
 - Phase 5 public API/filtering: complete.
-- Phases 6-8 storefront, stationery data, and full verification: pending.
+- Phase 6 storefront controls: complete; browser interaction smoke remains pending.
+- Phases 7-8 stationery data and full verification: pending.
 
 ## Current Baseline
 
@@ -253,6 +254,12 @@ definition flags, so stationery configuration must explicitly enable it.
 - Add responsive mobile filter controls.
 - Add grouped option selectors and variant resolution.
 - Add frontend tests for query synchronization and option combinations.
+
+Status: implementation complete. The catalogue keeps search/category/brand/
+collection/attribute/in-stock state in query parameters, reads filter metadata,
+and uses responsive controls. Product detail renders normalized grouped options
+when available and retains the legacy flat-variant fallback. Frontend lint,
+typecheck, and build pass; focused browser interaction smoke remains pending.
 
 ### Phase 7: Stationery data
 

@@ -61,6 +61,22 @@ export default function ProductPage() {
   if (!product) return <main><p role="status">در حال دریافت محصول…</p></main>;
 
   const image = product.images[0];
+  const hasStructuredOptions = product.option_definitions.length > 0 && product.variants.some((item) => item.option_values.length > 0);
+
+  function optionValue(variant: ProductVariant, optionId: number): string | undefined {
+    return variant.option_values.find((item) => item.definition.id === optionId)?.value.slug;
+  }
+
+  function selectOption(optionId: number, valueSlug: string) {
+    if (!product || !variant) return;
+    const selected = new Map(variant.option_values.map((item) => [item.definition.id, item.value.slug]));
+    selected.set(optionId, valueSlug);
+    const matching = product.variants.find((item) => (
+      [...selected].every(([id, value]) => optionValue(item, id) === value)
+    ));
+    if (matching) setVariant(matching);
+  }
+
   return (
     <main className="product-page">
       <div className="product-gallery">
@@ -69,9 +85,20 @@ export default function ProductPage() {
       <section className="product-info">
         <Link href="/products">محصولات /</Link>
         <p className="product-category">{product.categories.map((item) => item.name).join("، ")}</p>
+        {product.brand && <p className="product-brand">{product.brand.name}</p>}
         <h1>{product.name}</h1>
         <p>{product.description}</p>
-        {product.variants.length > 1 && <div className="variant-list" aria-label="انتخاب مدل">
+        {hasStructuredOptions && <div className="option-groups" aria-label="انتخاب ویژگی‌ها">{product.option_definitions.map((option) => {
+          const values = Array.from(new Map(product.variants.flatMap((item) => item.option_values.filter((value) => value.definition.id === option.definition.id).map((value) => [value.value.slug, value.value]))).values());
+          return <fieldset key={option.id}><legend>{option.definition.name}</legend><div>{values.map((value) => {
+            const selected = variant ? new Map(variant.option_values.map((item) => [item.definition.id, item.value.slug])) : new Map<number, string>();
+            selected.set(option.definition.id, value.slug);
+            const matching = product.variants.find((item) => [...selected].every(([id, slug]) => optionValue(item, id) === slug));
+            const disabled = !matching || !matching.available;
+            return <button key={value.id} type="button" className={variant && optionValue(variant, option.definition.id) === value.slug ? "variant active" : "variant"} disabled={disabled} onClick={() => selectOption(option.definition.id, value.slug)}>{value.label}</button>;
+          })}</div></fieldset>;
+        })}</div>}
+        {!hasStructuredOptions && product.variants.length > 1 && <div className="variant-list" aria-label="انتخاب مدل">
           {product.variants.map((item) => <button key={item.id} type="button" className={variant?.id === item.id ? "variant active" : "variant"} onClick={() => setVariant(item)}>{item.name || item.sku}</button>)}
         </div>}
         {variant && <div className="selected-variant">
