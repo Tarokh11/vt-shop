@@ -27,11 +27,18 @@ reference.
 1. Inspect relevant files and confirm the current plan.
 2. Implement one logical phase at a time.
 3. Run relevant tests, checks, and migrations.
-4. Update the active plan and concise `docs/SESSION_STATE.md`.
+4. Update the active plan, concise `docs/SESSION_STATE.md`, and
+   `docs/IMPLEMENTATION_HISTORY.md` with the commit's completed steps/checks.
 5. Review, stage, and commit the completed logical change.
 
 Keep commits focused. Do not commit broken, incomplete, secret, generated, or
 unrelated changes. Do not amend/rewrite commits unless explicitly requested.
+
+## Implementation History
+
+`docs/IMPLEMENTATION_HISTORY.md` is the durable record of completed work. Add
+one concise entry for every implementation commit, including the commit ID,
+completed steps, and verification. Do not turn `SESSION_STATE.md` into a log.
 
 ## Scope Changes
 
