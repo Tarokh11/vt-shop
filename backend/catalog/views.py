@@ -13,6 +13,7 @@ from .models import (
     AttributeValue,
     Brand,
     Category,
+    CategoryAttributeDefinition,
     Collection,
     Product,
     ProductAttributeValue,
@@ -49,6 +50,31 @@ def _descendant_category_ids(category):
     return category_ids
 
 
+def _requested_category(params):
+    category_slugs = _query_values(params, "category")
+    if len(category_slugs) > 1:
+        raise ValidationError({"category": "Only one category may be selected."})
+    if not category_slugs:
+        return None
+    category = Category.objects.filter(slug=category_slugs[0], is_active=True).first()
+    if category is None:
+        raise ValidationError({"category": "Unknown active category."})
+    return category
+
+
+def _category_attribute_definition_ids(category):
+    category_ids = _descendant_category_ids(category)
+    parent = category.parent
+    while parent is not None:
+        category_ids.add(parent.id)
+        parent = parent.parent
+    return set(
+        CategoryAttributeDefinition.objects.filter(category_id__in=category_ids).values_list(
+            "definition_id", flat=True
+        )
+    )
+
+
 def _query_values(params, name):
     values = params.getlist(name)
     if any(not value for value in values):
@@ -62,13 +88,8 @@ def _filter_params(request, queryset):
     if unknown:
         raise ValidationError({"detail": f"Unsupported filters: {', '.join(sorted(unknown))}."})
 
-    category_slugs = _query_values(request.query_params, "category")
-    if len(category_slugs) > 1:
-        raise ValidationError({"category": "Only one category may be selected."})
-    if category_slugs:
-        category = Category.objects.filter(slug=category_slugs[0], is_active=True).first()
-        if category is None:
-            raise ValidationError({"category": "Unknown active category."})
+    category = _requested_category(request.query_params)
+    if category is not None:
         queryset = queryset.filter(categories__in=_descendant_category_ids(category))
 
     for name, model, field in (
@@ -84,7 +105,14 @@ def _filter_params(request, queryset):
         queryset = queryset.filter(**{f"{field}__in": slugs})
 
     values_by_definition = defaultdict(list)
+    attribute_definition_ids = (
+        _category_attribute_definition_ids(category) if category is not None else set()
+    )
     for raw_value in _query_values(request.query_params, "attribute"):
+        if category is None:
+            raise ValidationError(
+                {"attribute": "Select a category before filtering by attributes."}
+            )
         try:
             definition_slug, value_slug = raw_value.split(":", 1)
         except ValueError as error:
@@ -92,7 +120,10 @@ def _filter_params(request, queryset):
                 {"attribute": "Use the definition-slug:value-slug format."}
             ) from error
         definition = AttributeDefinition.objects.filter(
-            slug=definition_slug, is_visible=True, is_filterable=True
+            id__in=attribute_definition_ids,
+            slug=definition_slug,
+            is_visible=True,
+            is_filterable=True,
         ).first()
         value = AttributeValue.objects.filter(
             definition=definition, slug=value_slug, is_active=True
@@ -211,8 +242,15 @@ class CatalogFilterView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
+        category = _requested_category(request.query_params)
+        attribute_definition_ids = (
+            _category_attribute_definition_ids(category) if category is not None else set()
+        )
         attributes = AttributeDefinition.objects.filter(
-            is_visible=True, is_filterable=True, values__is_active=True
+            id__in=attribute_definition_ids,
+            is_visible=True,
+            is_filterable=True,
+            values__is_active=True,
         ).distinct().prefetch_related(
             Prefetch("values", queryset=AttributeValue.objects.filter(is_active=True))
         )

@@ -207,7 +207,6 @@ class ProductVariant(models.Model):
     product = models.ForeignKey(Product, related_name="variants", on_delete=models.CASCADE)
     sku = models.CharField(max_length=80, unique=True)
     name = models.CharField(max_length=140, blank=True)
-    options = models.JSONField(default=dict, blank=True)
     price_irr = models.PositiveBigIntegerField()
     stock_quantity = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=True)
@@ -230,8 +229,6 @@ class ProductVariant(models.Model):
         ]
 
     def clean(self):
-        if not isinstance(self.options, dict):
-            raise ValidationError({"options": "Options must be a JSON object."})
         if self.is_default and not self.is_active:
             raise ValidationError({"is_default": "The default variant must be active."})
 

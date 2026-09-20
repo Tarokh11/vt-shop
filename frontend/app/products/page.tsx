@@ -15,13 +15,15 @@ function ProductsPageContent() {
   const [state, setState] = useState<"loading" | "ready" | "error">("loading");
   const [nextPage, setNextPage] = useState<string | null>(null);
   const [query, setQuery] = useState(() => searchParams.get("q") ?? "");
+  const selectedCategory = searchParams.get("category") ?? "";
 
   useEffect(() => {
-    fetch("/api/v1/catalog/filters/", { cache: "no-store" })
+    const params = selectedCategory ? `?category=${encodeURIComponent(selectedCategory)}` : "";
+    fetch(`/api/v1/catalog/filters/${params}`, { cache: "no-store" })
       .then((response) => response.ok ? response.json() as Promise<CatalogFilters> : Promise.reject())
       .then(setFilters)
       .catch(() => setFilters(null));
-  }, []);
+  }, [selectedCategory]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -87,7 +89,7 @@ function ProductsPageContent() {
           <button type="submit">جستجو</button>
         </form>
         <div className="filter-row">
-          <label>دسته‌بندی<select value={searchParams.get("category") ?? ""} onChange={(event) => updateSearchParams((params) => { if (event.target.value) params.set("category", event.target.value); else params.delete("category"); })}><option value="">همه دسته‌ها</option>{filters?.categories.map((item) => <option key={item.id} value={item.slug}>{item.parent ? `- ${item.name}` : item.name}</option>)}</select></label>
+          <label>دسته‌بندی<select value={selectedCategory} onChange={(event) => updateSearchParams((params) => { if (event.target.value) params.set("category", event.target.value); else params.delete("category"); params.delete("attribute"); })}><option value="">همه دسته‌ها</option>{filters?.categories.map((item) => <option key={item.id} value={item.slug}>{item.parent ? `- ${item.name}` : item.name}</option>)}</select></label>
           <label>برند<select value={searchParams.get("brand") ?? ""} onChange={(event) => updateSearchParams((params) => { if (event.target.value) params.set("brand", event.target.value); else params.delete("brand"); })}><option value="">همه برندها</option>{filters?.brands.map((item) => <option key={item.id} value={item.slug}>{item.name}</option>)}</select></label>
           <label>مجموعه<select value={searchParams.get("collection") ?? ""} onChange={(event) => updateSearchParams((params) => { if (event.target.value) params.set("collection", event.target.value); else params.delete("collection"); })}><option value="">همه مجموعه‌ها</option>{filters?.collections.map((item) => <option key={item.id} value={item.slug}>{item.name}</option>)}</select></label>
           <label className="stock-filter"><input type="checkbox" checked={searchParams.get("in_stock") === "true"} onChange={(event) => updateSearchParams((params) => { if (event.target.checked) params.set("in_stock", "true"); else params.delete("in_stock"); })} />فقط موجود</label>

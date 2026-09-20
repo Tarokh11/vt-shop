@@ -108,7 +108,6 @@ class ProductVariantSerializer(serializers.ModelSerializer):
             "id",
             "sku",
             "name",
-            "options",
             "option_values",
             "price_irr",
             "available",

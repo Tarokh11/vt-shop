@@ -30,8 +30,7 @@ The current catalog already provides:
 - `Product` with name, Unicode slug, description, category M2M, publication,
   and timestamps.
 - `ProductVariant` with stable primary key, globally unique SKU, display name,
-  legacy JSON options, normalized option assignments, integer IRR price, stock,
-  active/default state.
+  normalized option assignments, integer IRR price, stock, active/default state.
 - Ordered product images.
 - Append-only, locked `InventoryAdjustment` records.
 - Public category, product, detail, and filter-metadata APIs.
@@ -82,9 +81,9 @@ Add generic models for:
 These represent descriptive/filterable properties such as paper size, ruling,
 page count, paper weight, binding, material, refillability, and age/use group.
 
-Define category inheritance explicitly before implementing it. The minimal
-recommendation is no automatic inheritance initially; assign definitions to
-the categories that need them and add descendant behavior only when required.
+Category applicability is explicit. A selected category exposes mappings from
+its configured subtree and inherits mappings from its active ancestors, so
+parent categories remain useful without exposing unrelated global attributes.
 
 ### Variant-producing options
 
@@ -94,10 +93,9 @@ only where structured selection is required:
 - Product option definition/order.
 - Variant option value assignments.
 
-Examples include ink color, body color, tip size, and pack quantity. Existing
-JSON options require a controlled migration before they can be removed. Keep
-the JSON temporarily during migration if necessary, but establish one source
-of truth before changing API consumers.
+Examples include ink color, body color, tip size, and pack quantity. Legacy JSON
+options were migrated and removed; normalized assignments are now the only
+source of truth.
 
 ### Collections
 
@@ -176,7 +174,7 @@ Implement the smallest useful stationery catalog:
 1. Add category parent support.
 2. Add Brand and a nullable product brand relation.
 3. Add generic attribute definitions/values and product assignments.
-4. Add category applicability without automatic inheritance initially.
+4. Add category applicability with bounded parent/descendant inheritance.
 5. Normalize variant options while preserving existing variant rows.
 6. Add ordered Collections.
 7. Add basic search and category/brand/collection/attribute/stock filters.
@@ -218,14 +216,13 @@ relations without modifying existing product or variant identity.
 - Convert existing JSON variant options into normalized definitions/values.
 - Verify every existing variant keeps its ID, SKU, price, stock, active/default
   state, and downstream references.
-- Keep legacy JSON only for a deliberately bounded transition period.
+- Remove the legacy JSON field only after all consumers use normalized values.
 
 Status: complete. Migration `catalog.0004` copied every existing JSON option
 into reusable definitions/values, product options, variant assignments, and
-category mappings without changing variant IDs, SKU, price, stock, or JSON. The
-legacy JSON remains the public API/storefront source of truth until Phase 5
-switches both consumers to normalized assignments; avoid editing one form
-without updating the other during this transition.
+category mappings without changing variant IDs, SKU, or stock. Follow-up
+`catalog.0005` removed the legacy JSON field after API, Admin, seed command,
+tests, and storefront consumers switched to normalized assignments.
 
 ### Phase 4: Admin
 
@@ -234,6 +231,11 @@ without updating the other during this transition.
 - Validate applicable values and duplicate variant combinations.
 - Keep direct stock edits read-only and use inventory adjustments.
 
+Status: implementation complete. Admin registers brands, attributes, category
+applicability, products, normalized product options, variants, collections, and
+inventory adjustments. Product and category screens expose the relevant inline
+workflows; variant stock is read-only and inventory adjustments are append-only.
+
 ### Phase 5: API and search/filtering
 
 - Extend serializers without exposing hidden attributes.
@@ -241,10 +243,12 @@ without updating the other during this transition.
 - Add descendant category behavior.
 - Add focused query, visibility, and pagination tests.
 
-Status: complete. Product responses now add brand, collections, visible product
-attributes, product option definitions, and normalized variant option values
-without removing legacy fields. `GET /api/v1/catalog/filters/` exposes active
-filter metadata. `GET /api/v1/catalog/products/` accepts `category`, repeated
+Status: complete. Product responses expose brand, collections, visible product
+attributes, product option definitions, and normalized variant option values.
+`GET /api/v1/catalog/filters/` exposes only attributes configured for the
+selected category (including configured descendants and inherited ancestors);
+without a category it exposes no attribute definitions. `GET
+/api/v1/catalog/products/` accepts `category`, repeated
 `brand`, repeated `collection`, repeated `attribute=definition-slug:value-slug`,
 `in_stock=true|false`, `q`, `page`, and `page_size`; unsupported or invalid
 filters return validation errors. Attribute search/filter eligibility comes from
@@ -258,7 +262,8 @@ definition flags, so stationery configuration must explicitly enable it.
 - Add frontend tests for query synchronization and option combinations.
 
 Status: implementation complete. The catalogue keeps search/category/brand/
-collection/attribute/in-stock state in query parameters, reads filter metadata,
+collection/attribute/in-stock state in query parameters, reloads category-aware
+filter metadata, clears attribute selections when the category changes, and
 and uses responsive controls. Product detail renders normalized grouped options
 when available and retains the legacy flat-variant fallback. Frontend lint,
 typecheck, and build pass; focused browser interaction smoke remains pending.
@@ -282,11 +287,13 @@ adjustments. It is idempotent and does not alter the existing clothing records.
 - Verify PostgreSQL filtering/search behavior.
 - Run frontend lint, typecheck, build, and responsive browser checks.
 
-Status: complete for the local sample. Backend regression tests, migration drift,
-Ruff, Django checks, frontend lint/typecheck/build, responsive Chrome checks at
-375px, 768px, and 1440px, URL filter interaction, and grouped variant selection
-all pass. Persistent production media, real catalog assets, and real Zarinpal
-verification remain release work.
+Status: implementation verification is in progress. Ruff, Django checks,
+migration drift, frontend lint/typecheck/build, responsive Chrome checks at
+375px, 768px, and 1440px, URL filter interaction, grouped variant selection,
+and local sample verification pass. Backend regression tests still require a
+PostgreSQL role with permission to create the test database. Persistent
+production media, real catalog assets, and real Zarinpal verification remain
+release work.
 
 ## Completion Criteria
 

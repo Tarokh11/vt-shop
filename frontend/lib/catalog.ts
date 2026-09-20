@@ -56,7 +56,6 @@ export type ProductVariant = {
   id: number;
   sku: string;
   name: string;
-  options: Record<string, string>;
   option_values: ProductOptionValue[];
   price_irr: number;
   available: boolean;

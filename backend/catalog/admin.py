@@ -22,7 +22,7 @@ class ProductVariantInline(admin.TabularInline):
     model = ProductVariant
     extra = 1
     readonly_fields = ("stock_quantity",)
-    fields = ("sku", "name", "options", "price_irr", "stock_quantity", "is_active", "is_default")
+    fields = ("sku", "name", "price_irr", "stock_quantity", "is_active", "is_default")
 
 
 class ProductImageInline(admin.TabularInline):

@@ -1,6 +1,3 @@
-from importlib import import_module
-
-from django.apps import apps
 from django.contrib import admin
 from django.core.exceptions import ValidationError
 from django.core.management import call_command
@@ -38,7 +35,6 @@ class CatalogApiTests(TestCase):
             product=self.product,
             sku="RUN-BLK-42",
             name="Black / 42",
-            options={"color": "black", "size": "42"},
             price_irr=12_500_000,
             stock_quantity=3,
             is_default=True,
@@ -141,11 +137,6 @@ class InventoryTests(TestCase):
                 product=self.product, sku="SKU-2", price_irr=500_000, is_default=True
             )
 
-    def test_options_must_be_an_object(self):
-        variant = ProductVariant(product=self.product, sku="SKU-2", price_irr=500_000, options=[])
-        with self.assertRaises(ValidationError):
-            variant.full_clean()
-
     def test_admin_prevents_direct_stock_editing(self):
         model_admin = ProductVariantAdmin(ProductVariant, admin.site)
         self.assertIn("stock_quantity", model_admin.get_readonly_fields(request=None))
@@ -212,33 +203,6 @@ class CatalogStructureTests(TestCase):
             ProductOptionDefinition(product=self.product, definition=self.color).full_clean()
 
 
-class LegacyOptionMigrationTests(TestCase):
-    def test_legacy_json_options_are_copied_without_changing_variant_identity(self):
-        category = Category.objects.create(name="Markers", slug="markers")
-        product = Product.objects.create(name="Marker", slug="marker")
-        product.categories.add(category)
-        variant = ProductVariant.objects.create(
-            product=product,
-            sku="MARKER-BLUE-FINE",
-            options={"color": "blue", "tip": "fine"},
-            price_irr=100_000,
-            stock_quantity=4,
-            is_default=True,
-        )
-
-        migration = import_module("catalog.migrations.0004_migrate_legacy_variant_options")
-        migration.migrate_legacy_variant_options(apps, schema_editor=None)
-        migration.migrate_legacy_variant_options(apps, schema_editor=None)
-
-        variant.refresh_from_db()
-        self.assertEqual(variant.sku, "MARKER-BLUE-FINE")
-        self.assertEqual(variant.stock_quantity, 4)
-        self.assertEqual(variant.options, {"color": "blue", "tip": "fine"})
-        self.assertEqual(variant.option_values.count(), 2)
-        self.assertEqual(product.option_definitions.count(), 2)
-        self.assertEqual(category.attribute_definitions.count(), 2)
-
-
 class CatalogFilteringTests(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -258,6 +222,15 @@ class CatalogFilteringTests(TestCase):
         )
         for category in (self.pens, self.notebooks):
             CategoryAttributeDefinition.objects.create(category=category, definition=self.color)
+        self.paper_size = AttributeDefinition.objects.create(
+            name="Paper size", slug="paper-size", is_filterable=True
+        )
+        self.a5 = AttributeValue.objects.create(
+            definition=self.paper_size, label="A5", slug="a5"
+        )
+        CategoryAttributeDefinition.objects.create(
+            category=self.notebooks, definition=self.paper_size
+        )
 
         self.pen, self.pen_variant = self.create_product(
             name="Blue pen",
@@ -290,7 +263,6 @@ class CatalogFilteringTests(TestCase):
         variant = ProductVariant.objects.create(
             product=product,
             sku=sku,
-            options={"color": name.split()[0].lower()},
             price_irr=100_000,
             stock_quantity=stock,
             is_default=True,
@@ -312,10 +284,16 @@ class CatalogFilteringTests(TestCase):
             self.client.get("/api/v1/catalog/products/?collection=featured").json()["count"], 1
         )
         self.assertEqual(
-            self.client.get("/api/v1/catalog/products/?attribute=color:blue").json()["count"], 1
+            self.client.get(
+                "/api/v1/catalog/products/?category=pens&attribute=color:blue"
+            ).json()["count"],
+            1,
         )
         self.assertEqual(
-            self.client.get("/api/v1/catalog/products/?attribute=color:black").json()["count"], 1
+            self.client.get(
+                "/api/v1/catalog/products/?category=notebooks&attribute=color:black"
+            ).json()["count"],
+            1,
         )
         self.assertEqual(
             self.client.get("/api/v1/catalog/products/?in_stock=true").json()["count"], 1
@@ -330,7 +308,16 @@ class CatalogFilteringTests(TestCase):
             self.client.get("/api/v1/catalog/products/?q=NOTEBOOK-BLACK").json()["count"], 1
         )
         self.assertEqual(
+            self.client.get("/api/v1/catalog/products/?attribute=color:blue").status_code, 400
+        )
+        self.assertEqual(
             self.client.get("/api/v1/catalog/products/?attribute=color").status_code, 400
+        )
+        self.assertEqual(
+            self.client.get(
+                "/api/v1/catalog/products/?category=pens&attribute=paper-size:a5"
+            ).status_code,
+            400,
         )
         self.assertEqual(
             self.client.get("/api/v1/catalog/products/?in_stock=yes").status_code, 400
@@ -338,18 +325,21 @@ class CatalogFilteringTests(TestCase):
         self.assertEqual(self.client.get("/api/v1/catalog/products/?unknown=x").status_code, 400)
 
     def test_filter_metadata_and_normalized_option_output(self):
-        filters = self.client.get("/api/v1/catalog/filters/")
+        self.assertEqual(self.client.get("/api/v1/catalog/filters/").json()["attributes"], [])
+        filters = self.client.get("/api/v1/catalog/filters/?category=pens")
         self.assertEqual(filters.status_code, 200)
         self.assertEqual(filters.json()["attributes"][0]["slug"], "color")
         self.assertEqual(
             [value["slug"] for value in filters.json()["attributes"][0]["values"]],
             ["blue", "black"],
         )
+        self.assertEqual(
+            [item["slug"] for item in filters.json()["attributes"]], ["color"]
+        )
 
         product = self.client.get("/api/v1/catalog/products/blue-pen/").json()
         self.assertEqual(product["brand"]["slug"], "acme")
         self.assertEqual(product["option_definitions"][0]["definition"]["slug"], "color")
-        self.assertEqual(product["variants"][0]["options"], {"color": "blue"})
         self.assertEqual(product["variants"][0]["option_values"][0]["value"]["slug"], "blue")
 
 
@@ -377,5 +367,8 @@ class StationerySampleCommandTests(TestCase):
         )
         self.assertEqual(client.get("/api/v1/catalog/products/?brand=rooyesh").json()["count"], 2)
         self.assertEqual(
-            client.get("/api/v1/catalog/products/?attribute=paper-size:a5").json()["count"], 1
+            client.get(
+                "/api/v1/catalog/products/?category=notebooks-paper&attribute=paper-size:a5"
+            ).json()["count"],
+            1,
         )

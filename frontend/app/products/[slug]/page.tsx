@@ -104,7 +104,7 @@ export default function ProductPage() {
         {variant && <div className="selected-variant">
           <strong>{formatIrr(variant.price_irr)}</strong>
           <span className={variant.available ? "in-stock" : "out-of-stock"}>{variant.available ? "آماده سفارش" : "در حال حاضر ناموجود"}</span>
-          {Object.keys(variant.options).length > 0 && <dl>{Object.entries(variant.options).map(([key, value]) => <div key={key}><dt>{key}</dt><dd>{value}</dd></div>)}</dl>}
+          {variant.option_values.length > 0 && <dl>{variant.option_values.map((item) => <div key={`${item.definition.id}-${item.value.slug}`}><dt>{item.definition.name}</dt><dd>{item.value.label}</dd></div>)}</dl>}
           <button type="button" disabled={!variant.available || adding} onClick={addToCart}>{adding ? "در حال افزودن…" : "افزودن به سبد خرید"}</button>
           {cartMessage && <p className={cartMessage === "به سبد خرید افزوده شد." ? "success" : "error"} role="status">{cartMessage}</p>}
         </div>}

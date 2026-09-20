@@ -238,16 +238,11 @@ class Command(BaseCommand):
 
     def create_variants(self, product, variants, definitions, values, staff):
         for variant_position, (sku, name, price, stock, option_data) in enumerate(variants):
-            display_options = {
-                definitions[attribute_slug].name: values[attribute_slug][value_slug].label
-                for attribute_slug, value_slug in option_data.items()
-            }
             variant, created = ProductVariant.objects.get_or_create(
                 sku=sku,
                 defaults={
                     "product": product,
                     "name": name,
-                    "options": display_options,
                     "price_irr": price,
                     "stock_quantity": 0,
                     "is_active": True,
@@ -257,7 +252,6 @@ class Command(BaseCommand):
             if not created:
                 variant.product = product
                 variant.name = name
-                variant.options = display_options
                 variant.price_irr = price
                 variant.is_active = True
                 variant.is_default = variant_position == 0
@@ -265,7 +259,6 @@ class Command(BaseCommand):
                     update_fields=(
                         "product",
                         "name",
-                        "options",
                         "price_irr",
                         "is_active",
                         "is_default",
