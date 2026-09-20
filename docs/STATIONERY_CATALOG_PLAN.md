@@ -264,8 +264,9 @@ definition flags, so stationery configuration must explicitly enable it.
 Status: implementation complete. The catalogue keeps search/category/brand/
 collection/attribute/in-stock state in query parameters, reloads category-aware
 filter metadata, clears attribute selections when the category changes, and
-and uses responsive controls. Product detail renders normalized grouped options
-when available and retains the legacy flat-variant fallback. Frontend lint,
+uses responsive controls. Product detail renders normalized grouped options
+when available, retains the legacy flat-variant fallback, and shows up to four
+same-category related products with names and images only. Frontend lint,
 typecheck, and build pass; focused browser interaction smoke remains pending.
 
 ### Phase 7: Stationery data

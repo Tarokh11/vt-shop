@@ -52,6 +52,13 @@ export type ProductImage = {
   position: number;
 };
 
+export type RelatedProduct = {
+  id: number;
+  name: string;
+  slug: string;
+  images: ProductImage[];
+};
+
 export type ProductVariant = {
   id: number;
   sku: string;
@@ -74,6 +81,7 @@ export type Product = {
   collections: Collection[];
   images: ProductImage[];
   variants: ProductVariant[];
+  related_products?: RelatedProduct[];
 };
 
 export type Page<T> = {

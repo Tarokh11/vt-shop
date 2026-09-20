@@ -93,6 +93,24 @@ class CatalogApiTests(TestCase):
         self.assertEqual(filtered.json()["results"][0]["slug"], "runner")
         self.assertEqual(self.client.get("/api/v1/catalog/categories/").json()[0]["slug"], "shoes")
 
+    def test_product_detail_includes_four_related_names_without_prices(self):
+        for position in range(5):
+            related = Product.objects.create(
+                name=f"Related {position}", slug=f"related-{position}", is_published=True
+            )
+            related.categories.add(self.category)
+            ProductVariant.objects.create(
+                product=related,
+                sku=f"RELATED-{position}",
+                price_irr=100_000 + position,
+                is_default=True,
+            )
+
+        related = self.client.get("/api/v1/catalog/products/runner/").json()["related_products"]
+        self.assertEqual(len(related), 4)
+        self.assertTrue(all(set(item) == {"id", "name", "slug", "images"} for item in related))
+        self.assertNotIn("price_irr", related[0])
+
 
 class InventoryTests(TestCase):
     def setUp(self):

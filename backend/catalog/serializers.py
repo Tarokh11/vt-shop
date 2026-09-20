@@ -1,3 +1,4 @@
+from django.db.models import Q
 from rest_framework import serializers
 
 from .models import (
@@ -141,3 +142,37 @@ class ProductSerializer(serializers.ModelSerializer):
             "images",
             "variants",
         )
+
+
+class RelatedProductSerializer(serializers.ModelSerializer):
+    images = ProductImageSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Product
+        fields = ("id", "name", "slug", "images")
+
+
+class ProductDetailSerializer(ProductSerializer):
+    related_products = serializers.SerializerMethodField()
+
+    class Meta(ProductSerializer.Meta):
+        fields = ProductSerializer.Meta.fields + ("related_products",)
+
+    def get_related_products(self, obj):
+        category_ids = obj.categories.values_list("id", flat=True)
+        if not category_ids:
+            return []
+        products = (
+            Product.objects.filter(
+                is_published=True,
+                categories__in=category_ids,
+                variants__is_active=True,
+                variants__is_default=True,
+            )
+            .filter(Q(brand__isnull=True) | Q(brand__is_active=True))
+            .exclude(pk=obj.pk)
+            .prefetch_related("images")
+            .distinct()
+            .order_by("-created_at")[:4]
+        )
+        return RelatedProductSerializer(products, many=True).data

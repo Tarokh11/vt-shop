@@ -26,6 +26,7 @@ from .serializers import (
     BrandSerializer,
     CategorySerializer,
     CollectionSerializer,
+    ProductDetailSerializer,
     ProductSerializer,
 )
 
@@ -233,7 +234,7 @@ class ProductListView(PublishedProductQuerysetMixin, ListAPIView):
 class ProductDetailView(PublishedProductQuerysetMixin, RetrieveAPIView):
     authentication_classes = []
     permission_classes = [AllowAny]
-    serializer_class = ProductSerializer
+    serializer_class = ProductDetailSerializer
     lookup_field = "slug"
 
 

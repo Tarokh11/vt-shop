@@ -61,6 +61,7 @@ export default function ProductPage() {
   if (!product) return <main><p role="status">در حال دریافت محصول…</p></main>;
 
   const image = product.images[0];
+  const relatedProducts = product.related_products ?? [];
   const hasStructuredOptions = product.option_definitions.length > 0 && product.variants.some((item) => item.option_values.length > 0);
 
   function optionValue(variant: ProductVariant, optionId: number): string | undefined {
@@ -78,11 +79,12 @@ export default function ProductPage() {
   }
 
   return (
-    <main className="product-page">
-      <div className="product-gallery">
+    <main>
+      <div className="product-page">
+        <div className="product-gallery">
         {image ? <Image src={image.image} alt={image.alt_text || product.name} width={900} height={700} priority /> : <div className="image-placeholder">بدون تصویر</div>}
-      </div>
-      <section className="product-info">
+        </div>
+        <section className="product-info">
         <Link href="/products">محصولات /</Link>
         <p className="product-category">{product.categories.map((item) => item.name).join("، ")}</p>
         {product.brand && <p className="product-brand">{product.brand.name}</p>}
@@ -108,7 +110,18 @@ export default function ProductPage() {
           <button type="button" disabled={!variant.available || adding} onClick={addToCart}>{adding ? "در حال افزودن…" : "افزودن به سبد خرید"}</button>
           {cartMessage && <p className={cartMessage === "به سبد خرید افزوده شد." ? "success" : "error"} role="status">{cartMessage}</p>}
         </div>}
-      </section>
+        </section>
+      </div>
+      {relatedProducts.length > 0 && <section className="related-products" aria-labelledby="related-products-title">
+        <div className="section-heading"><div><p className="eyebrow">برای کنار این انتخاب</p><h2 id="related-products-title">محصولات مشابه</h2></div></div>
+        <div className="related-products-grid">{relatedProducts.map((item) => {
+          const relatedImage = item.images[0];
+          return <Link className="related-product" href={`/products/${item.slug}`} key={item.id}>
+            <span className="related-product-image">{relatedImage ? <Image src={relatedImage.image} alt={relatedImage.alt_text || item.name} width={480} height={360} /> : <span aria-hidden="true">بدون تصویر</span>}</span>
+            <strong>{item.name}</strong>
+          </Link>;
+        })}</div>
+      </section>}
     </main>
   );
 }
