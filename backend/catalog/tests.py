@@ -7,7 +7,21 @@ from rest_framework.test import APIClient
 from accounts.models import User
 
 from .admin import ProductVariantAdmin
-from .models import Category, InventoryAdjustment, Product, ProductVariant
+from .models import (
+    AttributeDefinition,
+    AttributeValue,
+    Brand,
+    Category,
+    CategoryAttributeDefinition,
+    Collection,
+    CollectionProduct,
+    InventoryAdjustment,
+    Product,
+    ProductAttributeValue,
+    ProductOptionDefinition,
+    ProductVariant,
+    VariantOptionValue,
+)
 
 
 class CatalogApiTests(TestCase):
@@ -131,3 +145,64 @@ class InventoryTests(TestCase):
     def test_admin_prevents_direct_stock_editing(self):
         model_admin = ProductVariantAdmin(ProductVariant, admin.site)
         self.assertIn("stock_quantity", model_admin.get_readonly_fields(request=None))
+
+
+class CatalogStructureTests(TestCase):
+    def setUp(self):
+        self.category = Category.objects.create(name="Pens", slug="pens")
+        self.product = Product.objects.create(name="Pen", slug="pen")
+        self.product.categories.add(self.category)
+        self.variant = ProductVariant.objects.create(
+            product=self.product, sku="PEN-BLK", price_irr=100_000, is_default=True
+        )
+        self.color = AttributeDefinition.objects.create(
+            name="Color", slug="color", is_filterable=True
+        )
+        self.black = AttributeValue.objects.create(
+            definition=self.color, label="Black", slug="black"
+        )
+        CategoryAttributeDefinition.objects.create(category=self.category, definition=self.color)
+
+    def test_category_cannot_be_its_own_descendant(self):
+        child = Category.objects.create(name="Gel pens", slug="gel-pens", parent=self.category)
+        self.category.parent = child
+        with self.assertRaises(ValidationError):
+            self.category.full_clean()
+
+    def test_brand_and_collection_are_additive_product_relations(self):
+        brand = Brand.objects.create(name="Acme", slug="acme")
+        collection = Collection.objects.create(name="New", slug="new")
+        self.product.brand = brand
+        self.product.save(update_fields=("brand",))
+        CollectionProduct.objects.create(collection=collection, product=self.product, position=1)
+        self.product.refresh_from_db()
+        self.assertEqual(self.product.brand, brand)
+        self.assertEqual(list(collection.products.all()), [self.product])
+
+    def test_product_attribute_requires_an_applicable_definition(self):
+        assignment = ProductAttributeValue(product=self.product, value=self.black)
+        assignment.full_clean()
+
+        material = AttributeDefinition.objects.create(name="Material", slug="material")
+        plastic = AttributeValue.objects.create(
+            definition=material, label="Plastic", slug="plastic"
+        )
+        with self.assertRaises(ValidationError):
+            ProductAttributeValue(product=self.product, value=plastic).full_clean()
+
+    def test_variant_option_requires_product_option_and_matching_value_definition(self):
+        option = ProductOptionDefinition(product=self.product, definition=self.color)
+        option.full_clean()
+        option.save()
+        assignment = VariantOptionValue(variant=self.variant, option=option, value=self.black)
+        assignment.full_clean()
+
+        tip_size = AttributeDefinition.objects.create(name="Tip size", slug="tip-size")
+        fine = AttributeValue.objects.create(definition=tip_size, label="Fine", slug="fine")
+        with self.assertRaises(ValidationError):
+            VariantOptionValue(variant=self.variant, option=option, value=fine).full_clean()
+
+    def test_product_attribute_and_variant_option_cannot_share_a_definition(self):
+        ProductAttributeValue.objects.create(product=self.product, value=self.black)
+        with self.assertRaises(ValidationError):
+            ProductOptionDefinition(product=self.product, definition=self.color).full_clean()

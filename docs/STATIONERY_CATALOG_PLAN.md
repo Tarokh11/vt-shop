@@ -1,12 +1,21 @@
 # Stationery Catalog Model Plan
 
-Status: Approved for implementation planning. No catalog model changes have
-been implemented from this document yet.
+Status: Generic schema phase complete. The new structures and migration are in
+place, while JSON-option migration, catalog API/filtering, storefront controls,
+and stationery-specific configuration remain pending.
 
 This document is the working reference for the stationery catalog expansion.
 Read it before changing catalog models, catalog APIs, catalog Admin, seed data,
 or catalog storefront behavior. Keep reusable Core changes separate from
 stationery-specific data/configuration whenever possible.
+
+## Current Phase
+
+- Phase 1 contracts/invariants: complete.
+- Phase 2 generic schema: complete in catalog migration `0003`.
+- Phase 3 JSON option migration: pending.
+- Phase 4 Admin workflow polish: pending; base Admin management is present.
+- Phases 5-8 API, storefront, stationery data, and full verification: pending.
 
 ## Current Baseline
 
@@ -179,6 +188,12 @@ multi-brand products, multiple warehouses, and generic workflow/plugin systems.
 - Confirm which stationery properties are descriptive versus SKU-producing.
 - Define option-combination uniqueness and category applicability validation.
 
+Status: complete. Product categories remain M2M for compatibility, with leaf
+category assignment recommended for stationery data. Descriptive attributes and
+SKU-producing options are mutually exclusive per product. Category inheritance
+is not automatic. The initial filter contract remains category, brand,
+collection, attribute value, in-stock state, and basic text search.
+
 ### Phase 2: Generic schema
 
 - Add additive models and relations.
@@ -186,6 +201,9 @@ multi-brand products, multiple warehouses, and generic workflow/plugin systems.
 - Add category cycle validation.
 - Preserve existing product, variant, inventory, cart, reservation, and order
   relationships.
+
+Status: complete. Migration `catalog.0003` adds the models and nullable
+relations without modifying existing product or variant identity.
 
 ### Phase 3: Data migration
 

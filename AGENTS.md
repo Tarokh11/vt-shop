@@ -9,9 +9,10 @@
 ## Required Context
 
 At session start, read `AGENTS.md`, `docs/SESSION_STATE.md`, and the relevant
-part of `docs/PLAN.md`. Read `docs/PROJECT_SCOPE.md` when scope decisions matter.
-For catalog, product, inventory, search, filter, or stationery-store work, also
-read `docs/STATIONERY_CATALOG_PLAN.md` and use it as the implementation reference.
+active planning document. Read `docs/PROJECT_SCOPE.md` when scope decisions
+matter. For catalog, product, inventory, search, filter, or stationery-store
+work, read `docs/STATIONERY_CATALOG_PLAN.md` and use it as the implementation
+reference.
 
 ## Engineering Rules
 
@@ -19,14 +20,14 @@ read `docs/STATIONERY_CATALOG_PLAN.md` and use it as the implementation referenc
 - Do not implement outside `PROJECT_SCOPE.md`.
 - Prefer direct, simple solutions over premature abstractions or dependencies.
 - Do not redesign architecture or refactor unrelated code without a concrete need.
-- Update only the affected plan section; do not repeat existing documentation.
+- Update only the affected active-plan section; do not repeat existing documentation.
 
 ## Phase Workflow
 
 1. Inspect relevant files and confirm the current plan.
 2. Implement one logical phase at a time.
 3. Run relevant tests, checks, and migrations.
-4. Update `docs/PLAN.md` and concise `docs/SESSION_STATE.md`.
+4. Update the active plan and concise `docs/SESSION_STATE.md`.
 5. Review, stage, and commit the completed logical change.
 
 Keep commits focused. Do not commit broken, incomplete, secret, generated, or
