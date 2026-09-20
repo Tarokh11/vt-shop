@@ -1,8 +1,8 @@
 # Stationery Catalog Model Plan
 
 Status: Generic schema, legacy JSON option migration, public catalog API/filtering,
-and storefront controls are complete. Stationery-specific configuration and final
-browser verification remain pending.
+storefront controls, and sample stationery configuration are complete. Final
+production configuration remains pending.
 
 This document is the working reference for the stationery catalog expansion.
 Read it before changing catalog models, catalog APIs, catalog Admin, seed data,
@@ -16,8 +16,9 @@ stationery-specific data/configuration whenever possible.
 - Phase 3 JSON option migration: complete in catalog migration `0004`.
 - Phase 4 Admin workflow polish: pending; base Admin management is present.
 - Phase 5 public API/filtering: complete.
-- Phase 6 storefront controls: complete; browser interaction smoke remains pending.
-- Phases 7-8 stationery data and full verification: pending.
+- Phase 6 storefront controls: complete; browser interaction smoke passes.
+- Phase 7 sample stationery data: complete.
+- Phase 8 current verification: complete; production configuration remains pending.
 
 ## Current Baseline
 
@@ -268,12 +269,22 @@ typecheck, and build pass; focused browser interaction smoke remains pending.
 - Keep clothing demo data separate or replace it intentionally as store data;
   never silently mix it into reusable Core.
 
+Status: complete for local sample data. `seed_stationery` creates the stationery
+root/category tree, three brands, seven visible/filterable/searchable attributes,
+two collections, five published products, nine variants, and inventory
+adjustments. It is idempotent and does not alter the existing clothing records.
+
 ### Phase 8: Verification
 
 - Run migration drift and data-preservation checks.
 - Run catalog, cart, checkout, reservation, payment, and order regressions.
 - Verify PostgreSQL filtering/search behavior.
 - Run frontend lint, typecheck, build, and responsive browser checks.
+
+Status: complete for the local sample. Backend regression tests, migration drift,
+Ruff, Django checks, frontend lint/typecheck/build, and Chrome smoke checks at
+375px, 768px, and 1440px pass. Persistent production media, real catalog assets,
+and real Zarinpal verification remain release work.
 
 ## Completion Criteria
 

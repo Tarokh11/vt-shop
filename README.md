@@ -32,7 +32,9 @@ DJANGO_SETTINGS_MODULE=config.test_settings .venv/bin/python backend/manage.py t
 cd frontend && npm run lint && npm run typecheck && npm run build
 ```
 
-See `docs/PROJECT_SCOPE.md` and `docs/PLAN.md` for scope, decisions, and phase status.
+See `docs/PROJECT_SCOPE.md` for reusable-core boundaries and
+`docs/STATIONERY_CATALOG_PLAN.md` for the active stationery catalog plan.
+See `docs/IMPLEMENTATION_HISTORY.md` for completed implementation commits.
 See `docs/RELEASE_CHECKLIST.md` before local release or production deployment.
 
 `.env` is intentionally not loaded by Django. Explicit shell loading keeps runtime
@@ -57,6 +59,21 @@ Prices and inventory are stored as whole IRR amounts and units. Inventory
 adjustments cannot be edited or deleted. Product media under `backend/media/` is
 local development storage; production deployments must configure persistent
 public object/media storage before accepting uploads.
+
+## Stationery sample catalog
+
+The `vt-shop` branch includes repeatable sample stationery data for the catalog,
+filters, option selection, and storefront verification. It creates categories,
+brands, filterable attributes, collections, published products, variants, and
+stock adjustments without changing existing products:
+
+```bash
+set -a && source .env && set +a
+.venv/bin/python backend/manage.py seed_stationery
+```
+
+Run it again safely after local database resets. The command uses inventory
+adjustments and does not duplicate its initial stock entries.
 
 ## Cart behavior
 

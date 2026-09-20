@@ -3,6 +3,7 @@ from importlib import import_module
 from django.apps import apps
 from django.contrib import admin
 from django.core.exceptions import ValidationError
+from django.core.management import call_command
 from django.db import IntegrityError, transaction
 from django.test import TestCase
 from rest_framework.test import APIClient
@@ -350,3 +351,31 @@ class CatalogFilteringTests(TestCase):
         self.assertEqual(product["option_definitions"][0]["definition"]["slug"], "color")
         self.assertEqual(product["variants"][0]["options"], {"color": "blue"})
         self.assertEqual(product["variants"][0]["option_values"][0]["value"]["slug"], "blue")
+
+
+class StationerySampleCommandTests(TestCase):
+    def setUp(self):
+        User.objects.create_user(
+            username="staff@example.com", email="staff@example.com", password="test", is_staff=True
+        )
+
+    def test_sample_command_creates_public_filterable_data_without_duplicate_stock(self):
+        call_command("seed_stationery")
+        adjustment_count = InventoryAdjustment.objects.count()
+        call_command("seed_stationery")
+
+        self.assertEqual(Brand.objects.filter(is_active=True).count(), 3)
+        self.assertEqual(Category.objects.filter(slug="stationery", is_active=True).count(), 1)
+        self.assertEqual(AttributeDefinition.objects.filter(is_filterable=True).count(), 7)
+        self.assertEqual(Collection.objects.filter(is_active=True).count(), 2)
+        self.assertEqual(Product.objects.filter(slug__startswith="gel-pen").count(), 1)
+        self.assertEqual(InventoryAdjustment.objects.count(), adjustment_count)
+
+        client = APIClient()
+        self.assertEqual(
+            client.get("/api/v1/catalog/products/?category=stationery").json()["count"], 5
+        )
+        self.assertEqual(client.get("/api/v1/catalog/products/?brand=rooyesh").json()["count"], 2)
+        self.assertEqual(
+            client.get("/api/v1/catalog/products/?attribute=paper-size:a5").json()["count"], 1
+        )
