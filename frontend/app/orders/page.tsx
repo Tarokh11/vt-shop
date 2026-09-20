@@ -48,6 +48,7 @@ export default function OrdersPage() {
   const router = useRouter();
   const [orders, setOrders] = useState<Order[] | null>(null);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     api<Order[]>("/api/v1/orders/")
@@ -55,10 +56,12 @@ export default function OrdersPage() {
       .catch((reason) => {
         if (reason instanceof ApiError && reason.status === 403) router.replace("/login");
         else setError(reason instanceof Error ? reason.message : "دریافت سفارش‌ها ناموفق بود.");
-      });
+      })
+      .finally(() => setLoading(false));
   }, [router]);
 
-  if (!orders) return <main><p role="status">در حال دریافت سفارش‌ها…</p></main>;
+  if (loading) return <main><p role="status">در حال دریافت سفارش‌ها…</p></main>;
+  if (!orders) return <main><p className="error" role="alert">دریافت سفارش‌ها ناموفق بود.</p></main>;
 
   return (
     <main className="orders-page">

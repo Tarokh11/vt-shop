@@ -12,16 +12,21 @@ export default function AccountPage() {
   const router = useRouter();
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [favorites, setFavorites] = useState<Favorite[]>([]);
+  const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
   useEffect(() => {
-    Promise.all([api<Customer>("/api/v1/accounts/me/"), api<Favorite[]>("/api/v1/accounts/favorites/")])
-      .then(([profile, saved]) => { setCustomer(profile); setFavorites(saved); })
+    api<Customer>("/api/v1/accounts/me/")
+      .then((profile) => setCustomer(profile))
       .catch((reason) => {
         if (reason instanceof ApiError && reason.status === 403) router.replace("/login");
         else setError("دریافت اطلاعات حساب ناموفق بود.");
-      });
+      })
+      .finally(() => setLoading(false));
+    api<Favorite[]>("/api/v1/accounts/favorites/")
+      .then(setFavorites)
+      .catch(() => setFavorites([]));
   }, [router]);
 
   async function update(event: FormEvent<HTMLFormElement>) {
@@ -62,7 +67,8 @@ export default function AccountPage() {
     router.replace("/login");
   }
 
-  if (!customer) return <main><p role="status">در حال آماده‌سازی فضای حساب شما…</p></main>;
+  if (loading) return <main><p role="status">در حال آماده‌سازی فضای حساب شما…</p></main>;
+  if (!customer) return <main><p className="error" role="alert">دریافت حساب کاربری ناموفق بود.</p></main>;
 
   return (
     <main className="account-dashboard">
