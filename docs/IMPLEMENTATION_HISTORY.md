@@ -119,3 +119,12 @@ Use `SESSION_STATE.md` for current handoff context, not historical detail.
   payment, and order relationships with additive migration `catalog.0003`.
 - Checks: catalog/cart/order tests (26), backend Ruff, Django checks, migration
   drift check, and PostgreSQL migration verification.
+
+### `68555f0` Migrate legacy variant options
+
+- Added idempotent migration `catalog.0004` to copy legacy variant JSON options
+  into normalized definitions, values, category mappings, product options, and
+  variant assignments.
+- Preserved every variant ID, SKU, stock quantity, and legacy JSON payload.
+- Checks: catalog/cart/order tests (27), backend Ruff, Django checks, migration
+  drift check, no pending migrations, and PostgreSQL record verification.
