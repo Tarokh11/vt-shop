@@ -1,0 +1,240 @@
+# Stationery Catalog Model Plan
+
+Status: Approved for implementation planning. No catalog model changes have
+been implemented from this document yet.
+
+This document is the working reference for the stationery catalog expansion.
+Read it before changing catalog models, catalog APIs, catalog Admin, seed data,
+or catalog storefront behavior. Keep reusable Core changes separate from
+stationery-specific data/configuration whenever possible.
+
+## Current Baseline
+
+The current catalog already provides:
+
+- Flat `Category` with name, Unicode slug, description, active state, and order.
+- `Product` with name, Unicode slug, description, category M2M, publication,
+  and timestamps.
+- `ProductVariant` with stable primary key, globally unique SKU, display name,
+  free-form JSON options, integer IRR price, stock, active/default state.
+- Ordered product images.
+- Append-only, locked `InventoryAdjustment` records.
+- Public published-product and active-category APIs.
+- Exact category filtering through `?category=`.
+- Product detail and flat variant selection in the storefront.
+- Existing cart, checkout, reservation, payment, and order flows tied directly
+  to `ProductVariant` rows.
+
+## Compatibility Rules
+
+- Preserve existing `ProductVariant` primary keys, SKUs, prices, stock fields,
+  active/default fields, and row identity.
+- Do not replace the current variant or inventory architecture.
+- Do not delete or rewrite variants that may be referenced by carts,
+  reservations, inventory adjustments, or historical orders.
+- Keep backend ownership of prices, totals, availability, and stock decisions.
+- Preserve Unicode slugs and existing product detail URL behavior.
+- Keep the initial implementation PostgreSQL/Django-native without a search
+  service, tree dependency, or generic plugin framework.
+- Product descriptive attributes and SKU-producing variant options are separate
+  concepts.
+
+## Target Core Model
+
+### Category hierarchy
+
+Add a nullable self-reference from `Category` to `Category` with cycle
+validation. Use a normal self-FK; do not add MPTT or another tree dependency
+unless real depth/performance requirements justify it.
+
+### Brand
+
+Add a reusable `Brand` model with name, slug, description, active state, and
+ordering as needed. Add a nullable `Product.brand` FK. Use one brand per
+product unless a concrete requirement proves otherwise.
+
+### Descriptive attributes
+
+Add generic models for:
+
+- `AttributeDefinition`: name, slug, visibility, filterable, searchable, order.
+- `AttributeValue`: definition, label, slug, order.
+- Category-to-attribute applicability: category, definition, required, order.
+- Product-to-attribute-value assignment.
+
+These represent descriptive/filterable properties such as paper size, ruling,
+page count, paper weight, binding, material, refillability, and age/use group.
+
+Define category inheritance explicitly before implementing it. The minimal
+recommendation is no automatic inheritance initially; assign definitions to
+the categories that need them and add descendant behavior only when required.
+
+### Variant-producing options
+
+Keep `ProductVariant` as the purchasable SKU. Add normalized option relations
+only where structured selection is required:
+
+- Product option definition/order.
+- Variant option value assignments.
+
+Examples include ink color, body color, tip size, and pack quantity. Existing
+JSON options require a controlled migration before they can be removed. Keep
+the JSON temporarily during migration if necessary, but establish one source
+of truth before changing API consumers.
+
+### Collections
+
+Add `Collection` and an ordered product membership through model. Collections
+are merchandising groups, not categories or attributes. Examples include
+new arrivals, school essentials, and staff picks.
+
+## Catalog API Behavior
+
+The initial target API should support:
+
+- Category hierarchy and descendant category filtering.
+- Brand filtering.
+- Collection filtering.
+- Attribute-value filtering.
+- In-stock filtering.
+- Basic text search across product name, description, brand, SKU, and values
+  of searchable attributes.
+- Filter metadata for rendering storefront controls.
+- Normalized option information sufficient to render grouped variant selectors.
+
+Filter semantics:
+
+- OR between multiple values of the same attribute.
+- AND between different attributes.
+- AND between category, brand, collection, availability, and search criteria.
+- Validate accepted query parameters instead of silently ignoring invalid ones.
+
+Use simple Django/PostgreSQL queries and indexes first. Advanced ranking,
+autocomplete, typo tolerance, synonyms, and external search are out of scope
+for the initial stationery implementation.
+
+## Storefront Behavior
+
+- Search and filter state must be represented in URL query parameters.
+- Refresh, browser back/forward, and shared filtered URLs must work.
+- Category, brand, collection, attribute, availability, and search controls
+  should be driven by API filter metadata.
+- Variant options should render as grouped selectors.
+- Impossible or unavailable combinations should be disabled.
+- Add-to-cart must submit the resolved variant ID.
+- Preserve pagination and Unicode slug handling.
+
+## Generic Core vs Store Data
+
+### Generic Core changes
+
+- Category hierarchy.
+- Brand model and product relation.
+- Attribute definitions, values, applicability, and product assignments.
+- Normalized variant options.
+- Collections and ordered membership.
+- Search/filter query behavior and API metadata.
+- Admin validation and management.
+- Relevant indexes, constraints, migrations, and tests.
+- Optional order-line snapshot of structured purchased options.
+
+### Stationery-specific configuration/data
+
+- Category tree such as writing instruments, notebooks, paper, art supplies,
+  and office supplies.
+- Brand records and brand assets.
+- Attribute definitions and allowed values.
+- Category-to-attribute mappings and required flags.
+- Decisions about which attributes create SKUs.
+- Collections, products, images, prices, SKUs, inventory, and merchandising.
+- Persian labels, copy, synonyms, and store-specific search terms.
+
+Do not put stationery names or seed records into reusable Core models or generic
+logic. Store-specific seed/configuration belongs in a separate commit/branch.
+
+## Minimal Approved Scope
+
+Implement the smallest useful stationery catalog:
+
+1. Add category parent support.
+2. Add Brand and a nullable product brand relation.
+3. Add generic attribute definitions/values and product assignments.
+4. Add category applicability without automatic inheritance initially.
+5. Normalize variant options while preserving existing variant rows.
+6. Add ordered Collections.
+7. Add basic search and category/brand/collection/attribute/stock filters.
+8. Add URL-backed storefront filters and grouped option selection.
+9. Add Admin workflows and focused regression tests.
+
+Avoid typed EAV support for every possible data type, runtime variant
+combination generation, dynamic facet-count engines, external search,
+multi-brand products, multiple warehouses, and generic workflow/plugin systems.
+
+## Implementation Phases
+
+### Phase 1: Contracts and invariants
+
+- Confirm API query names and filter semantics.
+- Confirm product/category assignment convention.
+- Confirm which stationery properties are descriptive versus SKU-producing.
+- Define option-combination uniqueness and category applicability validation.
+
+### Phase 2: Generic schema
+
+- Add additive models and relations.
+- Add indexes and database constraints.
+- Add category cycle validation.
+- Preserve existing product, variant, inventory, cart, reservation, and order
+  relationships.
+
+### Phase 3: Data migration
+
+- Convert existing JSON variant options into normalized definitions/values.
+- Verify every existing variant keeps its ID, SKU, price, stock, active/default
+  state, and downstream references.
+- Keep legacy JSON only for a deliberately bounded transition period.
+
+### Phase 4: Admin
+
+- Register brands, definitions, values, collections, and category mappings.
+- Add product attribute and option editing.
+- Validate applicable values and duplicate variant combinations.
+- Keep direct stock edits read-only and use inventory adjustments.
+
+### Phase 5: API and search/filtering
+
+- Extend serializers without exposing hidden attributes.
+- Add validated search/filter parameters and filter metadata.
+- Add descendant category behavior.
+- Add focused query, visibility, and pagination tests.
+
+### Phase 6: Storefront
+
+- Add URL-backed search and filters.
+- Add responsive mobile filter controls.
+- Add grouped option selectors and variant resolution.
+- Add frontend tests for query synchronization and option combinations.
+
+### Phase 7: Stationery data
+
+- Add stationery categories, brands, attributes, collections, and products in a
+  store-specific commit.
+- Keep clothing demo data separate or replace it intentionally as store data;
+  never silently mix it into reusable Core.
+
+### Phase 8: Verification
+
+- Run migration drift and data-preservation checks.
+- Run catalog, cart, checkout, reservation, payment, and order regressions.
+- Verify PostgreSQL filtering/search behavior.
+- Run frontend lint, typecheck, build, and responsive browser checks.
+
+## Completion Criteria
+
+- Existing carts, reservations, inventory adjustments, payments, and orders
+  continue to work with unchanged variant identity.
+- Admin can manage the new generic catalog structures without raw JSON editing
+  for normal stationery workflows.
+- Public API exposes only published products, active values, and visible fields.
+- Search and filtering are validated, URL-shareable, paginated, and tested.
+- Store-specific stationery data is isolated from reusable Core changes.

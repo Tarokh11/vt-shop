@@ -10,6 +10,8 @@
 
 At session start, read `AGENTS.md`, `docs/SESSION_STATE.md`, and the relevant
 part of `docs/PLAN.md`. Read `docs/PROJECT_SCOPE.md` when scope decisions matter.
+For catalog, product, inventory, search, filter, or stationery-store work, also
+read `docs/STATIONERY_CATALOG_PLAN.md` and use it as the implementation reference.
 
 ## Engineering Rules
 
@@ -55,3 +57,7 @@ Use Luna for mechanical low-risk work, Terra for routine scoped implementation,
 Sol for normal multi-file/domain work, and Astra only for unusually difficult
 architecture, debugging, or risky refactors. Recommend a different model only
 when it materially improves the task.
+
+## merge branches
+
+Keep reusable/core/main changes and store-specific changes in separate commits whenever possible. Do not mix them in the same commit unless necessary, so future merges and cherry-picks stay clean.
