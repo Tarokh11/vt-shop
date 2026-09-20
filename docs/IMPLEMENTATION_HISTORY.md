@@ -136,3 +136,12 @@ Use `SESSION_STATE.md` for current handoff context, not historical detail.
 - Added public filter metadata and additive normalized product/option output.
 - Checks: catalog/cart/order tests (30), backend Ruff, Django checks, migration
   drift check, and no pending migrations.
+
+### `56c1cef` Add storefront catalog filters
+
+- Added URL-backed search, category, brand, collection, attribute, and in-stock
+  controls driven by catalog filter metadata.
+- Added responsive filter styles and grouped normalized option selectors with a
+  fallback to flat legacy variants.
+- Checks: frontend lint, typecheck, production build, and catalog/cart/order
+  backend regressions (30).
