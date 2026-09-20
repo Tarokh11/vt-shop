@@ -1,8 +1,8 @@
 # Stationery Catalog Model Plan
 
 Status: Generic schema, legacy JSON option migration, public catalog API/filtering,
-storefront controls, and sample stationery configuration are complete. Final
-production configuration remains pending.
+storefront controls, sample stationery configuration, and local interaction
+verification are complete. Final production configuration remains pending.
 
 This document is the working reference for the stationery catalog expansion.
 Read it before changing catalog models, catalog APIs, catalog Admin, seed data,
@@ -16,7 +16,8 @@ stationery-specific data/configuration whenever possible.
 - Phase 3 JSON option migration: complete in catalog migration `0004`.
 - Phase 4 Admin workflow polish: pending; base Admin management is present.
 - Phase 5 public API/filtering: complete.
-- Phase 6 storefront controls: complete; browser interaction smoke passes.
+- Phase 6 storefront controls: complete; browser interaction smoke passes for
+  URL filters and grouped variant selection.
 - Phase 7 sample stationery data: complete.
 - Phase 8 current verification: complete; production configuration remains pending.
 
@@ -282,9 +283,10 @@ adjustments. It is idempotent and does not alter the existing clothing records.
 - Run frontend lint, typecheck, build, and responsive browser checks.
 
 Status: complete for the local sample. Backend regression tests, migration drift,
-Ruff, Django checks, frontend lint/typecheck/build, and Chrome smoke checks at
-375px, 768px, and 1440px pass. Persistent production media, real catalog assets,
-and real Zarinpal verification remain release work.
+Ruff, Django checks, frontend lint/typecheck/build, responsive Chrome checks at
+375px, 768px, and 1440px, URL filter interaction, and grouped variant selection
+all pass. Persistent production media, real catalog assets, and real Zarinpal
+verification remain release work.
 
 ## Completion Criteria
 

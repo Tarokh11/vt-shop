@@ -1,6 +1,6 @@
 # Session State
 
-- Current phase: Stationery sample catalog complete on the Phase 8 local core;
+- Current phase: Stationery catalog local verification complete on the Phase 8 local core;
   real Zarinpal remains deferred.
 - Completed: logged-in navigation hides auth prompts and shows the customer name;
   login/register route to products; account profile stores optional phone/address;
@@ -13,7 +13,8 @@
   `0004` copies legacy variant JSON options into normalized records; public
   catalog search/filter APIs, filter metadata, URL-backed catalogue controls, and
   normalized option selection are available; five sample stationery products make
-  every configured category, brand, collection, and attribute filter visible.
+  every configured category, brand, collection, and attribute filter visible;
+  URL filter interaction and grouped variant selection pass in Chrome.
 - Decisions: order history is paid-order-only; pending-payment orders are created
   during checkout and immediately handed to the payment start flow; use
   `http://127.0.0.1:3000` locally to keep session cookies across payment redirects.
@@ -28,7 +29,8 @@
   `frontend/app/products/page.tsx`, `frontend/app/products/[slug]/page.tsx`,
   and `docs/STATIONERY_CATALOG_PLAN.md`.
 - Checks: catalog/cart/order tests (31), backend Ruff, migration drift, Django
-  system check, frontend lint/typecheck/build, and Chrome catalogue smoke checks
-  at 375px, 768px, and 1440px pass.
+  system check, frontend lint/typecheck/build, responsive Chrome catalogue smoke
+  checks at 375px, 768px, and 1440px, URL filter interaction, and grouped option
+  selection pass.
 - Next task: replace sample data/assets with the final store catalog, then resume
   real Zarinpal verification when merchant credentials and a domain are available.
