@@ -14,7 +14,8 @@
   catalog search/filter APIs, category-aware filter metadata, URL-backed catalogue
   controls, normalized option selection, and four-item related product previews
   are available; the orders page now presents payment, preparation, shipment,
-  and delivery progress; five sample stationery products make
+  and delivery progress; the account dashboard supports saved favorites; the
+  header includes a live cart count and category menu; five sample stationery products make
   every configured category, brand, collection, and attribute filter visible;
   URL filter interaction and grouped variant selection pass in Chrome.
 - Decisions: order history is paid-order-only; pending-payment orders are created

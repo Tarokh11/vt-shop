@@ -14,7 +14,7 @@ type Order = {
   total_irr: number;
   created_at: string;
   shipment: Shipment | null;
-  lines: { product_name: string; variant_name: string; quantity: number; line_total_irr: number }[];
+  lines: { product_name: string; product_slug: string; variant_name: string; quantity: number; line_total_irr: number }[];
 };
 
 const orderSteps = [
@@ -97,7 +97,7 @@ export default function OrdersPage() {
               </div>
               <ul className="order-lines">
                 {order.lines.map((line, index) => <li key={`${order.number}-${line.product_name}-${index}`}>
-                  <div><strong>{line.product_name}</strong>{line.variant_name && <span>{line.variant_name}</span>}</div>
+                  <div>{line.product_slug ? <Link href={`/products/${encodeURIComponent(line.product_slug)}`}><strong>{line.product_name}</strong></Link> : <strong>{line.product_name}</strong>}{line.variant_name && <span>{line.variant_name}</span>}</div>
                   <span>{line.quantity} عدد · {formatIrr(line.line_total_irr)}</span>
                 </li>)}
               </ul>

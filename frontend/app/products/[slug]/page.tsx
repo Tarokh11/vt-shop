@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 
 import { formatIrr, Product, ProductVariant } from "@/lib/catalog";
 import { api, ApiError } from "@/lib/api";
+import { Favorite } from "@/lib/cart";
 
 export default function ProductPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -17,6 +18,8 @@ export default function ProductPage() {
   const [error, setError] = useState("");
   const [cartMessage, setCartMessage] = useState("");
   const [adding, setAdding] = useState(false);
+  const [favorite, setFavorite] = useState(false);
+  const [favoritePending, setFavoritePending] = useState(false);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -32,6 +35,9 @@ export default function ProductPage() {
       .then((value) => {
         setProduct(value);
         setVariant(value.variants.find((item) => item.is_default) ?? value.variants[0] ?? null);
+        api<Favorite[]>("/api/v1/accounts/favorites/")
+          .then((items) => setFavorite(items.some((item) => item.product.id === value.id)))
+          .catch(() => setFavorite(false));
       })
       .catch((reason) => { if (reason.name !== "AbortError") setError("محصول پیدا نشد یا منتشر نشده است."); });
     return () => controller.abort();
@@ -45,6 +51,7 @@ export default function ProductPage() {
       await api("/api/v1/cart/items/", {
         method: "POST", body: JSON.stringify({ variant_id: variant.id, quantity: 1 }),
       });
+      window.dispatchEvent(new Event("cart-updated"));
       setCartMessage("به سبد خرید افزوده شد.");
     } catch (reason) {
       if (reason instanceof ApiError && reason.status === 403) {
@@ -54,6 +61,26 @@ export default function ProductPage() {
       }
     } finally {
       setAdding(false);
+    }
+  }
+
+  async function toggleFavorite() {
+    if (!product) return;
+    setFavoritePending(true);
+    try {
+      if (favorite) {
+        await api(`/api/v1/accounts/favorites/${product.id}/`, { method: "DELETE" });
+        setFavorite(false);
+      } else {
+        await api("/api/v1/accounts/favorites/", {
+          method: "POST", body: JSON.stringify({ product_id: product.id }),
+        });
+        setFavorite(true);
+      }
+    } catch (reason) {
+      if (reason instanceof ApiError && reason.status === 403) router.push("/login");
+    } finally {
+      setFavoritePending(false);
     }
   }
 
@@ -88,7 +115,7 @@ export default function ProductPage() {
         <Link href="/products">محصولات /</Link>
         <p className="product-category">{product.categories.map((item) => item.name).join("، ")}</p>
         {product.brand && <p className="product-brand">{product.brand.name}</p>}
-        <h1>{product.name}</h1>
+        <div className="product-title-row"><h1>{product.name}</h1><button className={favorite ? "favorite-button active" : "favorite-button"} type="button" disabled={favoritePending} onClick={toggleFavorite} aria-label={favorite ? "حذف از علاقه‌مندی‌ها" : "افزودن به علاقه‌مندی‌ها"}>{favorite ? "♥" : "♡"}</button></div>
         <p>{product.description}</p>
         {hasStructuredOptions && <div className="option-groups" aria-label="انتخاب ویژگی‌ها">{product.option_definitions.map((option) => {
           const values = Array.from(new Map(product.variants.flatMap((item) => item.option_values.filter((value) => value.definition.id === option.definition.id).map((value) => [value.value.slug, value.value]))).values());

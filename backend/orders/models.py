@@ -44,6 +44,7 @@ class OrderLine(models.Model):
     order = models.ForeignKey(Order, related_name="lines", on_delete=models.PROTECT)
     sku = models.CharField(max_length=80)
     product_name = models.CharField(max_length=180)
+    product_slug = models.SlugField(max_length=200, blank=True)
     variant_name = models.CharField(max_length=140, blank=True)
     unit_price_irr = models.PositiveBigIntegerField()
     quantity = models.PositiveIntegerField(validators=[MinValueValidator(1)])

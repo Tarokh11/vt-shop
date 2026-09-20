@@ -3,7 +3,7 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
 from rest_framework import serializers
 
-from .models import User
+from .models import Favorite, User
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -19,6 +19,24 @@ class UserSerializer(serializers.ModelSerializer):
             "shipping_region",
         )
         read_only_fields = ("id", "email")
+
+
+class FavoriteSerializer(serializers.ModelSerializer):
+    product = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Favorite
+        fields = ("id", "product", "created_at")
+
+    def get_product(self, favorite):
+        product = favorite.product
+        image = product.images.first()
+        return {
+            "id": product.id,
+            "name": product.name,
+            "slug": product.slug,
+            "image": image.image.url if image else None,
+        }
 
 
 class RegistrationSerializer(serializers.ModelSerializer):

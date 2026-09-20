@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { api, Customer } from "@/lib/api";
+import { Cart } from "@/lib/cart";
+import { Category } from "@/lib/catalog";
 
 function customerName(customer: Customer): string {
   const name = `${customer.first_name} ${customer.last_name}`.trim();
@@ -22,6 +24,8 @@ function savedCustomer(): Customer | null {
 
 export function SiteHeader() {
   const [customer, setCustomer] = useState<Customer | null>(null);
+  const [cartCount, setCartCount] = useState(0);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -37,10 +41,25 @@ export function SiteHeader() {
         });
     }
 
+    function loadCart() {
+      api<Cart>("/api/v1/cart/")
+        .then((cart) => setCartCount(cart.items.reduce((total, item) => total + item.quantity, 0)))
+        .catch(() => setCartCount(0));
+    }
+
     queueMicrotask(() => setCustomer(savedCustomer()));
     loadCustomer();
+    loadCart();
+    fetch("/api/v1/catalog/categories/", { cache: "no-store" })
+      .then((response) => response.ok ? response.json() as Promise<Category[]> : Promise.reject())
+      .then(setCategories)
+      .catch(() => setCategories([]));
     window.addEventListener("customer-auth-changed", loadCustomer);
-    return () => window.removeEventListener("customer-auth-changed", loadCustomer);
+    window.addEventListener("cart-updated", loadCart);
+    return () => {
+      window.removeEventListener("customer-auth-changed", loadCustomer);
+      window.removeEventListener("cart-updated", loadCart);
+    };
   }, []);
 
   return (
@@ -64,12 +83,18 @@ export function SiteHeader() {
       </button>
           <nav id="main-navigation" className={menuOpen ? "site-nav open" : "site-nav"} aria-label="ناوبری اصلی">
             <Link href="/">خانه</Link>
-            <Link href="/products">محصولات</Link>
+            <div className="products-nav">
+              <Link href="/products">محصولات</Link>
+              {categories.length > 0 && <div className="products-menu">
+                <div><strong>دسته‌بندی محصولات</strong><Link href="/products">همه محصولات</Link>{categories.map((category) => <Link href={`/products?category=${encodeURIComponent(category.slug)}`} key={category.id}>{category.parent ? `↳ ${category.name}` : category.name}</Link>)}</div>
+                <div className="products-menu-note"><span>برای میز کار شما</span><strong>انتخاب‌های کاربردی،<br />با دقت کنار هم.</strong><Link href="/products">مشاهده کاتالوگ ←</Link></div>
+              </div>}
+            </div>
             <Link href="/orders">پیگیری سفارش</Link>
             {customer ? <Link href="/account">{customerName(customer)}</Link> : <Link href="/login">ورود / عضویت</Link>}
           </nav>
           <div className="header-actions">
-            <Link className="header-cart" href="/cart" aria-label="سبد خرید"><span aria-hidden="true">سبد</span><b>خرید</b></Link>
+            <Link className="header-cart" href="/cart" aria-label={`سبد خرید، ${cartCount} کالا`}><span aria-hidden="true">سبد</span><b>خرید</b><i className="cart-count">{cartCount}</i></Link>
           </div>
         </div>
       </header>

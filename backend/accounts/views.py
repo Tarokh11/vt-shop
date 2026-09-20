@@ -13,8 +13,11 @@ from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
 from rest_framework.views import APIView
 
-from .models import User
+from catalog.models import Product
+
+from .models import Favorite, User
 from .serializers import (
+    FavoriteSerializer,
     LoginSerializer,
     PasswordResetConfirmSerializer,
     PasswordResetRequestSerializer,
@@ -82,6 +85,41 @@ class ProfileView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
+
+
+class FavoriteListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        favorites = request.user.favorites.select_related("product").prefetch_related(
+            "product__images"
+        )
+        return Response(FavoriteSerializer(favorites, many=True).data)
+
+    def post(self, request):
+        product_id = request.data.get("product_id")
+        product = Product.objects.filter(
+            pk=product_id, is_published=True, variants__is_active=True, variants__is_default=True
+        ).distinct().first()
+        if product is None:
+            return Response(
+                {"detail": "Product is not available."}, status=status.HTTP_404_NOT_FOUND
+            )
+        favorite, created = Favorite.objects.get_or_create(user=request.user, product=product)
+        return Response(
+            FavoriteSerializer(favorite).data,
+            status=status.HTTP_201_CREATED if created else status.HTTP_200_OK,
+        )
+
+
+class FavoriteDetailView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, product_id):
+        deleted, _ = Favorite.objects.filter(user=request.user, product_id=product_id).delete()
+        if not deleted:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @method_decorator(csrf_protect, name="dispatch")

@@ -5,6 +5,8 @@ from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from rest_framework.test import APIClient
 
+from catalog.models import Category, Product, ProductVariant
+
 from .models import User
 
 
@@ -133,3 +135,26 @@ class AccountApiTests(TestCase):
         response = self.client.get("/api/v1/accounts/me/")
         self.assertEqual(response.json()["email"], first.email)
         self.assertNotContains(response, "other@example.com")
+
+    def test_customer_can_save_and_remove_product_favorites(self):
+        customer = self.create_customer()
+        category = Category.objects.create(name="Stationery", slug="stationery")
+        product = Product.objects.create(name="Notebook", slug="notebook", is_published=True)
+        product.categories.add(category)
+        ProductVariant.objects.create(
+            product=product, sku="NOTEBOOK-1", price_irr=100, is_default=True
+        )
+        self.client.force_authenticate(customer)
+
+        self.assertEqual(self.client.get("/api/v1/accounts/favorites/").json(), [])
+        saved = self.client.post(
+            "/api/v1/accounts/favorites/", {"product_id": product.id}, format="json"
+        )
+        self.assertEqual(saved.status_code, 201)
+        self.assertEqual(saved.json()["product"]["slug"], "notebook")
+        repeated = self.client.post(
+            "/api/v1/accounts/favorites/", {"product_id": product.id}, format="json"
+        )
+        self.assertEqual(repeated.status_code, 200)
+        removed = self.client.delete(f"/api/v1/accounts/favorites/{product.id}/")
+        self.assertEqual(removed.status_code, 204)

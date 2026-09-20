@@ -20,3 +20,17 @@ class User(AbstractUser):
     def save(self, *args, **kwargs):
         self.email = self.__class__.objects.normalize_email(self.email).lower()
         return super().save(*args, **kwargs)
+
+
+class Favorite(models.Model):
+    user = models.ForeignKey(User, related_name="favorites", on_delete=models.CASCADE)
+    product = models.ForeignKey(
+        "catalog.Product", related_name="favorites", on_delete=models.CASCADE
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ("-created_at",)
+        constraints = [
+            models.UniqueConstraint(fields=("user", "product"), name="accounts_unique_favorite")
+        ]

@@ -25,6 +25,7 @@ export default function CheckoutPage() {
     const form = new FormData(event.currentTarget);
     try {
       const order = await api<CheckoutOrder>("/api/v1/orders/checkout/", { method: "POST", body: JSON.stringify({ shipping_region: form.get("shipping_region"), recipient_name: form.get("recipient_name"), recipient_phone: form.get("recipient_phone"), address: form.get("address") }) });
+      window.dispatchEvent(new Event("cart-updated"));
       const payment = await api<{ redirect_url: string }>(`/api/v1/payments/orders/${order.number}/start/`, { method: "POST" });
       window.location.assign(payment.redirect_url);
     } catch (reason) { setError(reason instanceof Error ? reason.message : "ثبت سفارش ناموفق بود."); } finally { setPending(false); }

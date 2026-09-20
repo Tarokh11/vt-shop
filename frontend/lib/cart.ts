@@ -16,3 +16,9 @@ export type Cart = {
   items: CartItem[];
   subtotal_irr: number;
 };
+
+export type Favorite = {
+  id: number;
+  created_at: string;
+  product: { id: number; name: string; slug: string; image: string | null };
+};

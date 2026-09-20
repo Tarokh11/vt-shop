@@ -27,9 +27,11 @@ export default function CartPage() {
     setPending(itemId);
     setError("");
     try {
-      setCart(await api<Cart>(`/api/v1/cart/items/${itemId}/`, {
+      const updated = await api<Cart>(`/api/v1/cart/items/${itemId}/`, {
         method: "PATCH", body: JSON.stringify({ quantity }),
-      }));
+      });
+      setCart(updated);
+      window.dispatchEvent(new Event("cart-updated"));
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "به‌روزرسانی ناموفق بود.");
     } finally {
@@ -41,7 +43,9 @@ export default function CartPage() {
     setPending(itemId);
     setError("");
     try {
-      setCart(await api<Cart>(`/api/v1/cart/items/${itemId}/`, { method: "DELETE" }));
+      const updated = await api<Cart>(`/api/v1/cart/items/${itemId}/`, { method: "DELETE" });
+      setCart(updated);
+      window.dispatchEvent(new Event("cart-updated"));
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "حذف ناموفق بود.");
     } finally {

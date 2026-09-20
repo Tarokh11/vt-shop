@@ -87,6 +87,7 @@ class CheckoutView(APIView):
                     order=order,
                     sku=variant.sku,
                     product_name=variant.product.name,
+                    product_slug=variant.product.slug,
                     variant_name=variant.name,
                     unit_price_irr=variant.price_irr,
                     quantity=item.quantity,
