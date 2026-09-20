@@ -128,3 +128,11 @@ Use `SESSION_STATE.md` for current handoff context, not historical detail.
 - Preserved every variant ID, SKU, stock quantity, and legacy JSON payload.
 - Checks: catalog/cart/order tests (27), backend Ruff, Django checks, migration
   drift check, no pending migrations, and PostgreSQL record verification.
+
+### `440d566` Add catalog search and filters
+
+- Added public descendant-category, brand, collection, attribute, stock, and
+  basic text search filters with validated query parameters and pagination size.
+- Added public filter metadata and additive normalized product/option output.
+- Checks: catalog/cart/order tests (30), backend Ruff, Django checks, migration
+  drift check, and no pending migrations.
