@@ -1,3 +1,6 @@
+from importlib import import_module
+
+from django.apps import apps
 from django.contrib import admin
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError, transaction
@@ -206,3 +209,30 @@ class CatalogStructureTests(TestCase):
         ProductAttributeValue.objects.create(product=self.product, value=self.black)
         with self.assertRaises(ValidationError):
             ProductOptionDefinition(product=self.product, definition=self.color).full_clean()
+
+
+class LegacyOptionMigrationTests(TestCase):
+    def test_legacy_json_options_are_copied_without_changing_variant_identity(self):
+        category = Category.objects.create(name="Markers", slug="markers")
+        product = Product.objects.create(name="Marker", slug="marker")
+        product.categories.add(category)
+        variant = ProductVariant.objects.create(
+            product=product,
+            sku="MARKER-BLUE-FINE",
+            options={"color": "blue", "tip": "fine"},
+            price_irr=100_000,
+            stock_quantity=4,
+            is_default=True,
+        )
+
+        migration = import_module("catalog.migrations.0004_migrate_legacy_variant_options")
+        migration.migrate_legacy_variant_options(apps, schema_editor=None)
+        migration.migrate_legacy_variant_options(apps, schema_editor=None)
+
+        variant.refresh_from_db()
+        self.assertEqual(variant.sku, "MARKER-BLUE-FINE")
+        self.assertEqual(variant.stock_quantity, 4)
+        self.assertEqual(variant.options, {"color": "blue", "tip": "fine"})
+        self.assertEqual(variant.option_values.count(), 2)
+        self.assertEqual(product.option_definitions.count(), 2)
+        self.assertEqual(category.attribute_definitions.count(), 2)

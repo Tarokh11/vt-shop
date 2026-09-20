@@ -1,8 +1,8 @@
 # Stationery Catalog Model Plan
 
-Status: Generic schema phase complete. The new structures and migration are in
-place, while JSON-option migration, catalog API/filtering, storefront controls,
-and stationery-specific configuration remain pending.
+Status: Generic schema and legacy JSON option migration complete. Catalog
+API/filtering, storefront controls, and stationery-specific configuration remain
+pending.
 
 This document is the working reference for the stationery catalog expansion.
 Read it before changing catalog models, catalog APIs, catalog Admin, seed data,
@@ -13,7 +13,7 @@ stationery-specific data/configuration whenever possible.
 
 - Phase 1 contracts/invariants: complete.
 - Phase 2 generic schema: complete in catalog migration `0003`.
-- Phase 3 JSON option migration: pending.
+- Phase 3 JSON option migration: complete in catalog migration `0004`.
 - Phase 4 Admin workflow polish: pending; base Admin management is present.
 - Phases 5-8 API, storefront, stationery data, and full verification: pending.
 
@@ -21,11 +21,13 @@ stationery-specific data/configuration whenever possible.
 
 The current catalog already provides:
 
-- Flat `Category` with name, Unicode slug, description, active state, and order.
+- Hierarchical `Category` with name, Unicode slug, description, parent, active
+  state, and order.
 - `Product` with name, Unicode slug, description, category M2M, publication,
   and timestamps.
 - `ProductVariant` with stable primary key, globally unique SKU, display name,
-  free-form JSON options, integer IRR price, stock, active/default state.
+  legacy JSON options, normalized option assignments, integer IRR price, stock,
+  active/default state.
 - Ordered product images.
 - Append-only, locked `InventoryAdjustment` records.
 - Public published-product and active-category APIs.
@@ -211,6 +213,13 @@ relations without modifying existing product or variant identity.
 - Verify every existing variant keeps its ID, SKU, price, stock, active/default
   state, and downstream references.
 - Keep legacy JSON only for a deliberately bounded transition period.
+
+Status: complete. Migration `catalog.0004` copied every existing JSON option
+into reusable definitions/values, product options, variant assignments, and
+category mappings without changing variant IDs, SKU, price, stock, or JSON. The
+legacy JSON remains the public API/storefront source of truth until Phase 5
+switches both consumers to normalized assignments; avoid editing one form
+without updating the other during this transition.
 
 ### Phase 4: Admin
 
