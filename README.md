@@ -75,6 +75,13 @@ set -a && source .env && set +a
 Run it again safely after local database resets. The command uses inventory
 adjustments and does not duplicate its initial stock entries.
 
+The former clothing demo is preserved in
+`backend/catalog/fixtures/clothing_catalog.json`. The `archive_clothing`
+command exports it and hides protected clothing rows from the active catalog;
+run `set -a && source .env && set +a && .venv/bin/python backend/manage.py archive_clothing --deactivate`
+to repeat that operation. Load the fixture into a separate database when that
+store is needed.
+
 ## Cart behavior
 
 Customers must sign in before adding a published product option to their persistent

@@ -278,8 +278,10 @@ typecheck, and build pass; focused browser interaction smoke remains pending.
 
 Status: complete for local sample data. `seed_stationery` creates the stationery
 root/category tree, three brands, seven visible/filterable/searchable attributes,
-two collections, five published products, nine variants, and inventory
-adjustments. It is idempotent and does not alter the existing clothing records.
+two collections, eleven published products, sixteen variants, local sample images,
+and inventory adjustments. It is idempotent. The former clothing catalog is
+archived in `backend/catalog/fixtures/clothing_catalog.json` and hidden from
+the active database because historical reservations protect some of its rows.
 
 ### Phase 8: Verification
 

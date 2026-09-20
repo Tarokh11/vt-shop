@@ -1,0 +1,170 @@
+[
+{
+  "model": "catalog.category",
+  "pk": 1,
+  "fields": {
+    "name": "پوشاک",
+    "slug": "clothing",
+    "description": "",
+    "parent": null,
+    "is_active": true,
+    "position": 0
+  }
+},
+{
+  "model": "catalog.product",
+  "pk": 5,
+  "fields": {
+    "name": "لباس دامنی",
+    "slug": "لباس-دامنی",
+    "description": "",
+    "brand": null,
+    "is_published": true,
+    "created_at": "2026-09-19T13:56:03.833Z",
+    "updated_at": "2026-09-19T14:02:09.301Z",
+    "categories": [
+      1
+    ]
+  }
+},
+{
+  "model": "catalog.product",
+  "pk": 4,
+  "fields": {
+    "name": "شلوار جین راسته",
+    "slug": "straight-jeans",
+    "description": "",
+    "brand": null,
+    "is_published": true,
+    "created_at": "2026-09-15T06:41:40.175Z",
+    "updated_at": "2026-09-15T06:41:40.175Z",
+    "categories": [
+      1
+    ]
+  }
+},
+{
+  "model": "catalog.product",
+  "pk": 3,
+  "fields": {
+    "name": "هودی روزمره",
+    "slug": "everyday-hoodie",
+    "description": "",
+    "brand": null,
+    "is_published": true,
+    "created_at": "2026-09-15T06:41:40.170Z",
+    "updated_at": "2026-09-15T06:41:40.170Z",
+    "categories": [
+      1
+    ]
+  }
+},
+{
+  "model": "catalog.product",
+  "pk": 2,
+  "fields": {
+    "name": "پیراهن کتان",
+    "slug": "linen-shirt",
+    "description": "",
+    "brand": null,
+    "is_published": true,
+    "created_at": "2026-09-15T06:41:40.163Z",
+    "updated_at": "2026-09-15T06:41:40.163Z",
+    "categories": [
+      1
+    ]
+  }
+},
+{
+  "model": "catalog.product",
+  "pk": 1,
+  "fields": {
+    "name": "تی‌شرت ساده",
+    "slug": "basic-tshirt",
+    "description": "",
+    "brand": null,
+    "is_published": true,
+    "created_at": "2026-09-15T06:41:40.151Z",
+    "updated_at": "2026-09-15T06:41:40.151Z",
+    "categories": [
+      1
+    ]
+  }
+},
+{
+  "model": "catalog.productvariant",
+  "pk": 1,
+  "fields": {
+    "product": 1,
+    "sku": "TSHIRT-WHT-M",
+    "name": "سفید / M",
+    "price_irr": 2490000,
+    "stock_quantity": 5,
+    "is_active": true,
+    "is_default": true,
+    "created_at": "2026-09-15T06:41:40.156Z",
+    "updated_at": "2026-09-17T10:22:40.486Z"
+  }
+},
+{
+  "model": "catalog.productvariant",
+  "pk": 2,
+  "fields": {
+    "product": 2,
+    "sku": "SHIRT-BLU-L",
+    "name": "آبی / L",
+    "price_irr": 4850000,
+    "stock_quantity": 8,
+    "is_active": true,
+    "is_default": true,
+    "created_at": "2026-09-15T06:41:40.165Z",
+    "updated_at": "2026-09-17T10:36:18.993Z"
+  }
+},
+{
+  "model": "catalog.productvariant",
+  "pk": 3,
+  "fields": {
+    "product": 3,
+    "sku": "HOODIE-GRY-L",
+    "name": "طوسی / L",
+    "price_irr": 6900000,
+    "stock_quantity": 8,
+    "is_active": true,
+    "is_default": true,
+    "created_at": "2026-09-15T06:41:40.172Z",
+    "updated_at": "2026-09-20T11:18:12.607Z"
+  }
+},
+{
+  "model": "catalog.productvariant",
+  "pk": 4,
+  "fields": {
+    "product": 4,
+    "sku": "JEANS-IND-32",
+    "name": "سرمه‌ای / 32",
+    "price_irr": 7400000,
+    "stock_quantity": 0,
+    "is_active": true,
+    "is_default": true,
+    "created_at": "2026-09-15T06:41:40.178Z",
+    "updated_at": "2026-09-16T13:03:48.855Z"
+  }
+},
+{
+  "model": "catalog.productvariant",
+  "pk": 5,
+  "fields": {
+    "product": 5,
+    "sku": "asd",
+    "name": "",
+    "price_irr": 25000,
+    "stock_quantity": 20,
+    "is_active": true,
+    "is_default": true,
+    "created_at": "2026-09-19T13:56:03.839Z",
+    "updated_at": "2026-09-19T13:59:28.432Z"
+  }
+}
+]
+

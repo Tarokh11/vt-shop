@@ -19,6 +19,7 @@ from .models import (
     InventoryAdjustment,
     Product,
     ProductAttributeValue,
+    ProductImage,
     ProductOptionDefinition,
     ProductVariant,
     VariantOptionValue,
@@ -376,17 +377,22 @@ class StationerySampleCommandTests(TestCase):
         self.assertEqual(Category.objects.filter(slug="stationery", is_active=True).count(), 1)
         self.assertEqual(AttributeDefinition.objects.filter(is_filterable=True).count(), 7)
         self.assertEqual(Collection.objects.filter(is_active=True).count(), 2)
-        self.assertEqual(Product.objects.filter(slug__startswith="gel-pen").count(), 1)
+        stationery_categories = Category.objects.filter(parent__slug="stationery")
+        stationery_products = Product.objects.filter(
+            categories__in=stationery_categories
+        ).distinct()
+        self.assertEqual(stationery_products.filter(is_published=True).count(), 11)
+        self.assertEqual(ProductImage.objects.filter(product__in=stationery_products).count(), 11)
         self.assertEqual(InventoryAdjustment.objects.count(), adjustment_count)
 
         client = APIClient()
         self.assertEqual(
-            client.get("/api/v1/catalog/products/?category=stationery").json()["count"], 5
+            client.get("/api/v1/catalog/products/?category=stationery").json()["count"], 11
         )
-        self.assertEqual(client.get("/api/v1/catalog/products/?brand=rooyesh").json()["count"], 2)
+        self.assertEqual(client.get("/api/v1/catalog/products/?brand=rooyesh").json()["count"], 4)
         self.assertEqual(
             client.get(
                 "/api/v1/catalog/products/?category=notebooks-paper&attribute=paper-size:a5"
             ).json()["count"],
-            1,
+            2,
         )

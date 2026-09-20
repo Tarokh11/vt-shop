@@ -1,3 +1,6 @@
+from pathlib import Path
+
+from django.core.files import File
 from django.core.management.base import BaseCommand
 from django.db import transaction
 
@@ -13,6 +16,7 @@ from catalog.models import (
     InventoryAdjustment,
     Product,
     ProductAttributeValue,
+    ProductImage,
     ProductOptionDefinition,
     ProductVariant,
     VariantOptionValue,
@@ -83,13 +87,16 @@ class Command(BaseCommand):
             ("material", "جنس", 7),
         )
         value_data = {
-            "color": (("blue", "آبی"), ("black", "مشکی"), ("red", "قرمز"), ("gray", "طوسی")),
+            "color": (
+                ("blue", "آبی"), ("black", "مشکی"), ("red", "قرمز"),
+                ("gray", "طوسی"), ("green", "سبز"), ("yellow", "زرد"),
+            ),
             "tip-size": (("0-5-mm", "۰٫۵ میلی‌متر"), ("0-7-mm", "۰٫۷ میلی‌متر")),
-            "paper-size": (("a5", "A5"),),
-            "ruling": (("lined", "خط‌دار"),),
-            "page-count": (("80", "۸۰ برگ"),),
-            "pack-quantity": (("12", "۱۲ رنگ"), ("24", "۲۴ رنگ")),
-            "material": (("plastic", "پلاستیک"),),
+            "paper-size": (("a5", "A5"), ("a4", "A4")),
+            "ruling": (("lined", "خط‌دار"), ("dotted", "نقطه‌ای"),),
+            "page-count": (("40", "۴۰ برگ"), ("80", "۸۰ برگ"), ("120", "۱۲۰ برگ")),
+            "pack-quantity": (("6", "۶ رنگ"), ("12", "۱۲ رنگ"), ("24", "۲۴ رنگ")),
+            "material": (("plastic", "پلاستیک"), ("cardboard", "مقوا"), ("metal", "فلز")),
         }
         definitions = {}
         values = {}
@@ -117,9 +124,9 @@ class Command(BaseCommand):
 
     def create_category_mappings(self, categories, definitions):
         category_attributes = {
-            "writing-tools": ("color", "tip-size"),
+            "writing-tools": ("color", "tip-size", "pack-quantity"),
             "notebooks-paper": ("paper-size", "ruling", "page-count"),
-            "art-supplies": ("pack-quantity",),
+            "art-supplies": ("pack-quantity", "paper-size", "page-count"),
             "office-supplies": ("color", "material"),
         }
         for category_slug, attribute_slugs in category_attributes.items():
@@ -154,6 +161,7 @@ class Command(BaseCommand):
                         {"color": "black", "tip-size": "0-7-mm"},
                     ),
                 ),
+                "image": "writing-tools.svg",
             },
             {
                 "slug": "mechanical-pencil-05",
@@ -177,6 +185,7 @@ class Command(BaseCommand):
                         {"color": "blue", "tip-size": "0-5-mm"},
                     ),
                 ),
+                "image": "writing-tools.svg",
             },
             {
                 "slug": "a5-lined-notebook",
@@ -186,6 +195,7 @@ class Command(BaseCommand):
                 "brand": "rooyesh",
                 "attributes": {"paper-size": "a5", "ruling": "lined", "page-count": "80"},
                 "variants": (("NOTEBOOK-A5-LINED", "A5 / خط‌دار", 390_000, 20, {}),),
+                "image": "notebook.svg",
             },
             {
                 "slug": "watercolor-pencil-set",
@@ -197,6 +207,7 @@ class Command(BaseCommand):
                     ("WATERCOLOR-12", "۱۲ رنگ", 780_000, 9, {"pack-quantity": "12"}),
                     ("WATERCOLOR-24", "۲۴ رنگ", 1_390_000, 6, {"pack-quantity": "24"}),
                 ),
+                "image": "art-supplies.svg",
             },
             {
                 "slug": "desktop-organizer",
@@ -209,6 +220,68 @@ class Command(BaseCommand):
                     ("ORGANIZER-GRAY", "طوسی", 640_000, 7, {"color": "gray"}),
                     ("ORGANIZER-BLUE", "آبی", 640_000, 5, {"color": "blue"}),
                 ),
+                "image": "desk-organizer.svg",
+            },
+            {
+                "slug": "fountain-pen",
+                "name": "خودنویس کلاسیک",
+                "description": "خودنویسی خوش‌دست برای نامه‌ها، یادداشت‌های مهم و امضای روزانه.",
+                "category": "writing-tools",
+                "brand": "rooyesh",
+                "variants": (
+                    ("FOUNTAIN-BLACK", "مشکی", 1_250_000, 8, {"color": "black"}),
+                    ("FOUNTAIN-GREEN", "سبز", 1_250_000, 6, {"color": "green"}),
+                ),
+                "image": "writing-tools.svg",
+            },
+            {
+                "slug": "pastel-highlighter-set",
+                "name": "ست هایلایتر پاستلی",
+                "description": "شش رنگ ملایم برای خلاصه‌نویسی، برنامه‌ریزی و مطالعه.",
+                "category": "writing-tools",
+                "brand": "rangin",
+                "variants": (("HIGHLIGHTER-6", "۶ رنگ", 520_000, 14, {"pack-quantity": "6"}),),
+                "image": "writing-tools.svg",
+            },
+            {
+                "slug": "dotted-notebook",
+                "name": "دفتر نقطه‌ای A5",
+                "description": "دفتر نقطه‌ای برای بولت ژورنال، طراحی و برنامه‌ریزی منعطف.",
+                "category": "notebooks-paper",
+                "brand": "rooyesh",
+                "attributes": {"paper-size": "a5", "ruling": "dotted", "page-count": "120"},
+                "variants": (("NOTEBOOK-A5-DOT", "A5 / نقطه‌ای", 560_000, 18, {}),),
+                "image": "notebook.svg",
+            },
+            {
+                "slug": "a4-sketchbook",
+                "name": "دفتر طراحی A4",
+                "description": "کاغذ باکیفیت برای طراحی، اسکیس و تمرین‌های رنگی.",
+                "category": "art-supplies",
+                "brand": "negar",
+                "attributes": {"paper-size": "a4", "page-count": "40"},
+                "variants": (("SKETCHBOOK-A4", "A4 / ۴۰ برگ", 680_000, 11, {}),),
+                "image": "art-supplies.svg",
+            },
+            {
+                "slug": "metal-desk-tray",
+                "name": "سینی فلزی رومیزی",
+                "description": "سینی مینیمال برای مرتب نگه داشتن برگه‌ها و نامه‌های روزانه.",
+                "category": "office-supplies",
+                "brand": "negar",
+                "attributes": {"material": "metal"},
+                "variants": (("TRAY-GREEN", "سبز", 890_000, 7, {"color": "green"}),),
+                "image": "desk-organizer.svg",
+            },
+            {
+                "slug": "document-folder",
+                "name": "پوشه مدارک رنگی",
+                "description": "پوشه سبک و مقاوم برای اسناد، جزوه‌ها و برگه‌های مهم.",
+                "category": "office-supplies",
+                "brand": "rangin",
+                "attributes": {"material": "cardboard"},
+                "variants": (("FOLDER-YELLOW", "زرد", 260_000, 22, {"color": "yellow"}),),
+                "image": "desk-organizer.svg",
             },
         )
         products = {}
@@ -225,10 +298,26 @@ class Command(BaseCommand):
             product.categories.set((categories[data["category"]],))
             self.create_product_attributes(product, data.get("attributes", {}), values)
             self.create_variants(product, data["variants"], definitions, values, staff)
+            self.create_product_image(product, data["image"])
             product.is_published = True
             product.save(update_fields=("is_published", "updated_at"))
             products[data["slug"]] = product
         return products
+
+    def create_product_image(self, product, filename):
+        image = ProductImage.objects.filter(product=product, position=1).first()
+        if image is not None:
+            return
+        source = Path(__file__).resolve().parents[2] / "sample_images" / filename
+        if not source.exists():
+            return
+        with source.open("rb") as image_file:
+            ProductImage.objects.create(
+                product=product,
+                image=File(image_file, name=f"stationery/{filename}"),
+                alt_text=product.name,
+                position=1,
+            )
 
     def create_product_attributes(self, product, attributes, values):
         for attribute_slug, value_slug in attributes.items():
