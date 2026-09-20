@@ -120,6 +120,42 @@ p { line-height: 1.9; }
 .section-heading h2 { margin-top: .45rem; font-size: clamp(1.6rem, 3vw, 2.4rem); }
 .section-heading a { color: var(--muted); font-size: .8rem; text-decoration: none; }
 .section-heading a span { color: var(--orange); font-size: 1rem; }
+.about-page { padding-top: 3.5rem; }
+.about-hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(20rem, .85fr); align-items: center; gap: clamp(3rem, 9vw, 8rem); min-height: 34rem; }
+.about-hero-copy { max-width: 38rem; }
+.about-hero h1 { max-width: 35rem; margin-top: .6rem; }
+.about-hero h1 em { color: var(--orange); font-style: normal; }
+.about-hero-copy > p:not(.eyebrow) { max-width: 32rem; margin: 0; color: var(--muted); font-size: 1rem; }
+.about-hero-actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 2rem; }
+.about-hero-actions a { text-decoration: none; }
+.about-hero-art { position: relative; min-height: 29rem; overflow: hidden; border-radius: 1.6rem; background: #183e32; box-shadow: var(--shadow); isolation: isolate; }
+.about-hero-art::before, .about-hero-art::after { position: absolute; content: ""; }
+.about-hero-art::before { top: -18%; right: -15%; width: 80%; height: 90%; border-radius: 50%; background: #e5eee9; opacity: .95; }
+.about-hero-art::after { bottom: -18%; left: -12%; width: 80%; height: 55%; border-radius: 50%; background: #e8794f; opacity: .9; }
+.about-art-ring { position: absolute; z-index: 2; top: 23%; right: 27%; width: 12rem; height: 12rem; border: 1px solid rgba(255,255,255,.55); border-radius: 50%; }
+.about-art-note { position: absolute; z-index: 3; top: 2.5rem; left: 2.5rem; color: #f0c9ae; font: 700 .8rem/1.6 "DM Sans", sans-serif; letter-spacing: .25em; }
+.about-art-pencil { position: absolute; z-index: 4; right: 31%; bottom: 13%; width: 4rem; height: 19rem; border-radius: 2rem 2rem .6rem .6rem; background: #f0c9ae; box-shadow: 1rem 1rem 0 rgba(24,62,50,.22); transform: rotate(32deg); }
+.about-art-pencil::before { position: absolute; top: -2rem; left: 0; border-right: 2rem solid transparent; border-bottom: 2rem solid #f4dfca; border-left: 2rem solid transparent; content: ""; }
+.about-art-pencil::after { position: absolute; top: 2.2rem; left: 1.45rem; width: 1.1rem; height: 2rem; border-radius: 1rem; background: var(--green); content: ""; }
+.about-intro { display: grid; grid-template-columns: minmax(15rem, .8fr) minmax(0, 1.2fr); gap: 5rem; margin-top: 6rem; padding: 2.5rem 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.about-intro h2 { max-width: 19rem; margin-top: .5rem; font-size: clamp(1.7rem, 3vw, 2.5rem); }
+.about-intro > p { max-width: 38rem; margin: 0; color: var(--muted); font-size: 1rem; }
+.about-values { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 5rem; }
+.about-values article { min-height: 14rem; padding: 1.5rem; border-radius: 1rem; background: var(--card); box-shadow: 0 5px 18px rgba(24,62,50,.035); }
+.about-values article:nth-child(2) { background: var(--green); color: #fff; transform: translateY(1.5rem); }
+.about-values article:nth-child(2) p { color: #cce0d5; }
+.about-values span { color: var(--orange); font: 700 .72rem "DM Sans", sans-serif; }
+.about-values h3 { margin: 3rem 0 .6rem; font-size: 1.15rem; }
+.about-values p { margin: 0; color: var(--muted); font-size: .78rem; line-height: 1.9; }
+.about-process { display: grid; grid-template-columns: minmax(15rem, .75fr) minmax(0, 1.25fr); gap: 5rem; margin-top: 8rem; }
+.about-process h2 { margin-top: .5rem; font-size: clamp(1.7rem, 3vw, 2.5rem); }
+.about-process ol { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
+.about-process li { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; padding: 1.15rem 0; border-bottom: 1px solid var(--line); }
+.about-process li:first-child { border-top: 1px solid var(--line); }
+.about-process strong { font-size: .9rem; }
+.about-process span { color: var(--muted); font-size: .78rem; line-height: 1.8; }
+.about-cta { display: grid; justify-items: center; margin-top: 8rem; padding: 4rem 1.5rem; border-radius: 1.3rem; background: #f0c9ae; text-align: center; }
+.about-cta h2 { margin: .5rem 0 1.5rem; font-size: clamp(1.7rem, 3vw, 2.6rem); }
 
 .account-shell { max-width: 34rem; padding-top: 6rem; }
 .account-card { padding: clamp(1.5rem, 5vw, 3.25rem); border: 1px solid var(--line); border-radius: 1.25rem; background: rgba(255, 254, 251, .84); box-shadow: var(--shadow); }
@@ -304,6 +340,10 @@ button.variant.active { border-color: var(--green); background: var(--green-ligh
   main { padding-top: 4rem; }
   .hero-section { gap: 2rem; }
   .hero-art { min-height: 24rem; }
+  .about-hero { grid-template-columns: 1fr; gap: 2.5rem; min-height: 0; }
+  .about-hero-art { min-height: 24rem; }
+  .about-intro, .about-process { grid-template-columns: 1fr; gap: 1.5rem; }
+  .about-process { margin-top: 6rem; }
   .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .product-page { grid-template-columns: 1fr; gap: 2rem; }
   .product-gallery { position: static; max-width: 48rem; margin-inline: auto; width: 100%; }
@@ -327,6 +367,17 @@ button.variant.active { border-color: var(--green); background: var(--green-ligh
   .products-menu-note { display: none; }
   main { width: min(100% - 2rem, 78rem); padding-top: 3rem; padding-bottom: 4rem; }
   .home-page { padding-top: 1.5rem; }
+  .about-page { padding-top: 1.5rem; }
+  .about-hero-art { min-height: 19rem; }
+  .about-hero-actions { align-items: stretch; flex-direction: column; }
+  .about-hero-actions a { width: 100%; }
+  .about-intro { gap: .5rem; margin-top: 4rem; padding: 2rem 0; }
+  .about-values { grid-template-columns: 1fr; gap: .75rem; margin-top: 3rem; }
+  .about-values article:nth-child(2) { transform: none; }
+  .about-values h3 { margin-top: 2rem; }
+  .about-process { margin-top: 5rem; }
+  .about-process li { grid-template-columns: 1fr; gap: .4rem; }
+  .about-cta { margin-top: 5rem; padding: 3rem 1rem; }
   .hero-section { display: flex; flex-direction: column; align-items: stretch; min-height: 0; }
   .hero-copy h1 { font-size: clamp(2rem, 10vw, 2.8rem); }
   .hero-lede { font-size: .95rem; }

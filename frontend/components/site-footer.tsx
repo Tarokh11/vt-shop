@@ -13,7 +13,7 @@ export function SiteFooter() {
         </div>
         <nav className="site-footer-links" aria-label="پیوندهای پایین صفحه">
           <div><strong>فروشگاه</strong><Link href="/products">همه محصولات</Link><Link href="/products?category=writing-tools">نوشت‌افزار</Link><Link href="/products?category=notebooks-paper">دفتر و کاغذ</Link></div>
-          <div><strong>راهنما</strong><Link href="/cart">سبد خرید</Link><Link href="/account">حساب کاربری</Link><Link href="/orders">پیگیری سفارش</Link></div>
+          <div><strong>راهنما</strong><Link href="/about">درباره نورا</Link><Link href="/cart">سبد خرید</Link><Link href="/account">حساب کاربری</Link><Link href="/orders">پیگیری سفارش</Link></div>
         </nav>
         <div className="site-footer-contact">
           <strong>پشتیبانی نورا</strong>
