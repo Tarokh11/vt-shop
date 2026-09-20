@@ -145,3 +145,12 @@ Use `SESSION_STATE.md` for current handoff context, not historical detail.
   fallback to flat legacy variants.
 - Checks: frontend lint, typecheck, production build, and catalog/cart/order
   backend regressions (30).
+
+### `392d9bb` Add stationery sample catalog data
+
+- Added idempotent `seed_stationery` data for hierarchy, brands, filterable
+  attributes, collections, five products, nine variants, and audited stock.
+- Added command idempotency/public-filter coverage and documented local use.
+- Checks: catalog/cart/order tests (31), backend Ruff, Django checks, migration
+  drift, frontend lint/typecheck/build, live filter coverage audit, and Chrome
+  catalogue smoke checks at 375px, 768px, and 1440px.
