@@ -5,6 +5,10 @@ from django.urls import include, path
 
 from core.views import health, readiness
 
+admin.site.site_header = "مدیریت فروشگاه نورا"
+admin.site.site_title = "مدیریت نورا"
+admin.site.index_title = "داشبورد عملیات فروشگاه"
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/v1/accounts/", include("accounts.urls")),

@@ -55,6 +55,11 @@ variants, product images, and inventory in Django Admin.
    every manual change has a staff member, reason, delta, and resulting quantity.
 4. Add product images and categories, then publish the product.
 
+For bulk catalog work, open **Products → Import from Excel**, download the live
+template, complete one row per SKU, and upload it. The template includes current
+category, brand, collection, and attribute references. The whole workbook is
+validated before any row is saved. See `docs/ADMIN_GUIDE.md` for the workflow.
+
 Prices and inventory are stored as whole IRR amounts and units. Inventory
 adjustments cannot be edited or deleted. Product media under `backend/media/` is
 local development storage; production deployments must configure persistent

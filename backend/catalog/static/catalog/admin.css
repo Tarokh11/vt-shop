@@ -1,0 +1,37 @@
+:root {
+  --primary: #224d69;
+  --secondary: #19324f;
+  --accent: #f2c14e;
+  --header-bg: #19324f;
+  --header-color: #fffdf7;
+  --breadcrumbs-bg: #224d69;
+  --link-fg: #1f607c;
+  --link-hover-color: #e8684a;
+  --button-bg: #224d69;
+  --button-hover-bg: #19324f;
+  --default-button-bg: #e8684a;
+  --default-button-hover-bg: #c94f35;
+}
+html[data-theme="light"], :root { --body-bg: #f7f4eb; --body-fg: #26394d; }
+body { font-family: Tahoma, Arial, sans-serif; }
+#header { min-height: 3.7rem; padding-inline: clamp(1rem, 3vw, 2.5rem); box-shadow: 0 5px 20px rgba(25,50,79,.16); }
+#site-name a { display: inline-flex; align-items: center; gap: .65rem; color: #fff; font-weight: 700; }
+#site-name a > span:last-child { display: grid; gap: .15rem; }
+#site-name small { color: #c7d7df; font-size: .65rem; font-weight: 400; }
+.nora-admin-mark { display: grid; width: 2.35rem; height: 2.35rem; place-items: center; border-radius: .45rem .45rem .45rem 1rem; background: #e8684a; box-shadow: .22rem .22rem 0 rgba(242,193,78,.75); }
+.storefront-link { align-self: center; padding: .5rem .8rem; border: 1px solid rgba(255,255,255,.3); border-radius: 999px; color: #fff !important; font-size: .75rem; }
+div.breadcrumbs { padding: .75rem clamp(1rem, 3vw, 2.5rem); }
+#content { padding: clamp(1rem, 3vw, 2.5rem); }
+.module, .inline-group, #changelist-filter, .submit-row { overflow: hidden; border-radius: .45rem .45rem .45rem 1rem; box-shadow: 0 5px 20px rgba(25,50,79,.05); }
+.module h2, .module caption, .inline-group h2 { padding: .75rem 1rem; }
+.object-tools a { border-radius: 999px; }
+.object-tools .importlink { background: #e8684a; }
+.catalog-image-preview { width: 4.5rem; height: 3.5rem; object-fit: cover; border-radius: .4rem; }
+.admin-status, .stock-indicator { display: inline-flex; min-width: 3.5rem; justify-content: center; padding: .25rem .5rem; border-radius: 999px; font-size: .7rem; font-weight: 700; }
+.status-live, .stock-ok { background: #e0f1e9; color: #247050; }.status-draft { background: #ececef; color: #646472; }.stock-low { background: #fff0c9; color: #8b6413; }.stock-empty { background: #fbe4df; color: #a13f31; }
+.excel-import-layout { display: grid; grid-template-columns: minmax(0,1.3fr) minmax(17rem,.7fr); gap: 1.2rem; align-items: start; }
+.excel-import-card, .excel-import-help { padding: clamp(1.2rem, 3vw, 2rem); border-radius: .6rem .6rem .6rem 1.5rem; background: #fff; box-shadow: 0 12px 35px rgba(25,50,79,.08); }
+.admin-eyebrow { margin: 0; color: #e8684a; font-size: .72rem; font-weight: 700; }.excel-import-card h1 { margin-top: .4rem; }.excel-import-card form { margin-top: 1.5rem; }.excel-import-card input[type="file"] { width: 100%; padding: 1rem; border: 1px dashed #9db0ba; border-radius: .5rem; background: #f7faf9; }
+.excel-import-help { background: #19324f; color: #fff; }.excel-import-help h2 { color: #fff; }.excel-import-help a { color: #f2c14e; }.excel-import-help li, .excel-import-help p { color: #d7e1e6; line-height: 1.8; }.excel-import-help ol { padding-right: 1.2rem; }
+.import-errors { margin-top: 1.5rem; padding: 1rem; border-right: .3rem solid #ba4938; background: #fff0ed; color: #812e23; }.import-errors h2 { color: inherit; }
+@media (max-width: 767px) { #header { align-items: flex-start; gap: .7rem; flex-direction: column; padding-block: .8rem; }.storefront-link { align-self: flex-start; }.excel-import-layout { grid-template-columns: 1fr; } #content { padding: 1rem; } }

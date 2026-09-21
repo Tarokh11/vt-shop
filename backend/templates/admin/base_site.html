@@ -1,0 +1,17 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}{{ title }} | مدیریت نورا{% endblock %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'catalog/admin.css' %}">
+{% endblock %}
+
+{% block branding %}
+  <div id="site-name">
+    <a href="{% url 'admin:index' %}"><span class="nora-admin-mark">ن</span><span>مدیریت نورا<small>کاتالوگ، سفارش و موجودی</small></span></a>
+  </div>
+{% endblock %}
+
+{% block nav-global %}<a class="storefront-link" href="{{ storefront_url }}" target="_blank" rel="noopener">مشاهده فروشگاه ↗</a>{% endblock %}

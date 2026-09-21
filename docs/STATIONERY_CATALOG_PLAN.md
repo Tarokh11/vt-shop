@@ -14,7 +14,7 @@ stationery-specific data/configuration whenever possible.
 - Phase 1 contracts/invariants: complete.
 - Phase 2 generic schema: complete in catalog migration `0003`.
 - Phase 3 JSON option migration: complete in catalog migration `0004`.
-- Phase 4 Admin workflow polish: pending; base Admin management is present.
+- Phase 4 Admin workflow polish: complete, including validated Excel import.
 - Phase 5 public API/filtering: complete.
 - Phase 6 storefront controls: complete; browser interaction smoke passes for
   URL filters and grouped variant selection.
@@ -235,6 +235,9 @@ Status: implementation complete. Admin registers brands, attributes, category
 applicability, products, normalized product options, variants, collections, and
 inventory adjustments. Product and category screens expose the relevant inline
 workflows; variant stock is read-only and inventory adjustments are append-only.
+The branded operations UI adds product/stock summaries, image previews, safer
+publication actions, richer customer/order/fulfillment screens, and an atomic
+Excel import with a generated live-reference template and row-level errors.
 
 ### Phase 5: API and search/filtering
 

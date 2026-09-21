@@ -1,6 +1,6 @@
 # Session State
 
-- Current phase: stationery storefront redesign complete; Phase 8 verification continues.
+- Current phase: stationery Admin operations and Excel catalog import verification.
 - Completed: logged-in navigation hides auth prompts and shows the customer name;
   login/register route to products; account profile stores optional phone/address;
   checkout starts payment directly; order history lists paid orders; local dev
@@ -20,7 +20,9 @@
   URL filter interaction and grouped variant selection pass in Chrome; all
   storefront routes now share a responsive stationery-led visual system with
   accessible motion, category discovery, product image galleries and specs,
-  guided cart/checkout, and aligned account, auth, orders, and About pages.
+  guided cart/checkout, and aligned account, auth, orders, and About pages;
+  Django Admin now has an accessible branded operations UI, richer catalog,
+  customer, order, shipment, and inventory views, and atomic `.xlsx` catalog import.
 - Decisions: order history is paid-order-only; pending-payment orders are created
   during checkout and immediately handed to the payment start flow; use
   `http://127.0.0.1:3000` locally to keep session cookies across payment redirects.
@@ -40,5 +42,5 @@
   Ruff, migration drift, Django system check, frontend lint/typecheck/build,
   responsive Chrome catalogue smoke checks at 375px, 768px, and 1440px, URL
   filter interaction, and grouped option selection pass.
-- Next task: run a focused responsive browser smoke across the redesigned routes,
-  then run backend regressions with a PostgreSQL role permitted to create tests.
+- Next task: smoke the redesigned storefront and Admin in a browser, then run
+  backend regressions with a PostgreSQL role permitted to create tests.
