@@ -7,6 +7,12 @@ import { api, Customer } from "@/lib/api";
 import { Cart } from "@/lib/cart";
 import { Category } from "@/lib/catalog";
 
+const announcements = [
+  "ارسال مطمئن نوشت‌افزار به سراسر ایران",
+  "برای هر ایده، یک صفحه تازه آماده است",
+  "انتخاب‌های کاربردی برای مدرسه، کار و خلاقیت",
+];
+
 function customerName(customer: Customer): string {
   const name = `${customer.first_name} ${customer.last_name}`.trim();
   return name || customer.email;
@@ -27,6 +33,15 @@ export function SiteHeader() {
   const [cartCount, setCartCount] = useState(0);
   const [categories, setCategories] = useState<Category[]>([]);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [announcementIndex, setAnnouncementIndex] = useState(0);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const interval = window.setInterval(() => {
+      setAnnouncementIndex((index) => (index + 1) % announcements.length);
+    }, 4500);
+    return () => window.clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     function loadCustomer() {
@@ -64,12 +79,12 @@ export function SiteHeader() {
 
   return (
     <>
-      <div className="announcement-bar">ارسال سریع و مطمئن در سراسر ایران</div>
+      <div className="announcement-bar"><span aria-hidden="true">✦</span><span className="announcement-message" key={announcementIndex}>{announcements[announcementIndex]}</span><span aria-hidden="true">✦</span></div>
       <header className="site-header">
         <div className="site-header-inner">
           <Link className="brand" href="/">
             <span className="brand-mark" aria-hidden="true">ن</span>
-            <span><strong>نورا</strong><small>فروشگاه انتخاب‌های خاص</small></span>
+             <span><strong>نورا</strong><small>نوشت‌افزار و ابزار خلاقیت</small></span>
           </Link>
       <button
         className="menu-toggle"
@@ -87,7 +102,7 @@ export function SiteHeader() {
               <Link href="/products">محصولات</Link>
               {categories.length > 0 && <div className="products-menu">
                 <div><strong>دسته‌بندی محصولات</strong><Link href="/products">همه محصولات</Link>{categories.map((category) => <Link href={`/products?category=${encodeURIComponent(category.slug)}`} key={category.id}>{category.parent ? `↳ ${category.name}` : category.name}</Link>)}</div>
-                <div className="products-menu-note"><span>برای میز کار شما</span><strong>انتخاب‌های کاربردی،<br />با دقت کنار هم.</strong><Link href="/products">مشاهده کاتالوگ ←</Link></div>
+                <div className="products-menu-note"><span>برای میز شما</span><strong>ابزارهایی برای نوشتن،<br />ساختن و فکر کردن.</strong><Link href="/products">مشاهده کاتالوگ ←</Link></div>
               </div>}
             </div>
             <Link href="/orders">پیگیری سفارش</Link>

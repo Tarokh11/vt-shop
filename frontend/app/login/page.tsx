@@ -30,12 +30,12 @@ export default function LoginPage() {
   }
 
   return (
-    <AccountShell eyebrow="حساب مشتری" title="ورود به فروشگاه">
+    <AccountShell eyebrow="میز شخصی شما" title="دوباره به نورا خوش آمدید">
       <form onSubmit={submit}>
         <label>ایمیل<input name="email" type="email" autoComplete="email" required /></label>
         <label>رمز عبور<input name="password" type="password" autoComplete="current-password" required /></label>
         {error && <p className="error" role="alert">{error}</p>}
-        <button disabled={pending}>{pending ? "در حال ورود…" : "ورود"}</button>
+        <button disabled={pending}>{pending ? "در حال ورود…" : "ورود به میز من"}</button>
       </form>
       <div className="form-links">
         <Link href="/register">ساخت حساب</Link>

@@ -58,10 +58,9 @@ export default function CartPage() {
 
   return (
     <main className="cart-page">
-      <p className="eyebrow">سبد خرید</p>
-      <h1>انتخاب‌های شما</h1>
+      <header className="commerce-heading"><div><p className="eyebrow">سبد خرید</p><h1>انتخاب‌های روی میز شما</h1><p>تعداد و مدل‌ها را مرور کنید؛ موجودی و قیمت‌ها دوباره در پرداخت بررسی می‌شوند.</p></div><span aria-hidden="true">▤</span></header>
       {error && <p className="error" role="alert">{error}</p>}
-      {cart.items.length === 0 ? <section className="empty-cart"><p>سبد خرید شما خالی است.</p><Link href="/products">مشاهده محصولات</Link></section> : <>
+      {cart.items.length === 0 ? <section className="empty-cart"><span aria-hidden="true">✎</span><h2>هنوز چیزی روی میز نیست</h2><p>از بین دفترها و ابزارهای نوشتن، اولین انتخاب را پیدا کنید.</p><Link className="button-primary" href="/products">رفتن به قفسه‌ها</Link></section> : <>
         <section className="cart-items">
           {cart.items.map((item) => <article className="cart-item" key={item.id}>
             <div><Link href={`/products/${encodeURIComponent(item.product_slug)}`}>{item.product}</Link><p>{item.variant || item.sku}</p>{!item.available && <p className="error">این گزینه دیگر موجود نیست.</p>}</div>

@@ -18,12 +18,14 @@ export function ProductCard({ product }: Readonly<{ product: Product }>) {
         )}
       </Link>
       <div className="product-card-body">
+        {product.brand && <span className="product-card-brand">{product.brand.name}</span>}
         <p className="product-category">{product.categories.map((item) => item.name).join("، ")}</p>
         <h2><Link href={`/products/${product.slug}`}>{product.name}</Link></h2>
         <div className="product-meta">
           <strong>{prices.length ? `از ${formatIrr(Math.min(...prices))}` : "بدون قیمت"}</strong>
           <span className={available ? "in-stock" : "out-of-stock"}>{available ? "موجود" : "ناموجود"}</span>
         </div>
+        <Link className="product-card-link" href={`/products/${product.slug}`}>دیدن جزئیات <span aria-hidden="true">←</span></Link>
       </div>
     </article>
   );

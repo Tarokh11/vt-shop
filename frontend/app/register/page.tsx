@@ -35,7 +35,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <AccountShell eyebrow="عضویت" title="حساب تازه بسازید">
+    <AccountShell eyebrow="یک شروع تازه" title="گوشه خودتان را در نورا بسازید">
       <form onSubmit={submit}>
         <div className="field-row">
           <label>نام<input name="first_name" autoComplete="given-name" /></label>
@@ -45,7 +45,7 @@ export default function RegisterPage() {
         <label>رمز عبور<input name="password" type="password" autoComplete="new-password" minLength={8} required /></label>
         <p className="hint">حداقل ۸ نویسه و غیرقابل حدس انتخاب کنید.</p>
         {error && <p className="error" role="alert">{error}</p>}
-        <button disabled={pending}>{pending ? "در حال ساخت…" : "ساخت حساب"}</button>
+        <button disabled={pending}>{pending ? "در حال ساخت…" : "ساخت حساب نورا"}</button>
       </form>
       <div className="form-links"><Link href="/login">حساب دارید؟ وارد شوید</Link></div>
     </AccountShell>

@@ -1,6 +1,6 @@
 # Session State
 
-- Current phase: Phase 8 verification and finalization; real Zarinpal remains deferred.
+- Current phase: stationery storefront redesign complete; Phase 8 verification continues.
 - Completed: logged-in navigation hides auth prompts and shows the customer name;
   login/register route to products; account profile stores optional phone/address;
   checkout starts payment directly; order history lists paid orders; local dev
@@ -17,7 +17,10 @@
   and delivery progress; the account dashboard supports saved favorites; the
   header includes a live cart count and category menu; eleven sample stationery products make
   every configured category, brand, collection, and attribute filter visible;
-  URL filter interaction and grouped variant selection pass in Chrome.
+  URL filter interaction and grouped variant selection pass in Chrome; all
+  storefront routes now share a responsive stationery-led visual system with
+  accessible motion, category discovery, product image galleries and specs,
+  guided cart/checkout, and aligned account, auth, orders, and About pages.
 - Decisions: order history is paid-order-only; pending-payment orders are created
   during checkout and immediately handed to the payment start flow; use
   `http://127.0.0.1:3000` locally to keep session cookies across payment redirects.
@@ -37,6 +40,5 @@
   Ruff, migration drift, Django system check, frontend lint/typecheck/build,
   responsive Chrome catalogue smoke checks at 375px, 768px, and 1440px, URL
   filter interaction, and grouped option selection pass.
-- Next task: run backend regression tests with a permitted PostgreSQL test role,
-  including category-aware attribute filter coverage, then review and commit the
-  completed catalog cutover.
+- Next task: run a focused responsive browser smoke across the redesigned routes,
+  then run backend regressions with a PostgreSQL role permitted to create tests.

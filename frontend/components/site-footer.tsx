@@ -18,7 +18,7 @@ export function SiteFooter() {
         <div className="site-footer-contact">
           <strong>پشتیبانی نورا</strong>
           <p>شنبه تا پنجشنبه، ۹ تا ۱۸<br />همراه شما از انتخاب تا تحویل</p>
-          <a href="mailto:hello@example.com">hello@example.com</a>
+          <Link href="/account">ارسال پیام از حساب کاربری</Link>
         </div>
       </div>
       <div className="site-footer-bottom"><span>© ۱۴۰۵ نورا</span><span>پرداخت امن و ارسال لوازم تحریر به سراسر ایران</span></div>

@@ -73,7 +73,7 @@ export default function AccountPage() {
   return (
     <main className="account-dashboard">
       <header className="account-welcome">
-        <div><p className="eyebrow">فضای شخصی شما</p><h1>{customer.first_name ? `${customer.first_name}، خوش آمدید` : "حساب من"}</h1><p>اطلاعات، سفارش‌ها و انتخاب‌های ذخیره‌شده‌تان یکجا.</p></div>
+        <div><p className="eyebrow">گوشه شخصی شما</p><h1>{customer.first_name ? `${customer.first_name}، خوش آمدید` : "حساب من"}</h1><p>سفارش‌ها، نشانی و انتخاب‌هایی که برای میزتان کنار گذاشته‌اید.</p></div>
         <button className="secondary" type="button" onClick={signOut}>خروج از حساب</button>
       </header>
       {error && <p className="error" role="alert">{error}</p>}
@@ -95,7 +95,7 @@ export default function AccountPage() {
             <button>ذخیره تغییرات</button>
           </form>
         </section>
-        <section className="account-panel account-note-panel"><p className="eyebrow">خرید راحت‌تر</p><h2>برای انتخاب‌های بعدی آماده‌ایم.</h2><p>محصولاتی که دوست دارید ذخیره کنید تا هر وقت خواستید دوباره به آن‌ها سر بزنید.</p><Link className="button-primary" href="/products">رفتن به کاتالوگ</Link></section>
+        <section className="account-panel account-note-panel"><span className="account-note-mark" aria-hidden="true">✎</span><p className="eyebrow">خرید راحت‌تر</p><h2>ایده‌های بعدی را همین‌جا نگه دارید.</h2><p>دفترها و ابزارهایی که دوست دارید ذخیره کنید تا هر وقت خواستید دوباره به آن‌ها سر بزنید.</p><Link className="button-primary" href="/products">رفتن به قفسه‌ها</Link></section>
       </div>
       <section className="account-panel favorites-panel" id="favorites"><div className="account-panel-heading"><div><p className="eyebrow">انتخاب‌های شما</p><h2>علاقه‌مندی‌ها</h2></div><span className="favorites-count">{favorites.length} مورد</span></div>{favorites.length === 0 ? <div className="favorites-empty"><span aria-hidden="true">♡</span><p>هنوز چیزی ذخیره نکرده‌اید.</p><Link href="/products">پیدا کردن یک انتخاب تازه</Link></div> : <div className="favorite-grid">{favorites.map((favorite) => <article className="favorite-card" key={favorite.id}><Link href={`/products/${favorite.product.slug}`} className="favorite-image">{favorite.product.image ? <Image src={favorite.product.image} alt={favorite.product.name} width={320} height={240} /> : <span>بدون تصویر</span>}</Link><div><Link href={`/products/${favorite.product.slug}`}><strong>{favorite.product.name}</strong></Link><button type="button" className="favorite-remove" onClick={() => removeFavorite(favorite.product.id)}>حذف</button></div></article>)}</div>}</section>
     </main>

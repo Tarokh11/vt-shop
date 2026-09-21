@@ -267,7 +267,9 @@ filter metadata, clears attribute selections when the category changes, and
 uses responsive controls. Product detail renders normalized grouped options
 when available, retains the legacy flat-variant fallback, and shows up to four
 same-category related products with names and images only. Frontend lint,
-typecheck, and build pass; focused browser interaction smoke remains pending.
+typecheck, and build pass. The full storefront now uses a responsive stationery
+visual system, multi-image product gallery, visible product specifications, and
+reduced-motion-safe interaction; focused browser interaction smoke remains pending.
 
 ### Phase 7: Stationery data
 

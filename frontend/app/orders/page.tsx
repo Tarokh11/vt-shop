@@ -81,15 +81,15 @@ function OrdersPageContent() {
   return (
     <main className="orders-page">
       <header className="orders-heading">
-        <div><p className="eyebrow">همراه خرید شما</p><h1>سفارش‌های من</h1><p>اینجا می‌توانید وضعیت سفارش‌ها و مسیر رسیدنشان را ببینید.</p></div>
+        <div><p className="eyebrow">از قفسه تا میز شما</p><h1>سفارش‌های من</h1><p>آماده شدن بسته نورا و مسیر رسیدنش را قدم‌به‌قدم دنبال کنید.</p></div>
         <Link className="button-quiet" href="/products">خرید دوباره</Link>
       </header>
       {error && <p className="error" role="alert">{error}</p>}
       {orders.length === 0 ? (
         <section className="orders-empty">
-          <span className="orders-empty-mark" aria-hidden="true">✦</span>
+          <span className="orders-empty-mark" aria-hidden="true">▤</span>
           <h2>هنوز سفارشی ندارید</h2>
-          <p>محصولات مورد علاقه‌تان را پیدا کنید و اولین سفارش را ثبت کنید.</p>
+          <p>دفتر و ابزار مورد علاقه‌تان را پیدا کنید و اولین بسته نورا را بسازید.</p>
           <Link className="button-primary" href="/products">مشاهده محصولات</Link>
         </section>
       ) : (

@@ -4,8 +4,8 @@ import { SiteFooter } from "@/components/site-footer";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "نورا | انتخاب‌های خاص برای زندگی روزمره",
-  description: "فروشگاه نورا؛ مجموعه‌ای از محصولات کاربردی و خوش‌ساخت.",
+  title: "نورا | نوشت‌افزار برای ایده‌های تازه",
+  description: "فروشگاه نورا؛ نوشت‌افزار، دفتر و ابزارهای خلاقیت برای مدرسه، کار و زندگی روزمره.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

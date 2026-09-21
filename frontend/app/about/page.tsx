@@ -25,7 +25,7 @@ export default function AboutPage() {
         <div className="about-process-heading"><p className="eyebrow">تجربه نورا</p><h2>یک انتخاب خوب،<br />آرام شروع می‌شود.</h2></div>
         <ol><li><strong>کشف کنید</strong><span>دسته‌ای را انتخاب کنید و بین ابزارهای کاربردی بگردید.</span></li><li><strong>با خیال راحت انتخاب کنید</strong><span>ویژگی‌ها و گزینه‌های هر محصول را واضح ببینید.</span></li><li><strong>با ما ادامه دهید</strong><span>سفارش را پیگیری کنید و هر وقت خواستید به انتخاب‌های ذخیره‌شده برگردید.</span></li></ol>
       </section>
-      <section className="about-cta"><p className="eyebrow">حالا نوبت شماست</p><h2>میز کار بعدی‌تان را بسازید.</h2><Link className="button-primary" href="/products">ورود به کاتالوگ</Link></section>
+      <section className="about-cta"><span className="about-cta-mark" aria-hidden="true">✎</span><p className="eyebrow">حالا نوبت شماست</p><h2>صفحه بعدی را با چه چیزی شروع می‌کنید؟</h2><Link className="button-primary" href="/products">ورود به قفسه نورا</Link></section>
     </main>
   );
 }

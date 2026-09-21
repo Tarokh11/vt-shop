@@ -29,8 +29,8 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <AccountShell eyebrow="بازیابی حساب" title="رمز عبور را فراموش کرده‌اید؟">
-      <p>ایمیل حساب را وارد کنید تا پیوند انتخاب رمز تازه ارسال شود.</p>
+    <AccountShell eyebrow="برگشت به میز شما" title="رمز عبور را فراموش کرده‌اید؟">
+      <p>ایمیل حساب را وارد کنید تا مسیر انتخاب رمز تازه را برایتان بفرستیم.</p>
       <form onSubmit={submit}>
         <label>ایمیل<input name="email" type="email" autoComplete="email" required /></label>
         {message && <p className="success" role="status">{message}</p>}

@@ -31,7 +31,7 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <AccountShell eyebrow="امنیت حساب" title="رمز عبور تازه">
+    <AccountShell eyebrow="یک صفحه امن" title="رمز عبور تازه انتخاب کنید">
       <form onSubmit={submit}>
         <label>رمز عبور تازه<input name="password" type="password" autoComplete="new-password" minLength={8} required /></label>
         {error && <p className="error" role="alert">{error}</p>}

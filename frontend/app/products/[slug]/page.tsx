@@ -15,6 +15,7 @@ export default function ProductPage() {
   const router = useRouter();
   const [product, setProduct] = useState<Product | null>(null);
   const [variant, setVariant] = useState<ProductVariant | null>(null);
+  const [selectedImageId, setSelectedImageId] = useState<number | null>(null);
   const [error, setError] = useState("");
   const [cartMessage, setCartMessage] = useState("");
   const [adding, setAdding] = useState(false);
@@ -34,6 +35,7 @@ export default function ProductPage() {
       })
       .then((value) => {
         setProduct(value);
+        setSelectedImageId(value.images[0]?.id ?? null);
         setVariant(value.variants.find((item) => item.is_default) ?? value.variants[0] ?? null);
         api<Favorite[]>("/api/v1/accounts/favorites/")
           .then((items) => setFavorite(items.some((item) => item.product.id === value.id)))
@@ -87,7 +89,7 @@ export default function ProductPage() {
   if (error) return <main><p className="error" role="alert">{error}</p><Link href="/products">بازگشت به محصولات</Link></main>;
   if (!product) return <main><p role="status">در حال دریافت محصول…</p></main>;
 
-  const image = product.images[0];
+  const image = product.images.find((item) => item.id === selectedImageId) ?? product.images[0];
   const relatedProducts = product.related_products ?? [];
   const hasStructuredOptions = product.option_definitions.length > 0 && product.variants.some((item) => item.option_values.length > 0);
 
@@ -109,7 +111,11 @@ export default function ProductPage() {
     <main>
       <div className="product-page">
         <div className="product-gallery">
-        {image ? <Image src={image.image} alt={image.alt_text || product.name} width={900} height={700} priority /> : <div className="image-placeholder">بدون تصویر</div>}
+        <div className="product-gallery-main">
+          {image ? <Image src={image.image} alt={image.alt_text || product.name} width={900} height={700} priority /> : <div className="image-placeholder">بدون تصویر</div>}
+          {product.images.length > 1 && <span className="gallery-count">{product.images.findIndex((item) => item.id === image?.id) + 1} / {product.images.length}</span>}
+        </div>
+        {product.images.length > 1 && <div className="product-thumbnails" aria-label="تصاویر محصول">{product.images.map((item) => <button key={item.id} type="button" className={item.id === image?.id ? "product-thumbnail active" : "product-thumbnail"} onClick={() => setSelectedImageId(item.id)} aria-label={`نمایش ${item.alt_text || product.name}`} aria-pressed={item.id === image?.id}><Image src={item.image} alt="" width={120} height={90} /></button>)}</div>}
         </div>
         <section className="product-info">
         <Link href="/products">محصولات /</Link>
@@ -117,6 +123,7 @@ export default function ProductPage() {
         {product.brand && <p className="product-brand">{product.brand.name}</p>}
         <div className="product-title-row"><h1>{product.name}</h1><button className={favorite ? "favorite-button active" : "favorite-button"} type="button" disabled={favoritePending} onClick={toggleFavorite} aria-label={favorite ? "حذف از علاقه‌مندی‌ها" : "افزودن به علاقه‌مندی‌ها"}>{favorite ? "♥" : "♡"}</button></div>
         <p>{product.description}</p>
+        {product.attributes.length > 0 && <section className="product-specs" aria-labelledby="product-specs-title"><h2 id="product-specs-title">جزئیات این انتخاب</h2><dl>{product.attributes.map((item) => <div key={`${item.definition.id}-${item.value.id}`}><dt>{item.definition.name}</dt><dd>{item.value.label}</dd></div>)}</dl></section>}
         {hasStructuredOptions && <div className="option-groups" aria-label="انتخاب ویژگی‌ها">{product.option_definitions.map((option) => {
           const values = Array.from(new Map(product.variants.flatMap((item) => item.option_values.filter((value) => value.definition.id === option.definition.id).map((value) => [value.value.slug, value.value]))).values());
           return <fieldset key={option.id}><legend>{option.definition.name}</legend><div>{values.map((value) => {
