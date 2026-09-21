@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
 
 import { api, ApiError } from "@/lib/api";
-import { formatIrr } from "@/lib/catalog";
+import { formatIrr, Page } from "@/lib/catalog";
 
 type Shipment = { status: "READY" | "SHIPPED" | "DELIVERED"; tracking_code: string };
 type Order = {
@@ -44,21 +44,36 @@ function orderDate(value: string): string {
   return new Intl.DateTimeFormat("fa-IR", { dateStyle: "medium" }).format(new Date(value));
 }
 
-export default function OrdersPage() {
+function OrdersPageContent() {
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [orders, setOrders] = useState<Order[] | null>(null);
+  const [pageLinks, setPageLinks] = useState({ next: false, previous: false });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api<Order[]>("/api/v1/orders/")
-      .then(setOrders)
+    const params = searchParams.toString();
+    api<Page<Order>>(`/api/v1/orders/${params ? `?${params}` : ""}`)
+      .then((page) => {
+        setOrders(page.results);
+        setPageLinks({ next: Boolean(page.next), previous: Boolean(page.previous) });
+      })
       .catch((reason) => {
         if (reason instanceof ApiError && [401, 403].includes(reason.status)) router.replace("/login");
         else setError(reason instanceof Error ? reason.message : "دریافت سفارش‌ها ناموفق بود.");
       })
       .finally(() => setLoading(false));
-  }, [router]);
+  }, [router, searchParams]);
+
+  function changePage(direction: -1 | 1) {
+    const params = new URLSearchParams(searchParams.toString());
+    const page = Math.max(1, Number(params.get("page") ?? "1") + direction);
+    if (page === 1) params.delete("page");
+    else params.set("page", String(page));
+    router.push(`${pathname}?${params}`);
+  }
 
   if (loading) return <main><p role="status">در حال دریافت سفارش‌ها…</p></main>;
   if (!orders) return <main><p className="error" role="alert">دریافت سفارش‌ها ناموفق بود.</p></main>;
@@ -108,6 +123,11 @@ export default function OrdersPage() {
           })}
         </section>
       )}
+      {(pageLinks.previous || pageLinks.next) && <nav className="order-pagination" aria-label="صفحه‌های سفارش‌ها"><button type="button" className="secondary" disabled={!pageLinks.previous} onClick={() => changePage(-1)}>سفارش‌های جدیدتر</button><span>صفحه {searchParams.get("page") ?? "1"}</span><button type="button" disabled={!pageLinks.next} onClick={() => changePage(1)}>سفارش‌های قدیمی‌تر</button></nav>}
     </main>
   );
+}
+
+export default function OrdersPage() {
+  return <Suspense fallback={<main><p role="status">در حال دریافت سفارش‌ها…</p></main>}><OrdersPageContent /></Suspense>;
 }

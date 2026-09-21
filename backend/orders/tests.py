@@ -71,12 +71,12 @@ class CheckoutTests(TestCase):
         order.save(update_fields=("status",))
         Shipment.objects.create(order=order, status=Shipment.Status.SHIPPED, tracking_code="POST-1")
         response = self.client.get("/api/v1/orders/")
-        self.assertEqual(response.json()[0]["shipment"]["tracking_code"], "POST-1")
+        self.assertEqual(response.json()["results"][0]["shipment"]["tracking_code"], "POST-1")
 
     def test_order_history_only_lists_paid_orders(self):
         self.checkout()
-        self.assertEqual(self.client.get("/api/v1/orders/").json(), [])
+        self.assertEqual(self.client.get("/api/v1/orders/").json()["results"], [])
         order = Order.objects.get()
         order.status = Order.Status.PAID
         order.save(update_fields=("status",))
-        self.assertEqual(len(self.client.get("/api/v1/orders/").json()), 1)
+        self.assertEqual(len(self.client.get("/api/v1/orders/").json()["results"]), 1)

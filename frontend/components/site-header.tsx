@@ -91,9 +91,10 @@ export function SiteHeader() {
               </div>}
             </div>
             <Link href="/orders">پیگیری سفارش</Link>
-            {customer ? <Link href="/account">{customerName(customer)}</Link> : <Link href="/login">ورود / عضویت</Link>}
+            <Link href="/about">درباره نورا</Link>
           </nav>
           <div className="header-actions">
+            {customer ? <Link className="header-account" href="/account">{customerName(customer)}</Link> : <Link className="header-account" href="/login">ورود</Link>}
             <Link className="header-cart" href="/cart" aria-label={`سبد خرید، ${cartCount} کالا`}><span aria-hidden="true">سبد</span><b>خرید</b><i className="cart-count">{cartCount}</i></Link>
           </div>
         </div>

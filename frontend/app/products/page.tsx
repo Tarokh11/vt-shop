@@ -13,7 +13,7 @@ function ProductsPageContent() {
   const [products, setProducts] = useState<Product[]>([]);
   const [filters, setFilters] = useState<CatalogFilters | null>(null);
   const [state, setState] = useState<"loading" | "ready" | "error">("loading");
-  const [nextPage, setNextPage] = useState<string | null>(null);
+  const [pageLinks, setPageLinks] = useState({ next: false, previous: false });
   const [query, setQuery] = useState(() => searchParams.get("q") ?? "");
   const selectedCategory = searchParams.get("category") ?? "";
 
@@ -33,7 +33,7 @@ function ProductsPageContent() {
         if (!response.ok) throw new Error("Catalog unavailable");
         return response.json() as Promise<Page<Product>>;
       })
-      .then((page) => { setProducts(page.results); setNextPage(page.next); setState("ready"); })
+      .then((page) => { setProducts(page.results); setPageLinks({ next: Boolean(page.next), previous: Boolean(page.previous) }); setState("ready"); })
       .catch((error) => { if (error.name !== "AbortError") setState("error"); });
     return () => controller.abort();
   }, [searchParams]);
@@ -62,20 +62,12 @@ function ProductsPageContent() {
     });
   }
 
-  async function loadMore() {
-    if (!nextPage) return;
-    setState("loading");
-    try {
-      const url = new URL(nextPage, window.location.origin);
-      const response = await fetch(`${url.pathname}${url.search}`, { cache: "no-store" });
-      if (!response.ok) throw new Error("Catalog unavailable");
-      const page = await response.json() as Page<Product>;
-      setProducts((current) => [...current, ...page.results]);
-      setNextPage(page.next);
-      setState("ready");
-    } catch {
-      setState("error");
-    }
+  function changePage(direction: -1 | 1) {
+    const params = new URLSearchParams(searchParams.toString());
+    const page = Math.max(1, Number(params.get("page") ?? "1") + direction);
+    if (page === 1) params.delete("page");
+    else params.set("page", String(page));
+    router.push(`${pathname}?${params}`);
   }
 
   return (
@@ -102,7 +94,7 @@ function ProductsPageContent() {
       <section className="product-grid" aria-live="polite">
         {products.map((product) => <ProductCard key={product.id} product={product} />)}
       </section>
-      {nextPage && <button className="load-more" type="button" onClick={loadMore} disabled={state === "loading"}>نمایش محصولات بیشتر</button>}
+      {(pageLinks.previous || pageLinks.next) && <nav className="page-navigation" aria-label="صفحه‌های محصولات"><button type="button" className="secondary" disabled={!pageLinks.previous} onClick={() => changePage(-1)}>صفحه قبل</button><span>صفحه {searchParams.get("page") ?? "1"}</span><button type="button" disabled={!pageLinks.next} onClick={() => changePage(1)}>صفحه بعد</button></nav>}
     </main>
   );
 }

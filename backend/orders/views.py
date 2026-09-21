@@ -5,6 +5,7 @@ from django.db import transaction
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -16,6 +17,12 @@ from .models import Order, OrderLine, ShippingRate, StockReservation
 from .serializers import CheckoutSerializer, OrderSerializer
 
 
+class OrderPagination(PageNumberPagination):
+    page_size = 6
+    page_size_query_param = "page_size"
+    max_page_size = 24
+
+
 class OrderListView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -25,7 +32,9 @@ class OrderListView(APIView):
             .prefetch_related("lines")
             .select_related("shipment")
         )
-        return Response(OrderSerializer(orders, many=True).data)
+        paginator = OrderPagination()
+        page = paginator.paginate_queryset(orders, request)
+        return paginator.get_paginated_response(OrderSerializer(page, many=True).data)
 
 
 class CheckoutView(APIView):
