@@ -54,7 +54,7 @@ export default function OrdersPage() {
     api<Order[]>("/api/v1/orders/")
       .then(setOrders)
       .catch((reason) => {
-        if (reason instanceof ApiError && reason.status === 403) router.replace("/login");
+        if (reason instanceof ApiError && [401, 403].includes(reason.status)) router.replace("/login");
         else setError(reason instanceof Error ? reason.message : "دریافت سفارش‌ها ناموفق بود.");
       })
       .finally(() => setLoading(false));

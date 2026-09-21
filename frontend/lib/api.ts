@@ -51,7 +51,13 @@ export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
   if (!["GET", "HEAD", "OPTIONS"].includes(method)) {
     headers.set("X-CSRFToken", await csrfToken());
   }
-  const response = await fetch(path, { ...init, method, headers, credentials: "same-origin" });
+  const response = await fetch(path, {
+    ...init,
+    method,
+    headers,
+    credentials: "same-origin",
+    cache: init.cache ?? "no-store",
+  });
   const data = response.status === 204 ? {} : await response.json().catch(() => ({}));
   if (!response.ok) throw new ApiError(response.status, data as Record<string, unknown>);
   return data as T;
