@@ -103,6 +103,8 @@ div.breadcrumbs {
 
 /* Changelists use one quiet visual rhythm instead of competing row colors. */
 #changelist .results {
+  width: min(100%, 78rem);
+  margin-inline: auto;
   overflow-x: auto;
   border: 1px solid #dedfdb;
   border-radius: 0.6rem;
@@ -120,7 +122,7 @@ div.breadcrumbs {
   border-bottom: 1px solid #d7d9d6;
   background: #eceeec;
   color: #44515b;
-  font-size: 0.72rem;
+  font-size: 0.82rem;
   font-weight: 700;
   white-space: nowrap;
 }
@@ -150,9 +152,10 @@ div.breadcrumbs {
 
 #changelist .results tbody th,
 #changelist .results tbody td {
-  padding: 0.78rem 0.7rem;
+  padding: 0.9rem 0.8rem;
   border-bottom: 1px solid #ecece8;
   color: #3d4850;
+  font-size: 0.86rem;
   line-height: 1.55;
   vertical-align: middle;
 }
@@ -194,12 +197,44 @@ div.breadcrumbs {
 }
 
 #changelist-filter h3 {
-  color: #59656d;
+  color: #344854;
+  font-size: 0.82rem;
+}
+
+#changelist-filter li,
+#changelist-filter li a,
+#changelist-filter li.selected a,
+#changelist-filter .small {
+  color: #40535e;
+  font-size: 0.8rem;
 }
 
 #changelist-filter li.selected a {
   color: #1f465f;
   font-weight: 700;
+}
+
+#changelist-filter li a:hover,
+#changelist-filter li.selected a:hover {
+  color: #19364b;
+}
+
+.help,
+.form-row .help,
+.aligned .help,
+p.help,
+.quiet,
+.small,
+.messagelist li {
+  color: #50616b;
+  font-size: 0.8rem;
+}
+
+#changelist .paginator,
+#changelist .actions label,
+#changelist .actions select,
+#changelist .actions button {
+  font-size: 0.8rem;
 }
 
 .catalog-image-preview {
@@ -414,6 +449,17 @@ html[data-theme="dark"] #changelist .results tbody td {
   color: #d3dade;
 }
 
+html[data-theme="dark"] #changelist-filter li,
+html[data-theme="dark"] #changelist-filter li a,
+html[data-theme="dark"] #changelist-filter li.selected a,
+html[data-theme="dark"] #changelist-filter h3,
+html[data-theme="dark"] .help,
+html[data-theme="dark"] .form-row .help,
+html[data-theme="dark"] .quiet,
+html[data-theme="dark"] .small {
+  color: #c5d0d6;
+}
+
 html[data-theme="dark"] #changelist .results input[type="text"],
 html[data-theme="dark"] #changelist .results input[type="number"],
 html[data-theme="dark"] #changelist .results select,
@@ -446,5 +492,6 @@ html[data-theme="dark"] .excel-import-card input[type="file"] {
   #changelist .results tbody th,
   #changelist .results tbody td {
     padding: 0.65rem 0.55rem;
+    font-size: 0.8rem;
   }
 }
