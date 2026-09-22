@@ -77,6 +77,29 @@ div.breadcrumbs {
   padding: clamp(1rem, 3vw, 2.5rem);
 }
 
+/* Override Django's RTL float spacing so the table sits in a centered content group. */
+#changelist {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 1.5rem;
+  max-width: 100%;
+  margin-inline: auto;
+}
+
+#changelist .changelist-form-container {
+  width: min(100%, 78rem);
+  flex: 0 1 78rem;
+  min-width: 0;
+  margin-inline: auto;
+}
+
+#changelist-filter {
+  width: 15rem;
+  flex: 0 0 15rem;
+  margin-inline: 0;
+}
+
 .module,
 .inline-group,
 #changelist-filter,
@@ -110,6 +133,11 @@ div.breadcrumbs {
   border-radius: 0.6rem;
   background: #fff;
   box-shadow: 0 5px 18px rgba(28, 48, 67, 0.045);
+}
+
+#changelist .results table {
+  width: 100%;
+  margin-inline: auto;
 }
 
 #changelist .results table {
@@ -487,6 +515,18 @@ html[data-theme="dark"] .excel-import-card input[type="file"] {
 
   #content {
     padding: 1rem;
+  }
+
+  #changelist {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  #changelist .changelist-form-container,
+  #changelist-filter {
+    width: 100%;
+    flex: 1 1 auto;
   }
 
   #changelist .results tbody th,
