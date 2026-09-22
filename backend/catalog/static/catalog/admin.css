@@ -1,37 +1,450 @@
-:root {
-  --primary: #224d69;
-  --secondary: #19324f;
-  --accent: #f2c14e;
-  --header-bg: #19324f;
-  --header-color: #fffdf7;
-  --breadcrumbs-bg: #224d69;
-  --link-fg: #1f607c;
-  --link-hover-color: #e8684a;
-  --button-bg: #224d69;
-  --button-hover-bg: #19324f;
-  --default-button-bg: #e8684a;
-  --default-button-hover-bg: #c94f35;
+:root,
+html[data-theme="light"] {
+  --primary: #263f56;
+  --secondary: #1c3043;
+  --accent: #f4eee3;
+  --header-bg: #1c3043;
+  --header-color: #ffffff;
+  --breadcrumbs-bg: #263f56;
+  --body-bg: #f5f4f0;
+  --body-fg: #2d3740;
+  --link-fg: #315873;
+  --link-hover-color: #19364b;
+  --hairline-color: #e2e2de;
+  --border-color: #d7d8d5;
+  --darkened-bg: #f2f2ef;
+  --selected-bg: #eef2f3;
+  --selected-row: #f0f4f5;
+  --button-bg: #315873;
+  --button-hover-bg: #1c3043;
+  --default-button-bg: #315873;
+  --default-button-hover-bg: #1c3043;
 }
-html[data-theme="light"], :root { --body-bg: #f7f4eb; --body-fg: #26394d; }
-body { font-family: Tahoma, Arial, sans-serif; }
-#header { min-height: 3.7rem; padding-inline: clamp(1rem, 3vw, 2.5rem); box-shadow: 0 5px 20px rgba(25,50,79,.16); }
-#site-name a { display: inline-flex; align-items: center; gap: .65rem; color: #fff; font-weight: 700; }
-#site-name a > span:last-child { display: grid; gap: .15rem; }
-#site-name small { color: #c7d7df; font-size: .65rem; font-weight: 400; }
-.nora-admin-mark { display: grid; width: 2.35rem; height: 2.35rem; place-items: center; border-radius: .45rem .45rem .45rem 1rem; background: #e8684a; box-shadow: .22rem .22rem 0 rgba(242,193,78,.75); }
-.storefront-link { align-self: center; padding: .5rem .8rem; border: 1px solid rgba(255,255,255,.3); border-radius: 999px; color: #fff !important; font-size: .75rem; }
-div.breadcrumbs { padding: .75rem clamp(1rem, 3vw, 2.5rem); }
-#content { padding: clamp(1rem, 3vw, 2.5rem); }
-.module, .inline-group, #changelist-filter, .submit-row { overflow: hidden; border-radius: .45rem .45rem .45rem 1rem; box-shadow: 0 5px 20px rgba(25,50,79,.05); }
-.module h2, .module caption, .inline-group h2 { padding: .75rem 1rem; }
-.object-tools a { border-radius: 999px; }
-.object-tools .importlink { background: #e8684a; }
-.catalog-image-preview { width: 4.5rem; height: 3.5rem; object-fit: cover; border-radius: .4rem; }
-.admin-status, .stock-indicator { display: inline-flex; min-width: 3.5rem; justify-content: center; padding: .25rem .5rem; border-radius: 999px; font-size: .7rem; font-weight: 700; }
-.status-live, .stock-ok { background: #e0f1e9; color: #247050; }.status-draft { background: #ececef; color: #646472; }.stock-low { background: #fff0c9; color: #8b6413; }.stock-empty { background: #fbe4df; color: #a13f31; }
-.excel-import-layout { display: grid; grid-template-columns: minmax(0,1.3fr) minmax(17rem,.7fr); gap: 1.2rem; align-items: start; }
-.excel-import-card, .excel-import-help { padding: clamp(1.2rem, 3vw, 2rem); border-radius: .6rem .6rem .6rem 1.5rem; background: #fff; box-shadow: 0 12px 35px rgba(25,50,79,.08); }
-.admin-eyebrow { margin: 0; color: #e8684a; font-size: .72rem; font-weight: 700; }.excel-import-card h1 { margin-top: .4rem; }.excel-import-card form { margin-top: 1.5rem; }.excel-import-card input[type="file"] { width: 100%; padding: 1rem; border: 1px dashed #9db0ba; border-radius: .5rem; background: #f7faf9; }
-.excel-import-help { background: #19324f; color: #fff; }.excel-import-help h2 { color: #fff; }.excel-import-help a { color: #f2c14e; }.excel-import-help li, .excel-import-help p { color: #d7e1e6; line-height: 1.8; }.excel-import-help ol { padding-right: 1.2rem; }
-.import-errors { margin-top: 1.5rem; padding: 1rem; border-right: .3rem solid #ba4938; background: #fff0ed; color: #812e23; }.import-errors h2 { color: inherit; }
-@media (max-width: 767px) { #header { align-items: flex-start; gap: .7rem; flex-direction: column; padding-block: .8rem; }.storefront-link { align-self: flex-start; }.excel-import-layout { grid-template-columns: 1fr; } #content { padding: 1rem; } }
+
+body {
+  font-family: Tahoma, Arial, sans-serif;
+}
+
+#header {
+  min-height: 3.7rem;
+  padding-inline: clamp(1rem, 3vw, 2.5rem);
+  box-shadow: 0 3px 14px rgba(28, 48, 67, 0.14);
+}
+
+#site-name a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: #fff;
+  font-weight: 700;
+}
+
+#site-name a > span:last-child {
+  display: grid;
+  gap: 0.15rem;
+}
+
+#site-name small {
+  color: #cbd4da;
+  font-size: 0.65rem;
+  font-weight: 400;
+}
+
+.nora-admin-mark {
+  display: grid;
+  width: 2.35rem;
+  height: 2.35rem;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.storefront-link {
+  align-self: center;
+  padding: 0.5rem 0.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 0.45rem;
+  color: #fff !important;
+  font-size: 0.75rem;
+}
+
+div.breadcrumbs {
+  padding: 0.75rem clamp(1rem, 3vw, 2.5rem);
+}
+
+#content {
+  padding: clamp(1rem, 3vw, 2.5rem);
+}
+
+.module,
+.inline-group,
+#changelist-filter,
+.submit-row {
+  overflow: hidden;
+  border: 1px solid #e1e2df;
+  border-radius: 0.6rem;
+  box-shadow: 0 4px 16px rgba(28, 48, 67, 0.045);
+}
+
+.module h2,
+.module caption,
+.inline-group h2 {
+  padding: 0.75rem 1rem;
+}
+
+.object-tools a {
+  border-radius: 0.4rem;
+}
+
+.object-tools .importlink {
+  background: #315873;
+}
+
+/* Changelists use one quiet visual rhythm instead of competing row colors. */
+#changelist .results {
+  overflow-x: auto;
+  border: 1px solid #dedfdb;
+  border-radius: 0.6rem;
+  background: #fff;
+  box-shadow: 0 5px 18px rgba(28, 48, 67, 0.045);
+}
+
+#changelist .results table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+#changelist .results thead th {
+  padding: 0.8rem 0.7rem;
+  border-bottom: 1px solid #d7d9d6;
+  background: #eceeec;
+  color: #44515b;
+  font-size: 0.72rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+#changelist .results thead th a,
+#changelist .results thead th .text a {
+  color: #334653;
+}
+
+#changelist .results tbody tr,
+#changelist .results tbody tr.row1,
+#changelist .results tbody tr.row2 {
+  background: #fff;
+  transition: background 0.15s ease;
+}
+
+#changelist .results tbody tr:nth-child(even),
+#changelist .results tbody tr.row2 {
+  background: #fafaf8;
+}
+
+#changelist .results tbody tr:hover,
+#changelist .results tbody tr.row1:hover,
+#changelist .results tbody tr.row2:hover {
+  background: #f0f4f5;
+}
+
+#changelist .results tbody th,
+#changelist .results tbody td {
+  padding: 0.78rem 0.7rem;
+  border-bottom: 1px solid #ecece8;
+  color: #3d4850;
+  line-height: 1.55;
+  vertical-align: middle;
+}
+
+#changelist .results tbody tr:last-child th,
+#changelist .results tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+#changelist .results tbody th a {
+  color: #284d66;
+  font-weight: 700;
+}
+
+#changelist .results input[type="text"],
+#changelist .results input[type="number"],
+#changelist .results select {
+  min-height: 2.15rem;
+  border-color: #cfd3d2;
+  border-radius: 0.35rem;
+  background: #fff;
+}
+
+#changelist .actions {
+  margin-bottom: 0.8rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #dedfdb;
+  border-radius: 0.55rem;
+  background: #fff;
+}
+
+#changelist-filter {
+  background: #fff;
+}
+
+#changelist-filter h2 {
+  background: #e9eceb;
+  color: #3c4b55;
+}
+
+#changelist-filter h3 {
+  color: #59656d;
+}
+
+#changelist-filter li.selected a {
+  color: #1f465f;
+  font-weight: 700;
+}
+
+.catalog-image-preview {
+  width: 4.5rem;
+  height: 3.5rem;
+  object-fit: cover;
+  border: 1px solid #dedfdb;
+  border-radius: 0.4rem;
+}
+
+.admin-status,
+.stock-indicator {
+  display: inline-flex;
+  min-width: 3.8rem;
+  align-items: center;
+  gap: 0.4rem;
+  justify-content: flex-start;
+  padding: 0.2rem 0;
+  background: transparent;
+  color: #536069;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.admin-status::before,
+.stock-indicator::before {
+  width: 0.48rem;
+  height: 0.48rem;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: #8b9296;
+  content: "";
+}
+
+.status-live,
+.stock-ok {
+  color: #3c6251;
+}
+
+.status-live::before,
+.stock-ok::before {
+  background: #5e8b75;
+}
+
+.status-draft {
+  color: #71777b;
+}
+
+.stock-low {
+  color: #80682f;
+}
+
+.stock-low::before {
+  background: #b89a50;
+}
+
+.stock-empty {
+  color: #8a554e;
+}
+
+.stock-empty::before {
+  background: #ad6c63;
+}
+
+.paginator {
+  margin-top: 0.8rem !important;
+  border: 1px solid #dedfdb !important;
+  border-radius: 0.55rem;
+  background: #fff !important;
+}
+
+.excel-import-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(17rem, 0.7fr);
+  gap: 1.2rem;
+  align-items: start;
+}
+
+.excel-import-card,
+.excel-import-help {
+  padding: clamp(1.2rem, 3vw, 2rem);
+  border: 1px solid #e0e1de;
+  border-radius: 0.65rem;
+  background: #fff;
+  box-shadow: 0 8px 25px rgba(28, 48, 67, 0.055);
+}
+
+.admin-eyebrow {
+  margin: 0;
+  color: #596b77;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.excel-import-card h1 {
+  margin-top: 0.4rem;
+}
+
+.excel-import-card form {
+  margin-top: 1.5rem;
+}
+
+.excel-import-card input[type="file"] {
+  width: 100%;
+  padding: 1rem;
+  border: 1px dashed #9db0ba;
+  border-radius: 0.5rem;
+  background: #f7f8f6;
+}
+
+.excel-import-help {
+  background: #263f56;
+  color: #fff;
+}
+
+.excel-import-help h2 {
+  color: #fff;
+}
+
+.excel-import-help a {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.excel-import-help li,
+.excel-import-help p {
+  color: #dbe2e6;
+  line-height: 1.8;
+}
+
+.excel-import-help ol {
+  padding-right: 1.2rem;
+}
+
+.import-errors {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border-right: 0.3rem solid #9f625a;
+  background: #f8eeec;
+  color: #75443e;
+}
+
+.import-errors h2 {
+  color: inherit;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid rgba(49, 88, 115, 0.32);
+  outline-offset: 2px;
+}
+
+html[data-theme="dark"] {
+  --body-bg: #17232c;
+  --body-fg: #dce2e5;
+  --darkened-bg: #202e38;
+  --selected-bg: #263845;
+  --selected-row: #263845;
+  --hairline-color: #34444e;
+  --border-color: #40505a;
+  --link-fg: #a9cadb;
+  --link-hover-color: #d3e5ed;
+}
+
+html[data-theme="dark"] .module,
+html[data-theme="dark"] .inline-group,
+html[data-theme="dark"] #changelist-filter,
+html[data-theme="dark"] .submit-row,
+html[data-theme="dark"] #changelist .results,
+html[data-theme="dark"] #changelist .actions,
+html[data-theme="dark"] .paginator,
+html[data-theme="dark"] .excel-import-card {
+  border-color: #34444e;
+  background: #202e38 !important;
+}
+
+html[data-theme="dark"] #changelist .results thead th,
+html[data-theme="dark"] #changelist-filter h2 {
+  border-color: #40505a;
+  background: #293944;
+  color: #d2dadd;
+}
+
+html[data-theme="dark"] #changelist .results thead th a,
+html[data-theme="dark"] #changelist .results thead th .text a,
+html[data-theme="dark"] #changelist .results tbody th a {
+  color: #b8d4e1;
+}
+
+html[data-theme="dark"] #changelist .results tbody tr,
+html[data-theme="dark"] #changelist .results tbody tr.row1 {
+  background: #202e38;
+}
+
+html[data-theme="dark"] #changelist .results tbody tr:nth-child(even),
+html[data-theme="dark"] #changelist .results tbody tr.row2 {
+  background: #1d2a33;
+}
+
+html[data-theme="dark"] #changelist .results tbody tr:hover,
+html[data-theme="dark"] #changelist .results tbody tr.row1:hover,
+html[data-theme="dark"] #changelist .results tbody tr.row2:hover {
+  background: #293d49;
+}
+
+html[data-theme="dark"] #changelist .results tbody th,
+html[data-theme="dark"] #changelist .results tbody td {
+  border-color: #34444e;
+  color: #d3dade;
+}
+
+html[data-theme="dark"] #changelist .results input[type="text"],
+html[data-theme="dark"] #changelist .results input[type="number"],
+html[data-theme="dark"] #changelist .results select,
+html[data-theme="dark"] .excel-import-card input[type="file"] {
+  border-color: #52616a;
+  background: #17232c;
+  color: #e2e7e9;
+}
+
+@media (max-width: 767px) {
+  #header {
+    align-items: flex-start;
+    gap: 0.7rem;
+    flex-direction: column;
+    padding-block: 0.8rem;
+  }
+
+  .storefront-link {
+    align-self: flex-start;
+  }
+
+  .excel-import-layout {
+    grid-template-columns: 1fr;
+  }
+
+  #content {
+    padding: 1rem;
+  }
+
+  #changelist .results tbody th,
+  #changelist .results tbody td {
+    padding: 0.65rem 0.55rem;
+  }
+}

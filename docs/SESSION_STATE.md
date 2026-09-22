@@ -22,7 +22,8 @@
   accessible motion, category discovery, product image galleries and specs,
   guided cart/checkout, and aligned account, auth, orders, and About pages;
   Django Admin now has an accessible branded operations UI, richer catalog,
-  customer, order, shipment, and inventory views, and atomic `.xlsx` catalog import.
+  customer, order, shipment, and inventory views, atomic `.xlsx` catalog import,
+  and restrained light/dark tables with neutral rows and compact status indicators.
 - Decisions: order history is paid-order-only; pending-payment orders are created
   during checkout and immediately handed to the payment start flow; use
   `http://127.0.0.1:3000` locally to keep session cookies across payment redirects.
