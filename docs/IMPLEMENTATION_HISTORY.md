@@ -1,9 +1,9 @@
 # Implementation History
 
-### `d5afafe` Apply soft cream styling to the product catalog panel
+### `d5afafe` Expand cream theme and strengthen panel contrast
 
-- Updated only the standalone catalog panel background, border, table header,
-  and row hover colors.
+- Updated product panel and card backgrounds, input surfaces, table separators,
+  and border/text contrast for readability.
 - Checks: served stylesheet HTTP check and Git whitespace check; no logic or
   schema changes.
 
