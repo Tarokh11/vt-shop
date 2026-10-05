@@ -209,3 +209,47 @@ class StockForm(forms.Form):
         if not delta:
             raise forms.ValidationError("مقدار تغییر نباید صفر باشد.")
         return delta
+
+
+class ProductDeletionForm(forms.Form):
+    version = forms.CharField(widget=forms.HiddenInput)
+    source_check = forms.ChoiceField(
+        label="منشأ محصول را بررسی کردم",
+        choices=(
+            ("manual", "محصول دستی وارد شده و از انبار نیامده است"),
+            ("inventory", "محصول از انبار آمده و آنجا حذف شده است"),
+        ),
+        widget=forms.RadioSelect,
+        required=False,
+    )
+    warehouse_checked = forms.BooleanField(
+        label="حذف محصول را در انبار بررسی و تأیید کردم",
+        required=False,
+    )
+
+    def __init__(self, *args, creation_source, has_history, **kwargs):
+        self.creation_source = creation_source
+        self.has_history = has_history
+        super().__init__(*args, **kwargs)
+        if creation_source == "MANUAL":
+            self.initial["source_check"] = "manual"
+        elif creation_source == "INVENTORY":
+            self.initial["source_check"] = "inventory"
+            self.fields["source_check"].choices = (
+                ("inventory", "محصول از انبار آمده و آنجا حذف شده است"),
+            )
+
+    def clean(self):
+        data = super().clean()
+        if self.creation_source == "UNKNOWN" and not data.get("source_check"):
+            self.add_error("source_check", "ابتدا منشأ محصول را مشخص کنید.")
+        if (
+            self.creation_source == "INVENTORY"
+            or data.get("source_check") == "inventory"
+        ) and not data.get("warehouse_checked"):
+            self.add_error(
+                "warehouse_checked", "پیش از حذف باید حذف محصول از انبار را تأیید کنید."
+            )
+        if self.has_history:
+            return data
+        return data

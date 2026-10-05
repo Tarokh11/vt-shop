@@ -147,17 +147,18 @@ class ProductAdmin(admin.ModelAdmin):
         "inventory_total",
         "updated_at",
     )
-    list_filter = ("is_published", "brand", "categories")
+    list_filter = ("is_published", "is_archived", "creation_source", "brand", "categories")
     list_select_related = ("brand",)
     list_per_page = 30
     filter_horizontal = ("categories",)
     autocomplete_fields = ("brand",)
     prepopulated_fields = {"slug": ("name",)}
     search_fields = ("name", "slug", "variants__sku", "brand__name")
-    readonly_fields = ("created_at", "updated_at")
+    readonly_fields = ("created_at", "updated_at", "creation_source", "is_archived")
     fieldsets = (
         ("اطلاعات اصلی", {"fields": ("name", "slug", "description", "brand")}),
         ("دسته‌بندی و انتشار", {"fields": ("categories", "is_published")}),
+        ("منشأ و بایگانی", {"fields": ("creation_source", "is_archived")}),
         ("زمان‌ها", {"fields": ("created_at", "updated_at"), "classes": ("collapse",)}),
     )
     actions = ("publish_selected", "unpublish_selected")

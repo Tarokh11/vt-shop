@@ -27,7 +27,10 @@ store projects after the core purchase flow is complete and verified.
 - A separate staff-only product management panel alongside Django Admin, sharing
   the same catalog records: product list/search, creation/editing, images,
   variant prices, and audited inventory adjustments. Changes appear in either
-  panel after reloading; order management remains in Django Admin.
+  panel after reloading. Manually entered products without retained references
+  can be deleted. Inventory-origin products require warehouse confirmation and
+  are archived; products with purchase or stock history are archived so records
+  remain intact. Order management remains in Django Admin.
 - Functional storefront, focused automated checks, and reproducible setup docs.
 
 ## Baseline design assumptions

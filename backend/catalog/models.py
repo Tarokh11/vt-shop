@@ -109,6 +109,11 @@ class CategoryAttributeDefinition(models.Model):
 
 
 class Product(models.Model):
+    class CreationSource(models.TextChoices):
+        UNKNOWN = "UNKNOWN", "Needs source verification"
+        MANUAL = "MANUAL", "Manually managed"
+        INVENTORY = "INVENTORY", "Imported from inventory"
+
     name = models.CharField(max_length=180)
     slug = models.SlugField(max_length=200, unique=True, allow_unicode=True)
     description = models.TextField(blank=True)
@@ -117,6 +122,10 @@ class Product(models.Model):
         Brand, related_name="products", on_delete=models.SET_NULL, null=True, blank=True
     )
     is_published = models.BooleanField(default=False)
+    creation_source = models.CharField(
+        max_length=12, choices=CreationSource.choices, default=CreationSource.MANUAL
+    )
+    is_archived = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

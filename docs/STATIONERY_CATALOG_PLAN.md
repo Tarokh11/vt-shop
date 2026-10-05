@@ -250,6 +250,13 @@ preview runs on port 8010; browser visual verification awaits user testing.
 The product panel and summary/form cards use a soft cream background; controls,
 table separators, and card borders have stronger contrast for readability.
 
+Product deletion respects inventory provenance. Workbook imports identify
+inventory-origin records, which require confirmation of removal from the source
+inventory and are then archived. Products with cart, reservation, stock, or
+order history are also archived. Manually entered products without such history
+can be permanently deleted. Older products with unknown origin require staff
+verification; archived products can be restored from the product editor.
+
 ### Phase 5: API and search/filtering
 
 - Extend serializers without exposing hidden attributes.

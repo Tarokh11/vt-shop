@@ -293,6 +293,8 @@ class Command(BaseCommand):
                     "description": data["description"],
                     "brand": brands[data["brand"]],
                     "is_published": False,
+                    "creation_source": Product.CreationSource.INVENTORY,
+                    "is_archived": False,
                 },
             )
             product.categories.set((categories[data["category"]],))

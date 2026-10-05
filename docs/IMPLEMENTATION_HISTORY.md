@@ -188,3 +188,13 @@ Use `SESSION_STATE.md` for current handoff context, not historical detail.
 - Checks: five stationery cards and 17 filter controls at 375px, 768px, and
   1440px; no horizontal overflow; filter query updates and gel-pen option
   selection complete without errors.
+### Pending: Add provenance-aware product deletion
+
+- Added product-origin tracking and archived-state migration; workbook imports
+  mark inventory-origin products.
+- Added the staff-panel delete flow: unreferenced manual products are removed;
+  inventory-origin products require warehouse confirmation and are archived;
+  products with retained history are archived. Unknown legacy origins require
+  staff classification.
+- Checks: Ruff, Django system check, and migration drift check passed; catalog
+  migration `0006` applied. Regression tests were not run.

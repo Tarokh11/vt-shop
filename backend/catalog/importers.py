@@ -279,6 +279,8 @@ def import_catalog_workbook(file, user):
                     "description": row.description,
                     "brand": brands.get(row.brand_slug),
                     "is_published": False,
+                    "creation_source": Product.CreationSource.INVENTORY,
+                    "is_archived": False,
                 },
             )
             counters["pc" if created else "pu"] += int(row.product_slug not in touched_products)

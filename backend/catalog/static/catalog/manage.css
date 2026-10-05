@@ -24,4 +24,20 @@
 .variant-card,.image-card{background:#fbf3e5;border-color:#d5c8b8}
 .form-panel input,.form-panel select,.form-panel textarea{background:#fffaf2;border-color:#c9bdad}
 .muted,.catalog-panel .date-cell,.catalog-panel .product-cell small{color:#606e78}
+.product-actions{display:flex;align-items:center;gap:12px;white-space:nowrap}
+.delete-link{font-size:10px;color:#a34d43}
+.delete-link:hover{color:#84362f;text-decoration:underline}
+.status.archived{background:#efe7d7;color:#745e3c}
+.notice.warning{background:#fff7e8;border-color:#d9b675;color:#715b36}
+.notice.warning p{margin:8px 0 0}
+.notice.warning form{margin-top:12px}
+.delete-confirm-panel{max-width:740px}
+.delete-product-summary{display:flex;align-items:center;gap:16px;padding:16px;margin-bottom:22px;background:#f7efdf;border:1px solid #d5c6ad;border-radius:10px}
+.delete-product-summary strong,.delete-product-summary small{display:block;margin-bottom:5px}
+.delete-product-summary small{color:#606e78}
+.delete-confirm-form fieldset{border:1px solid #d4c8b7;border-radius:10px;padding:16px;margin-bottom:18px}
+.delete-confirm-form legend,.delete-confirm-form .checkbox-field{font-size:12px}
+.delete-confirm-form .checkbox-field{margin-bottom:10px}
+.delete-confirm-actions{display:flex;justify-content:flex-start;gap:12px;margin-top:20px}
+.button.danger{background:#a54740;color:#fff}
 .products-table tbody tr:hover,.catalog-panel .products-table tbody tr:hover{background:#f8eddc}

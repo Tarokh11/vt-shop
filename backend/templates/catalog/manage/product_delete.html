@@ -1,0 +1,22 @@
+{% extends 'catalog/manage/base.html' %}
+{% block title %}حذف محصول{% endblock %}
+{% block content %}
+<a class="back-link" href="{% url 'catalog_management:products' %}">→ بازگشت به محصولات</a>
+<div class="page-heading"><div><span class="eyebrow">تأیید عملیات</span><h1>حذف محصول</h1><p class="muted">منشأ و سابقهٔ خرید و انبار را پیش از ثبت بررسی کنید.</p></div></div>
+{% if form.non_field_errors %}<div class="notice error">{{ form.non_field_errors }}</div>{% endif %}
+<section class="panel form-panel delete-confirm-panel">
+  <div class="delete-product-summary"><span class="product-thumb placeholder" aria-hidden="true">▧</span><div><strong>{{ product.name }}</strong><small>شناسه: {{ product.slug }}</small><small>{% if product.creation_source == 'MANUAL' %}ورود دستی{% elif product.creation_source == 'INVENTORY' %}ورود از انبار{% else %}منشأ نیازمند بررسی{% endif %}</small></div></div>
+  {% if has_history %}<div class="notice warning"><strong>برای حفظ سابقه‌های خرید یا موجودی، حذف کامل انجام نمی‌شود.</strong><p>با تأیید، محصول از فروشگاه و فهرست اصلی پنهان می‌شود؛ سابقهٔ سفارش، سبد خرید و انبار حفظ می‌شود. محصول از فیلتر «بایگانی حذف‌ها» قابل مشاهده و بازگردانی است.</p></div>{% endif %}
+  {% if product.creation_source == 'UNKNOWN' %}<div class="notice warning"><strong>منشأ این محصول در سابقهٔ قدیمی ثبت نشده است.</strong><p>لطفاً مشخص کنید محصول دستی بوده یا از انبار آمده است. برای محصول انباری، پیش از ادامه حذف آن را در انبار بررسی و تأیید کنید.</p></div>
+  {% elif product.creation_source == 'INVENTORY' %}<div class="notice warning"><strong>این محصول از انبار وارد شده است.</strong><p>حذف از انبار را بررسی و تأیید کنید. برای نگهداری ردیف‌های حسابرسی، محصول از فروشگاه بایگانی می‌شود.</p></div>
+  {% elif not has_history %}<div class="notice warning"><strong>این محصول و تصویرهایش برای همیشه از پایگاه داده پاک می‌شوند.</strong><p>این محصول سابقهٔ سفارش، سبد یا انبار ندارد.</p></div>{% endif %}
+  <form method="post" class="delete-confirm-form">{% csrf_token %}{{ form.version }}
+    {{ form.source_check.errors }}
+    {% if product.creation_source == 'UNKNOWN' %}<fieldset><legend>{{ form.source_check.label }}</legend>{% for choice in form.source_check %}<div class="checkbox-field">{{ choice.tag }}{{ choice.choice_label }}</div>{% endfor %}</fieldset><div class="checkbox-field">{{ form.warehouse_checked }}{{ form.warehouse_checked.label_tag }}</div>
+    {% elif product.creation_source == 'INVENTORY' %}<div class="checkbox-field">{{ form.warehouse_checked }}{{ form.warehouse_checked.label_tag }}</div>
+    {% endif %}
+    {% if form.warehouse_checked.errors %}<ul class="errorlist">{% for error in form.warehouse_checked.errors %}<li>{{ error }}</li>{% endfor %}</ul>{% endif %}
+    <div class="delete-confirm-actions"><a class="button secondary" href="{% url 'catalog_management:products' %}">انصراف</a><button class="button danger" type="submit">{% if has_history or product.creation_source == 'INVENTORY' or form.source_check.value == 'inventory' %}تأیید و بایگانی امن{% elif product.creation_source == 'UNKNOWN' %}تأیید بررسی و ادامه{% else %}حذف کامل محصول{% endif %}</button></div>
+  </form>
+</section>
+{% endblock %}

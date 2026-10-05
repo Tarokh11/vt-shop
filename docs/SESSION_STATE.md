@@ -1,6 +1,9 @@
 # Session State
 
 - Current phase: separate staff product panel, ready for user testing.
+- Product deletion now tracks inventory provenance; manual products without
+  protected history can be removed, while imported/history-bearing products are
+  archived to retain stock/order records.
 - Completed: normalized catalog, search/filter storefront, stationery sample data,
   and Excel catalog import are implemented. A separate Persian product panel
   supports product/variant/image editing and audited stock, sharing Django

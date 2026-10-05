@@ -8,13 +8,24 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.core.paginator import Paginator
 from django.db import IntegrityError, transaction
-from django.db.models import Count, Min, Q, Sum
+from django.db.models import Count, Exists, Min, OuterRef, Q, Subquery, Sum
+from django.db.models.deletion import ProtectedError
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_http_methods
 
-from .management_forms import Images, ProductForm, StaffLoginForm, StockForm, Variants
+from cart.models import CartItem
+from orders.models import OrderLine, StockReservation
+
+from .management_forms import (
+    Images,
+    ProductDeletionForm,
+    ProductForm,
+    StaffLoginForm,
+    StockForm,
+    Variants,
+)
 from .models import (
     Category,
     InventoryAdjustment,
@@ -60,6 +71,8 @@ def product_version(product):
         product.description,
         product.brand_id,
         product.is_published,
+        product.creation_source,
+        product.is_archived,
         product.updated_at,
         list(product.categories.order_by("pk").values_list("pk", flat=True)),
         list(product.images.order_by("pk").values_list("pk", "image", "alt_text", "position")),
@@ -88,6 +101,16 @@ def product_version(product):
     return sha256(repr(state).encode()).hexdigest()
 
 
+def product_has_history(product):
+    skus = product.variants.order_by().values("sku")
+    return (
+        InventoryAdjustment.objects.filter(variant__product=product).exists()
+        or CartItem.objects.filter(variant__product=product).exists()
+        or StockReservation.objects.filter(variant__product=product).exists()
+        or OrderLine.objects.filter(sku__in=Subquery(skus)).exists()
+    )
+
+
 @require_http_methods(["GET"])
 @staff_catalog("catalog.view_product")
 def products(request):
@@ -95,6 +118,8 @@ def products(request):
     query = request.GET.get("q", "").strip()
     publication = request.GET.get("status", "")
     category = request.GET.get("category", "")
+    archived = publication == "archived"
+    queryset = queryset.filter(is_archived=archived)
     if query:
         queryset = queryset.filter(
             Q(name__icontains=query)
@@ -114,13 +139,25 @@ def products(request):
             variant_count=Count("variants"),
             stock_total=Sum("variants__stock_quantity"),
             starting_price=Min("variants__price_irr"),
+            has_protected_history=(
+                Exists(InventoryAdjustment.objects.filter(variant__product_id=OuterRef("pk")))
+                | Exists(CartItem.objects.filter(variant__product_id=OuterRef("pk")))
+                | Exists(StockReservation.objects.filter(variant__product_id=OuterRef("pk")))
+                | Exists(
+                    OrderLine.objects.filter(
+                        sku__in=Subquery(
+                            ProductVariant.objects.filter(product_id=OuterRef("pk")).values("sku")
+                        )
+                    )
+                )
+            ),
         )
         .order_by("-created_at", "-pk")
     )
     page = Paginator(queryset, 12).get_page(request.GET.get("page"))
     params = request.GET.copy()
     params.pop("page", None)
-    all_products = Product.objects.all()
+    all_products = Product.objects.filter(is_archived=False)
     return render(
         request,
         "catalog/manage/products.html",
@@ -129,10 +166,12 @@ def products(request):
             "query": query,
             "publication": publication,
             "category": category,
+            "archived": archived,
             "categories": Category.objects.all(),
             "filter_query": params.urlencode(),
             "stats": {
                 "total": all_products.count(),
+                "archived": Product.objects.filter(is_archived=True).count(),
                 "published": all_products.filter(is_published=True).count(),
                 "draft": all_products.filter(is_published=False).count(),
                 "low_stock": ProductVariant.objects.filter(
@@ -273,6 +312,88 @@ def product_edit(request, pk=None):
             },
             status=response_status,
         )
+
+
+@require_http_methods(["GET", "POST"])
+@staff_catalog("catalog.delete_product")
+def product_delete(request, pk):
+    response_status = 200
+    with transaction.atomic():
+        product = get_object_or_404(Product, pk=pk)
+        if request.method == "POST":
+            product = get_object_or_404(Product.objects.select_for_update(), pk=pk)
+            list(product.variants.select_for_update().order_by("pk"))
+        has_history = product_has_history(product)
+        version = product_version(product)
+        form = ProductDeletionForm(
+            request.POST if request.method == "POST" else None,
+            initial={"version": version},
+            creation_source=product.creation_source,
+            has_history=has_history,
+        )
+        if request.method == "POST":
+            valid = form.is_valid()
+            if request.POST.get("version") != version:
+                form.add_error(None, "محصول تغییر کرده است. صفحه را تازه کنید و دوباره بررسی کنید.")
+                response_status = 409
+                valid = False
+            if valid:
+                checked_source = form.cleaned_data.get("source_check")
+                preserve_record = (
+                    has_history
+                    or product.creation_source == "INVENTORY"
+                    or checked_source == "inventory"
+                )
+                if preserve_record:
+                    if checked_source == "inventory" and product.creation_source == "UNKNOWN":
+                        product.creation_source = Product.CreationSource.INVENTORY
+                    elif checked_source == "manual" and product.creation_source == "UNKNOWN":
+                        product.creation_source = Product.CreationSource.MANUAL
+                    product.is_published = False
+                    product.is_archived = True
+                    product.save(
+                        update_fields=(
+                            "creation_source",
+                            "is_published",
+                            "is_archived",
+                            "updated_at",
+                        )
+                    )
+                    messages.success(
+                        request, "محصول از فروشگاه بایگانی شد؛ سوابق انبار و خریدها حفظ شدند."
+                    )
+                else:
+                    try:
+                        with transaction.atomic():
+                            product.delete()
+                    except (ProtectedError, ValidationError):
+                        product.is_published = False
+                        product.is_archived = True
+                        product.save(update_fields=("is_published", "is_archived", "updated_at"))
+                        messages.success(
+                            request,
+                            "برای حفظ سابقهٔ انبار، محصول بایگانی شد و سوابقش باقی ماندند.",
+                        )
+                    else:
+                        messages.success(request, "محصولِ بدون سابقه به‌طور کامل حذف شد.")
+                return redirect("catalog_management:products")
+        return render(
+            request,
+            "catalog/manage/product_delete.html",
+            {"product": product, "form": form, "has_history": has_history},
+            status=response_status,
+        )
+
+
+@require_http_methods(["POST"])
+@staff_catalog("catalog.change_product")
+def product_restore(request, pk):
+    with transaction.atomic():
+        product = get_object_or_404(Product.objects.select_for_update(), pk=pk)
+        product.is_archived = False
+        product.save(update_fields=("is_archived", "updated_at"))
+    messages.success(request, "محصول از بایگانی خارج شد؛ وضعیت انتشار آن را بررسی کنید.")
+    return redirect("catalog_management:product_edit", pk=pk)
 
 
 @require_http_methods(["GET", "POST"])

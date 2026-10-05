@@ -13,7 +13,7 @@ username and password. Django Admin remains available at `/admin/`.
 - Add/edit variants, whole-rial prices, active/default status, and configured option values.
 - Upload, replace, reorder, or remove product images (PNG/JPEG/WebP/GIF, up to 5 MB).
 - After saving a new SKU, select **Register stock change** to add inventory with a reason.
-- Existing SKUs are deactivated rather than deleted, preserving purchase references.
+- Products with order, cart, reservation, or stock history are archived and unpublished so their records remain intact.
 
 Both panels use the same database records. Refresh a page after edits in the
 other panel. The separate panel rejects stale submissions rather than replacing
@@ -26,6 +26,16 @@ variant/image permissions for related edits. Changing configured option values
 requires the relevant `variantoptionvalue` permission. Inventory changes need
 `add_inventoryadjustment` and `view_productvariant`. Superusers already have these
 permissions. Authentication, CSRF checks, and staff access apply to every write.
+
+### Delete or archive products
+
+Use **Delete** beside a product. Products imported through Excel require
+confirmation that they have also been removed from the source inventory; they
+are then archived because stock adjustments are immutable. Manually entered
+products without order, cart, reservation, or inventory history can be
+permanently deleted. Older products with an unknown source ask staff to identify
+how they entered the catalog. Find archived products using the status filter;
+open one and choose **Restore product** to bring it back to the active list.
 
 ## Daily Workflow
 
