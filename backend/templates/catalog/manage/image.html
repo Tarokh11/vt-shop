@@ -1,0 +1,4 @@
+<article class="image-card" data-form-row>
+  {% if row.instance.pk %}<img class="image-preview" src="{{ row.instance.image.url }}" alt="{{ row.instance.alt_text }}">{% endif %}
+  {{ row.non_field_errors }}<div class="image-fields">{% for field in row %}{% include 'catalog/manage/field.html' %}{% endfor %}</div>
+</article>

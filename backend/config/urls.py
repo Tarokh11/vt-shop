@@ -11,6 +11,7 @@ admin.site.index_title = "داشبورد عملیات فروشگاه"
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("manage/", include("catalog.management_urls")),
     path("api/v1/accounts/", include("accounts.urls")),
     path("api/v1/catalog/", include("catalog.urls")),
     path("api/v1/cart/", include("cart.urls")),

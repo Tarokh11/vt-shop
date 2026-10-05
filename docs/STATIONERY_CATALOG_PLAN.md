@@ -239,6 +239,15 @@ The branded operations UI adds product/stock summaries, image previews, safer
 publication actions, richer customer/order/fulfillment screens, and an atomic
 Excel import with a generated live-reference template and row-level errors.
 
+Approved extension: complete. A separate Persian staff product panel at
+`/manage/products/` retains Django Admin and shares its catalog models, sessions,
+permissions, and append-only inventory adjustments. It supports search/list,
+creation/editing, images, variant prices/options, and audited stock changes;
+stale submissions are rejected. Catalog/management/cart/order tests (49), Ruff,
+Django checks, and migration checks pass. PostgreSQL smoke verified writes in
+both directions and audited inventory inside a rolled-back transaction. Local
+preview runs on port 8010; browser visual verification awaits user testing.
+
 ### Phase 5: API and search/filtering
 
 - Extend serializers without exposing hidden attributes.

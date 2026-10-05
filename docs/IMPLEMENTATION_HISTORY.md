@@ -1,5 +1,17 @@
 # Implementation History
 
+### Add separate staff product management panel
+
+- Added a Persian staff panel alongside Django Admin with shared catalog data,
+  sessions and permissions; product search/editing, variant prices/options,
+  images, and audited stock adjustments preserve existing row identities.
+- Added atomic writes, publication/option validation, CSRF protection, related
+  permissions, and stale-edit detection; documented the user-approved scope.
+- Checks: catalog/management/cart/order tests (49), Ruff, JS syntax, Django
+  system/migration checks, HTTP preview checks, and rolled-back PostgreSQL
+  writes through both panels plus inventory adjustment. Browser visual QA is
+  pending because no browser is connected; preview runs at port 8010.
+
 This is the concise record of completed implementation commits. Each future
 implementation commit must append its commit ID, completed steps, and checks.
 Use `SESSION_STATE.md` for current handoff context, not historical detail.

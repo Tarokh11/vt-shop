@@ -24,6 +24,10 @@ store projects after the core purchase flow is complete and verified.
 - Two configurable fixed shipping rates: Tehran and outside Tehran by post.
 - No tax calculation in the initial core.
 - Staff catalog, order, and fulfillment management through Django Admin.
+- A separate staff-only product management panel alongside Django Admin, sharing
+  the same catalog records: product list/search, creation/editing, images,
+  variant prices, and audited inventory adjustments. Changes appear in either
+  panel after reloading; order management remains in Django Admin.
 - Functional storefront, focused automated checks, and reproducible setup docs.
 
 ## Baseline design assumptions
@@ -75,7 +79,7 @@ explicitly removed from the initial core; this narrows scope without changing ar
 
 Multi-store tenancy, marketplaces, multiple inventory locations/currencies,
 multiple payment-provider frameworks, promotions, loyalty, subscriptions,
-recommendations, advanced search, carrier integrations, custom admin dashboards,
+recommendations, advanced search, carrier integrations, broader custom admin dashboards,
 microservices, event buses, plugin systems, and generic workflow engines.
 
 Store branding, copy, product data, and specialized business workflows belong in

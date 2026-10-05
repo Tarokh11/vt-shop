@@ -1,0 +1,27 @@
+{% extends 'catalog/manage/base.html' %}
+{% block title %}{% if product.pk %}ویرایش محصول{% else %}افزودن محصول{% endif %}{% endblock %}
+{% block content %}
+<a class="back-link" href="{% url 'catalog_management:products' %}">→ بازگشت به محصولات</a>
+<div class="page-heading"><div><span class="eyebrow">کاتالوگ فروشگاه</span><h1>{% if product.pk %}ویرایش محصول{% else %}یک محصول تازه{% endif %}</h1><p class="muted">{% if product.pk %}{{ product.name }}{% else %}اطلاعات محصول را وارد کنید و اولین تنوع آن را بسازید.{% endif %}</p></div>{% if product.pk %}<a class="button secondary" href="{% url 'admin:catalog_product_change' product.pk %}">باز کردن در Django ↗</a>{% endif %}</div>
+<form method="post" enctype="multipart/form-data" class="editor-form">{% csrf_token %}{{ form.version }}
+  {% if form.errors or variants.errors or images.errors or variants.non_form_errors or images.non_form_errors %}<div class="notice error" role="alert">ذخیره انجام نشد؛ خطاهای مشخص‌شده را بررسی کنید.{{ form.non_field_errors }}{{ variants.non_form_errors }}{{ images.non_form_errors }}</div>{% endif %}
+  <div class="editor-grid">
+    <div class="editor-main">
+      <section class="panel form-panel"><div class="panel-heading"><h2>اطلاعات اصلی</h2><span class="section-step">۰۱</span></div>{% include 'catalog/manage/field.html' with field=form.name %}{% include 'catalog/manage/field.html' with field=form.slug %}{% include 'catalog/manage/field.html' with field=form.description %}</section>
+      <section class="panel form-panel"><div class="panel-heading"><div><h2>تنوع‌ها و قیمت</h2><p class="muted">قیمت‌ها به ریال هستند. برای هر محصول فقط یک تنوع پیش‌فرض انتخاب کنید.</p></div><span class="section-step">۰۲</span></div>
+        {{ variants.management_form }}<div data-formset="variants">{% for row in variants %}{% include 'catalog/manage/variant.html' %}{% endfor %}</div>
+        {% if perms.catalog.add_productvariant %}<button class="button dashed" type="button" data-add-form="variants">＋ افزودن تنوع</button><template id="variants-template">{% include 'catalog/manage/variant.html' with row=variants.empty_form %}</template>{% endif %}
+      </section>
+      <section class="panel form-panel"><div class="panel-heading"><div><h2>تصاویر محصول</h2><p class="muted">PNG، JPEG، WebP یا GIF · حداکثر ۵ مگابایت برای هر تصویر</p></div><span class="section-step">۰۳</span></div>
+        {{ images.management_form }}<div data-formset="images">{% for row in images %}{% include 'catalog/manage/image.html' %}{% endfor %}</div>
+        {% if perms.catalog.add_productimage %}<button class="button dashed" type="button" data-add-form="images">＋ افزودن تصویر</button><template id="images-template">{% include 'catalog/manage/image.html' with row=images.empty_form %}</template>{% endif %}
+      </section>
+    </div>
+    <aside class="editor-aside">
+      <section class="panel form-panel"><div class="panel-heading"><h2>انتشار</h2></div>{% include 'catalog/manage/field.html' with field=form.publish %}<p class="help">محصول منتشرشده باید یک تنوع پیش‌فرض فعال داشته باشد. پیش‌نویس‌ها در فروشگاه نمایش داده نمی‌شوند.</p><button class="button primary full-width" type="submit">ذخیره محصول <span aria-hidden="true">✓</span></button><a class="button secondary full-width cancel" href="{% url 'catalog_management:products' %}">بازگشت به فهرست</a></section>
+      <section class="panel form-panel"><div class="panel-heading"><h2>دسته‌بندی و برند</h2></div>{% include 'catalog/manage/field.html' with field=form.brand %}{% include 'catalog/manage/field.html' with field=form.categories %}</section>
+      <div class="editor-tip"><span class="live-dot"></span><strong>اطلاعات مشترک</strong><p>تغییرات ذخیره‌شده در پنل Django هم دیده می‌شوند. موجودی را از «ثبت تغییر موجودی» هر تنوع تغییر دهید.</p>{% if product.pk %}<p>ویژگی‌های ثابت و مجموعه‌های محصول از پنل Django قابل مدیریت‌اند.</p>{% endif %}</div>
+    </aside>
+  </div>
+</form>
+{% endblock %}

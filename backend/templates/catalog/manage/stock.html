@@ -1,0 +1,8 @@
+{% extends 'catalog/manage/base.html' %}
+{% block title %}تغییر موجودی{% endblock %}
+{% block content %}
+<a class="back-link" href="{% url 'catalog_management:product_edit' variant.product_id %}">→ بازگشت به محصول</a>
+<div class="page-heading"><div><span class="eyebrow">موجودی انبار</span><h1>ثبت تغییر موجودی</h1><p class="muted">{{ variant.product.name }} · {{ variant.name|default:variant.sku }}</p></div><span class="stock-current">موجودی فعلی <strong>{{ variant.stock_quantity }}</strong> عدد</span></div>
+<div class="stock-grid"><section class="panel form-panel"><div class="panel-heading"><h2>افزایش یا کاهش موجودی</h2></div><form method="post">{% csrf_token %}{{ form.non_field_errors }}{% for field in form %}{% include 'catalog/manage/field.html' %}{% endfor %}<p class="help">هر تغییر با نام شما، دلیل و موجودی نهایی ثبت می‌شود و قابل حذف یا ویرایش نیست.</p><button class="button primary full-width" type="submit">ثبت تغییر موجودی</button></form></section>
+<section class="panel form-panel"><div class="panel-heading"><h2>آخرین تغییرها</h2></div><div class="stock-history">{% for item in history %}<article><span class="stock-pill {% if item.quantity_delta < 0 %}low{% endif %}">{% if item.quantity_delta > 0 %}+{% endif %}{{ item.quantity_delta }}</span><div><strong>{{ item.reason }}</strong><small>{{ item.created_by }} · {{ item.created_at|date:'Y/m/d H:i' }} · موجودی نهایی {{ item.resulting_quantity }}</small></div></article>{% empty %}<p class="muted">هنوز تغییر موجودی ثبت نشده است.</p>{% endfor %}</div></section></div>
+{% endblock %}

@@ -1,0 +1,6 @@
+<article class="variant-card" data-form-row>
+  <div class="row-heading"><h3>{% if row.instance.pk %}{{ row.instance.name|default:row.instance.sku }}{% else %}تنوع جدید{% endif %}</h3>{% if row.instance.pk %}<span class="stock-pill">موجودی: {{ row.instance.stock_quantity }} عدد</span>{% endif %}</div>
+  {{ row.non_field_errors }}
+  <div class="form-grid variant-fields">{% for field in row %}{% include 'catalog/manage/field.html' %}{% endfor %}</div>
+  {% if row.instance.pk %}{% if perms.catalog.add_inventoryadjustment and perms.catalog.view_productvariant %}<a class="text-link" href="{% url 'catalog_management:stock_adjust' product.pk row.instance.pk %}">ثبت تغییر موجودی ←</a>{% endif %}{% else %}<small class="help">بعد از ذخیره، می‌توانید موجودی این تنوع را ثبت کنید.</small>{% endif %}
+</article>

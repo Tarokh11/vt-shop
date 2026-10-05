@@ -1,0 +1,13 @@
+{% extends 'catalog/manage/base.html' %}
+{% block title %}ورود کارکنان{% endblock %}
+{% block shell %}
+<main class="login-page" id="main">
+  <section class="login-intro"><a class="brand" href="{{ storefront_url }}"><span class="brand-mark">م</span><span>مدیریت<small>فضای محصولات فروشگاه</small></span></a><div><span class="eyebrow">فضای کارکنان فروشگاه</span><h1>از یک ایده،<br>تا یک محصول تازه.</h1><p>محصولات را مرتب کنید، قیمت‌ها را به‌روز نگه دارید و موجودی را با خیال راحت مدیریت کنید.</p><div class="login-tags"><span>کاتالوگ مشترک</span><span>موجودی دقیق</span><span>دسترسی کارکنان</span></div></div><small>مدیریت محصولات · فروشگاه</small></section>
+  <section class="login-card"><span class="eyebrow">خوش آمدید</span><h2>ورود به پنل محصولات</h2><p class="muted">با نام کاربری و رمز حساب کارکنان Django وارد شوید.</p>
+    <form method="post">{% csrf_token %}{{ form.non_field_errors }}<input type="hidden" name="next" value="{{ next }}">
+      {% for field in form %}<div class="field">{{ field.label_tag }}{{ field }}{{ field.errors }}</div>{% endfor %}
+      <button class="button primary full-width" type="submit">ورود به پنل <span aria-hidden="true">←</span></button>
+    </form><a class="login-back" href="{{ storefront_url }}">بازگشت به فروشگاه ↗</a>
+  </section>
+</main>
+{% endblock %}

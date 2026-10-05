@@ -2,6 +2,31 @@
 
 Open `http://127.0.0.1:8000/admin/` and sign in with a staff account.
 
+## Separate Product Panel
+
+Open `/manage/products/` on the same Django server (the current local preview is
+`http://127.0.0.1:8010/manage/products/`). Sign in using the existing Django staff
+username and password. Django Admin remains available at `/admin/`.
+
+- Search by product name, SKU, or brand; filter by category and publication.
+- Add/edit names, descriptions, Unicode slugs, categories, brands, and publication.
+- Add/edit variants, whole-rial prices, active/default status, and configured option values.
+- Upload, replace, reorder, or remove product images (PNG/JPEG/WebP/GIF, up to 5 MB).
+- After saving a new SKU, select **Register stock change** to add inventory with a reason.
+- Existing SKUs are deactivated rather than deleted, preserving purchase references.
+
+Both panels use the same database records. Refresh a page after edits in the
+other panel. The separate panel rejects stale submissions rather than replacing
+newer product, image, price, or stock changes. No migration or data duplication
+is required. Fixed attributes, option definitions, collections, taxonomy,
+Excel import, orders, and fulfillment remain managed through Django Admin.
+
+Staff need `view_product` and `add_product`/`change_product`, plus the corresponding
+variant/image permissions for related edits. Changing configured option values
+requires the relevant `variantoptionvalue` permission. Inventory changes need
+`add_inventoryadjustment` and `view_productvariant`. Superusers already have these
+permissions. Authentication, CSRF checks, and staff access apply to every write.
+
 ## Daily Workflow
 
 - **Products:** edit names, descriptions, categories, images, variants, and publication.
