@@ -12,7 +12,7 @@
   writes through both panels plus inventory adjustment. Browser visual QA is
   pending because no browser is connected; preview runs at port 8010.
 
-### Brand the separate product panel for Nora
+### `295e855` Brand the separate product panel for Nora
 
 - Added Nora name, mark, and store copy to the shared panel shell and login
   templates in a separate store-specific commit.
