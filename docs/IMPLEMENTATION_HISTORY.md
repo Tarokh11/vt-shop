@@ -188,7 +188,7 @@ Use `SESSION_STATE.md` for current handoff context, not historical detail.
 - Checks: five stationery cards and 17 filter controls at 375px, 768px, and
   1440px; no horizontal overflow; filter query updates and gel-pen option
   selection complete without errors.
-### Pending: Add provenance-aware product deletion
+### `077c882` Add provenance-aware product deletion
 
 - Added product-origin tracking and archived-state migration; workbook imports
   mark inventory-origin products.
