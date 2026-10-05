@@ -247,6 +247,8 @@ stale submissions are rejected. Catalog/management/cart/order tests (49), Ruff,
 Django checks, and migration checks pass. PostgreSQL smoke verified writes in
 both directions and audited inventory inside a rolled-back transaction. Local
 preview runs on port 8010; browser visual verification awaits user testing.
+The catalog list panel uses a soft cream background with matching table header
+and hover colors.
 
 ### Phase 5: API and search/filtering
 

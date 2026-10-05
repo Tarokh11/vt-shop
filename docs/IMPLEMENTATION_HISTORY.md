@@ -1,5 +1,12 @@
 # Implementation History
 
+### Apply soft cream styling to the product catalog panel
+
+- Updated only the standalone catalog panel background, border, table header,
+  and row hover colors.
+- Checks: served stylesheet HTTP check and Git whitespace check; no logic or
+  schema changes.
+
 ### `1fe3410` Add separate staff product management panel
 
 - Added a Persian staff panel alongside Django Admin with shared catalog data,
