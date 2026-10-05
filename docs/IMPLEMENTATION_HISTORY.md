@@ -1,6 +1,6 @@
 # Implementation History
 
-### Apply soft cream styling to the product catalog panel
+### `d5afafe` Apply soft cream styling to the product catalog panel
 
 - Updated only the standalone catalog panel background, border, table header,
   and row hover colors.
