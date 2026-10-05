@@ -1,6 +1,6 @@
 # Implementation History
 
-### Add separate staff product management panel
+### `1fe3410` Add separate staff product management panel
 
 - Added a Persian staff panel alongside Django Admin with shared catalog data,
   sessions and permissions; product search/editing, variant prices/options,
@@ -11,6 +11,13 @@
   system/migration checks, HTTP preview checks, and rolled-back PostgreSQL
   writes through both panels plus inventory adjustment. Browser visual QA is
   pending because no browser is connected; preview runs at port 8010.
+
+### Brand the separate product panel for Nora
+
+- Added Nora name, mark, and store copy to the shared panel shell and login
+  templates in a separate store-specific commit.
+- Checks: HTTP preview login, Django Admin, and storefront catalog return 200;
+  backend product-management checks remain unchanged.
 
 This is the concise record of completed implementation commits. Each future
 implementation commit must append its commit ID, completed steps, and checks.

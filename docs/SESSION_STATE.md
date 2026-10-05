@@ -5,6 +5,7 @@
   and Excel catalog import are implemented. A separate Persian product panel
   supports product/variant/image editing and audited stock, sharing Django
   Admin's database, sessions, and permissions; stale edits are rejected.
+  Reusable panel functionality and Nora branding are separate commits.
 - Blockers: backend regression tests need a PostgreSQL role permitted to create
   the test database; real Zarinpal credentials/sandbox and persistent production
   media are still required before production.

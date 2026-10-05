@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
-  <title>{% block title %}مدیریت محصولات{% endblock %} | فروشگاه</title>
+  <title>{% block title %}مدیریت محصولات{% endblock %} | نورا</title>
   <link rel="stylesheet" href="{% static 'catalog/manage.css' %}">
   <script src="{% static 'catalog/manage.js' %}" defer></script>
 </head>
@@ -13,7 +13,7 @@
   <a class="skip-link" href="#main">رفتن به محتوای اصلی</a>
   {% block shell %}
   <aside class="sidebar">
-    <a class="brand" href="{% url 'catalog_management:products' %}"><span class="brand-mark">م</span><span>مدیریت<small>فضای مدیریت محصولات</small></span></a>
+    <a class="brand" href="{% url 'catalog_management:products' %}"><span class="brand-mark">ن</span><span>نورا<small>فضای مدیریت محصولات</small></span></a>
     <div class="nav-label">مدیریت فروشگاه</div>
     <nav aria-label="منوی مدیریت">
       <a class="nav-item active" href="{% url 'catalog_management:products' %}"><span aria-hidden="true">▦</span> محصولات</a>
@@ -26,12 +26,12 @@
     <form action="{% url 'catalog_management:logout' %}" method="post">{% csrf_token %}<button class="logout" type="submit">خروج از حساب</button></form>
   </aside>
   <div class="workspace">
-    <header class="topbar"><span>فروشگاه <span class="crumb-separator">/</span> مدیریت محصولات</span><span class="staff-badge">فضای کارکنان</span></header>
+    <header class="topbar"><span>فروشگاه نورا <span class="crumb-separator">/</span> مدیریت محصولات</span><span class="staff-badge">فضای کارکنان</span></header>
     <main id="main">
       {% if messages %}<div class="messages" aria-live="polite">{% for message in messages %}<div class="notice {{ message.tags }}">{{ message }}</div>{% endfor %}</div>{% endif %}
       {% block content %}{% endblock %}
     </main>
-    <footer class="panel-footer">مدیریت کاتالوگ <span>تغییرات ذخیره‌شده با تازه‌سازی صفحه در هر دو پنل دیده می‌شوند.</span></footer>
+    <footer class="panel-footer">نورا · مدیریت کاتالوگ <span>تغییرات ذخیره‌شده با تازه‌سازی صفحه در هر دو پنل دیده می‌شوند.</span></footer>
   </div>
   {% endblock %}
 </body>

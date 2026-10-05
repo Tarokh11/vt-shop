@@ -239,7 +239,7 @@ The branded operations UI adds product/stock summaries, image previews, safer
 publication actions, richer customer/order/fulfillment screens, and an atomic
 Excel import with a generated live-reference template and row-level errors.
 
-Approved extension: complete. A separate Persian staff product panel at
+Approved extension: complete. A separate Persian staff product panel, branded for Nora, at
 `/manage/products/` retains Django Admin and shares its catalog models, sessions,
 permissions, and append-only inventory adjustments. It supports search/list,
 creation/editing, images, variant prices/options, and audited stock changes;
