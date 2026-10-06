@@ -208,7 +208,7 @@ Use `SESSION_STATE.md` for current handoff context, not historical detail.
 - Checks: focused stationery seed/idempotency regression, targeted Ruff;
   eleven local files and storefront API/media responses verified.
 
-### Catalog usability refinements (commit pending)
+### `3994117` Improve catalog filtering and shopping feedback
 
 - Preserved React page state across URL filters, canceled stale requests, and
   added removable chips, mobile filter controls, loading skeletons, retry/empty
