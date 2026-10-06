@@ -219,7 +219,7 @@ Use `SESSION_STATE.md` for current handoff context, not historical detail.
   image URLs, empty search, combined filters, pagination, invalid filter response.
   Visual and browser interaction QA remains pending: browser connection unavailable.
 
-### Shared product detail redesign (commit pending)
+### `056f96f` Redesign product details and purchase interactions
 
 - Redesigned all product detail pages with an uncropped responsive gallery,
   native image dialog, breadcrumbs, purchase card, readable specs, buying
