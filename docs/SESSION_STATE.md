@@ -1,6 +1,6 @@
 # Session State
 
-- Current phase: separate staff product panel, ready for user testing.
+- Current phase: catalog usability refinements and staff panel ready for user testing.
 - Product deletion now tracks inventory provenance; manual products without
   protected history can be removed, while imported/history-bearing products are
   archived to retain stock/order records.
@@ -27,5 +27,9 @@
   Eleven individual demo product photos are stored as reusable WebP sample
   assets; local records have product-specific images. Browser connection
   unavailable for visual QA.
-- Next task: user-test the panel, then run backend regressions with a
-  PostgreSQL role permitted to create tests.
+- Catalog UX: removable filter chips, mobile filter toggle, stable search/filter
+  state, canceled stale requests, loading/error/empty guidance, and card specs.
+  Current checks: frontend lint/typecheck/build and live catalog/filter/pagination
+  and eleven WebP image URLs pass; browser interactions remain unverified.
+- Next task: user-test responsive catalog interactions and the panel, then run
+  backend regressions with a PostgreSQL role permitted to create tests.

@@ -1,113 +1,175 @@
 "use client";
 
-import { FormEvent, Suspense, useEffect, useState } from "react";
+import { FormEvent, Suspense, useEffect, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-
 import { ProductCard } from "@/components/product-card";
 import { CatalogFilters, Page, Product } from "@/lib/catalog";
+
+const number = new Intl.NumberFormat("fa-IR");
+
+function CatalogSearch({ initialQuery, onSearch }: Readonly<{ initialQuery: string; onSearch: (query: string) => void }>) {
+  const [query, setQuery] = useState(initialQuery);
+  function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    onSearch(query.trim());
+  }
+  return (
+    <form className="catalog-search" role="search" onSubmit={submit}>
+      <label htmlFor="catalog-query">دنبال چه چیزی می‌گردید؟
+        <span className="catalog-search-input">
+          <input id="catalog-query" type="search" enterKeyHint="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="نام محصول، برند یا ویژگی…" />
+          {query && <button className="catalog-search-clear" type="button" aria-label="پاک کردن جستجو" onClick={() => { setQuery(""); onSearch(""); }}>×</button>}
+        </span>
+      </label>
+      <button type="submit">جستجو</button>
+    </form>
+  );
+}
 
 function ProductsPageContent() {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [products, setProducts] = useState<Product[]>([]);
-  const [filters, setFilters] = useState<CatalogFilters | null>(null);
-  const [state, setState] = useState<"loading" | "ready" | "error">("loading");
-  const [pageLinks, setPageLinks] = useState({ next: false, previous: false });
-  const [totalCount, setTotalCount] = useState(0);
-  const [query, setQuery] = useState(() => searchParams.get("q") ?? "");
+  const queryString = searchParams.toString();
   const selectedCategory = searchParams.get("category") ?? "";
-
-  useEffect(() => {
-    const params = selectedCategory ? `?category=${encodeURIComponent(selectedCategory)}` : "";
-    fetch(`/api/v1/catalog/filters/${params}`, { cache: "no-store" })
-      .then((response) => response.ok ? response.json() as Promise<CatalogFilters> : Promise.reject())
-      .then(setFilters)
-      .catch(() => setFilters(null));
-  }, [selectedCategory]);
+  const searchQuery = searchParams.get("q") ?? "";
+  const [retry, setRetry] = useState(0);
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [searchReset, setSearchReset] = useState(0);
+  const [catalog, setCatalog] = useState<{ key: string; page: Page<Product> | null; error: string | null } | null>(null);
+  const [filterResource, setFilterResource] = useState<{ category: string; data: CatalogFilters | null; error: boolean } | null>(null);
+  const resultsHeading = useRef<HTMLHeadingElement>(null);
+  const requestKey = `${queryString}#${retry}`;
+  const loading = catalog?.key !== requestKey;
+  const error = !loading ? catalog?.error : null;
+  const products = catalog?.page?.results ?? [];
+  const totalCount = catalog?.page?.count ?? 0;
+  const filters = filterResource?.data;
+  const attributes = filterResource?.category === selectedCategory ? filters?.attributes ?? [] : [];
 
   useEffect(() => {
     const controller = new AbortController();
-    const params = searchParams.toString();
-    fetch(`/api/v1/catalog/products/${params ? `?${params}` : ""}`, { cache: "no-store", signal: controller.signal })
+    const params = selectedCategory ? `?category=${encodeURIComponent(selectedCategory)}` : "";
+    fetch(`/api/v1/catalog/filters/${params}`, { cache: "no-store", signal: controller.signal })
       .then((response) => {
-        if (!response.ok) throw new Error("Catalog unavailable");
+        if (!response.ok) throw new Error("Filters unavailable");
+        return response.json() as Promise<CatalogFilters>;
+      })
+      .then((data) => setFilterResource({ category: selectedCategory, data, error: false }))
+      .catch((error) => { if (error.name !== "AbortError") setFilterResource({ category: selectedCategory, data: null, error: true }); });
+    return () => controller.abort();
+  }, [selectedCategory, retry]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch(`/api/v1/catalog/products/${queryString ? `?${queryString}` : ""}`, { cache: "no-store", signal: controller.signal })
+      .then((response) => {
+        if (!response.ok) throw new Error(response.status === 400 || response.status === 404
+          ? "فیلتر یا شمارهٔ صفحه معتبر نیست. فیلترها را پاک کنید و دوباره انتخاب کنید."
+          : "دریافت محصولات ناموفق بود. اتصال اینترنت را بررسی کنید و دوباره تلاش کنید.");
         return response.json() as Promise<Page<Product>>;
       })
-      .then((page) => { setProducts(page.results); setTotalCount(page.count); setPageLinks({ next: Boolean(page.next), previous: Boolean(page.previous) }); setState("ready"); })
-      .catch((error) => { if (error.name !== "AbortError") setState("error"); });
+      .then((page) => setCatalog({ key: requestKey, page, error: null }))
+      .catch((error) => {
+        if (error.name !== "AbortError") setCatalog({ key: requestKey, page: null, error: error instanceof TypeError ? "ارتباط با فروشگاه برقرار نشد. اتصال اینترنت را بررسی کنید و دوباره تلاش کنید." : error.message || "دریافت محصولات ناموفق بود. دوباره تلاش کنید." });
+      });
     return () => controller.abort();
-  }, [searchParams]);
+  }, [queryString, requestKey]);
 
+  function navigate(params: URLSearchParams) {
+    router.push(`${pathname}${params.size ? `?${params}` : ""}`, { scroll: false });
+  }
   function updateSearchParams(update: (params: URLSearchParams) => void) {
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(queryString);
     update(params);
     params.delete("page");
-    router.push(`${pathname}${params.size ? `?${params}` : ""}`);
+    navigate(params);
   }
-
-  function submitSearch(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  function updateSingleFilter(key: string, value: string) {
     updateSearchParams((params) => {
-      if (query.trim()) params.set("q", query.trim());
-      else params.delete("q");
+      if (value) params.set(key, value);
+      else params.delete(key);
+      if (key === "category") params.delete("attribute");
     });
   }
-
+  function removeFilter(key: string, value: string) {
+    updateSearchParams((params) => {
+      const remaining = params.getAll(key).filter((item) => item !== value);
+      params.delete(key);
+      remaining.forEach((item) => params.append(key, item));
+      if (key === "category") params.delete("attribute");
+    });
+  }
   function updateAttribute(value: string, checked: boolean) {
-    updateSearchParams((params) => {
-      const values = params.getAll("attribute").filter((item) => item !== value);
-      if (checked) values.push(value);
-      params.delete("attribute");
-      values.forEach((item) => params.append("attribute", item));
-    });
+    if (!checked) removeFilter("attribute", value);
+    else updateSearchParams((params) => { if (!params.getAll("attribute").includes(value)) params.append("attribute", value); });
   }
-
+  function resetFilters() {
+    setSearchReset((value) => value + 1);
+    router.push(pathname, { scroll: false });
+  }
   function changePage(direction: -1 | 1) {
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(queryString);
     const page = Math.max(1, Number(params.get("page") ?? "1") + direction);
     if (page === 1) params.delete("page");
     else params.set("page", String(page));
-    router.push(`${pathname}?${params}`);
+    navigate(params);
+    resultsHeading.current?.focus();
   }
+  const chips: { key: string; value: string; label: string }[] = [];
+  searchParams.forEach((value, key) => {
+    let label: string | undefined;
+    if (key === "q") label = `جستجو: ${value}`;
+    if (key === "category") label = filters?.categories.find((item) => item.slug === value)?.name ?? value;
+    if (key === "brand") label = `برند: ${filters?.brands.find((item) => item.slug === value)?.name ?? value}`;
+    if (key === "collection") label = filters?.collections.find((item) => item.slug === value)?.name ?? value;
+    if (key === "in_stock") label = value === "true" ? "فقط موجود" : "فقط ناموجود";
+    if (key === "attribute") {
+      const [definitionSlug, valueSlug] = value.split(":");
+      const definition = attributes.find((item) => item.slug === definitionSlug);
+      label = definition ? `${definition.name}: ${definition.values.find((item) => item.slug === valueSlug)?.label ?? valueSlug}` : value;
+    }
+    if (label && !chips.some((chip) => chip.key === key && chip.value === value)) chips.push({ key, value, label });
+  });
 
   return (
     <main className="catalog-page">
       <div className="catalog-heading">
-        <div><p className="eyebrow">قفسه نورا</p><h1>ابزارهای کوچک، برای <em>فکرهای بزرگ</em></h1><p>بر اساس کاری که می‌خواهید انجام دهید، رنگی که دوست دارید یا ویژگی مورد نیازتان جستجو کنید.</p></div>
+        <div><p className="eyebrow">قفسه نورا</p><h1>ابزارهای کوچک، برای <em>فکرهای بزرگ</em></h1><p>با جستجو و فیلترها، ابزار مناسب نوشتن، طراحی و کارهای روزمره را پیدا کنید.</p></div>
         <div className="catalog-heading-art" aria-hidden="true"><span>✎</span><i>▤</i><b>✦</b></div>
       </div>
-      {filters?.categories.length ? <nav className="category-pills" aria-label="دسته‌بندی سریع"><button className={!selectedCategory ? "active" : ""} type="button" onClick={() => updateSearchParams((params) => { params.delete("category"); params.delete("attribute"); })}>همه قفسه‌ها</button>{filters.categories.filter((item) => item.parent).map((item) => <button className={selectedCategory === item.slug ? "active" : ""} type="button" onClick={() => updateSearchParams((params) => { params.set("category", item.slug); params.delete("attribute"); })} key={item.id}>{item.name}</button>)}</nav> : null}
+      <ul className="catalog-shopping-notes" aria-label="راهنمای خرید"><li>قیمت‌ها به ریال</li><li>انتخاب رنگ و مدل در صفحهٔ محصول</li><li>محاسبهٔ هزینهٔ ارسال در تسویه‌حساب</li></ul>
+      {filters?.categories.length ? <nav className="category-pills" aria-label="دسته‌بندی سریع"><button aria-pressed={!selectedCategory} className={!selectedCategory ? "active" : ""} type="button" onClick={() => updateSingleFilter("category", "")}>همه قفسه‌ها</button>{filters.categories.filter((item) => item.parent).map((item) => <button aria-pressed={selectedCategory === item.slug} className={selectedCategory === item.slug ? "active" : ""} type="button" onClick={() => updateSingleFilter("category", item.slug)} key={item.id}>{item.name}</button>)}</nav> : null}
       <section className="catalog-filters" aria-label="جستجو و فیلتر محصولات">
-        <form className="catalog-search" onSubmit={submitSearch}>
-          <label>جستجو<input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="نام، برند یا ویژگی محصول" /></label>
-          <button type="submit">جستجو</button>
-        </form>
-        <div className="filter-row">
-          <label>دسته‌بندی<select value={selectedCategory} onChange={(event) => updateSearchParams((params) => { if (event.target.value) params.set("category", event.target.value); else params.delete("category"); params.delete("attribute"); })}><option value="">همه دسته‌ها</option>{filters?.categories.map((item) => <option key={item.id} value={item.slug}>{item.parent ? `- ${item.name}` : item.name}</option>)}</select></label>
-          <label>برند<select value={searchParams.get("brand") ?? ""} onChange={(event) => updateSearchParams((params) => { if (event.target.value) params.set("brand", event.target.value); else params.delete("brand"); })}><option value="">همه برندها</option>{filters?.brands.map((item) => <option key={item.id} value={item.slug}>{item.name}</option>)}</select></label>
-          <label>مجموعه<select value={searchParams.get("collection") ?? ""} onChange={(event) => updateSearchParams((params) => { if (event.target.value) params.set("collection", event.target.value); else params.delete("collection"); })}><option value="">همه مجموعه‌ها</option>{filters?.collections.map((item) => <option key={item.id} value={item.slug}>{item.name}</option>)}</select></label>
-          <label className="stock-filter"><input type="checkbox" checked={searchParams.get("in_stock") === "true"} onChange={(event) => updateSearchParams((params) => { if (event.target.checked) params.set("in_stock", "true"); else params.delete("in_stock"); })} />فقط موجود</label>
+        <CatalogSearch key={`${searchQuery}#${searchReset}`} initialQuery={searchQuery} onSearch={(query) => updateSingleFilter("q", query)} />
+        <button className="catalog-filter-toggle" type="button" aria-expanded={filtersOpen} aria-controls="catalog-extra-filters" onClick={() => setFiltersOpen(!filtersOpen)}>فیلتر محصولات {chips.length > 0 && <span>({number.format(chips.length)})</span>}<span aria-hidden="true">{filtersOpen ? "−" : "+"}</span></button>
+        <div id="catalog-extra-filters" className="catalog-filter-controls" data-open={filtersOpen}>
+          <div className="filter-row">
+            <label>دسته‌بندی<select disabled={!filters} value={selectedCategory} onChange={(event) => updateSingleFilter("category", event.target.value)}><option value="">همه دسته‌ها</option>{filters?.categories.map((item) => <option key={item.id} value={item.slug}>{item.parent ? `— ${item.name}` : item.name}</option>)}</select></label>
+            <label>برند<select disabled={!filters} value={searchParams.get("brand") ?? ""} onChange={(event) => updateSingleFilter("brand", event.target.value)}><option value="">همه برندها</option>{filters?.brands.map((item) => <option key={item.id} value={item.slug}>{item.name}</option>)}</select></label>
+            <label>مجموعه<select disabled={!filters} value={searchParams.get("collection") ?? ""} onChange={(event) => updateSingleFilter("collection", event.target.value)}><option value="">همه مجموعه‌ها</option>{filters?.collections.map((item) => <option key={item.id} value={item.slug}>{item.name}</option>)}</select></label>
+            <label className="stock-filter"><input type="checkbox" checked={searchParams.get("in_stock") === "true"} onChange={(event) => updateSingleFilter("in_stock", event.target.checked ? "true" : "")} />فقط موجود</label>
+          </div>
+          {attributes.length ? <details className="attribute-filters"><summary>ویژگی‌های محصول</summary><div>{attributes.map((definition) => <fieldset key={definition.id}><legend>{definition.name}</legend>{definition.values.map((value) => { const parameter = `${definition.slug}:${value.slug}`; return <label key={value.id}><input type="checkbox" checked={searchParams.getAll("attribute").includes(parameter)} onChange={(event) => updateAttribute(parameter, event.target.checked)} />{value.label}</label>; })}</fieldset>)}</div></details> : !selectedCategory && <p className="catalog-filter-hint">برای فیلتر بر اساس اندازه، رنگ و سایر ویژگی‌ها، ابتدا یک دسته‌بندی انتخاب کنید.</p>}
         </div>
-        {filters?.attributes.length ? <details className="attribute-filters"><summary>فیلتر ویژگی‌ها</summary><div>{filters.attributes.map((definition) => <fieldset key={definition.id}><legend>{definition.name}</legend>{definition.values.map((value) => { const parameter = `${definition.slug}:${value.slug}`; return <label key={value.id}><input type="checkbox" checked={searchParams.getAll("attribute").includes(parameter)} onChange={(event) => updateAttribute(parameter, event.target.checked)} />{value.label}</label>; })}</fieldset>)}</div></details> : null}
+        {filterResource?.error && <div className="catalog-filter-error" role="alert"><span>فیلترها دریافت نشدند.</span><button type="button" onClick={() => setRetry((value) => value + 1)}>تلاش مجدد</button></div>}
       </section>
-      {state === "ready" && <div className="catalog-result-count"><span><strong>{new Intl.NumberFormat("fa-IR").format(totalCount)}</strong> محصول روی این قفسه</span>{searchParams.size > 0 && <button type="button" onClick={() => { setQuery(""); router.push(pathname); }}>پاک کردن فیلترها ×</button>}</div>}
-      {state === "loading" && <p className="catalog-notice" role="status">در حال دریافت محصولات…</p>}
-      {state === "error" && <p className="catalog-notice error" role="alert">دریافت محصولات ناموفق بود.</p>}
-      {state === "ready" && products.length === 0 && <p className="catalog-notice">محصولی در این دسته منتشر نشده است.</p>}
-      <section className="product-grid" aria-live="polite">
-        {products.map((product) => <ProductCard key={product.id} product={product} />)}
+      {chips.length > 0 && <div className="catalog-active-filters" aria-label="فیلترهای انتخاب‌شده">{chips.map((chip) => <button type="button" key={`${chip.key}:${chip.value}`} aria-label={`حذف ${chip.label}`} onClick={() => removeFilter(chip.key, chip.value)}>{chip.label}<span aria-hidden="true">×</span></button>)}<button className="catalog-clear-all" type="button" onClick={resetFilters}>پاک کردن همه</button></div>}
+      <div className="catalog-result-count">
+        <h2 ref={resultsHeading} tabIndex={-1}>محصولات{!loading && !error && <span> · {number.format(totalCount)} مورد</span>}</h2>
+        <span role="status" aria-live="polite">{loading ? "در حال دریافت محصولات…" : error ? "محصولات دریافت نشدند" : products.length ? `نمایش ${number.format(products.length)} از ${number.format(totalCount)} محصول` : "نتیجه‌ای پیدا نشد"}</span>
+      </div>
+      {error && <div className="catalog-notice catalog-feedback error" role="alert"><h3>دریافت محصولات ممکن نشد</h3><p>{error}</p><div><button type="button" onClick={() => setRetry((value) => value + 1)}>تلاش مجدد</button>{queryString && <button className="secondary" type="button" onClick={resetFilters}>بازگشت به همه محصولات</button>}</div></div>}
+      {!loading && !error && products.length === 0 && <div className="catalog-notice catalog-feedback"><span className="catalog-empty-icon" aria-hidden="true">⌕</span><h3>محصولی با این انتخاب‌ها پیدا نشد</h3><p>{chips.length ? "واژهٔ کوتاه‌تری جستجو کنید یا یکی از فیلترها را بردارید." : "هنوز محصولی برای نمایش منتشر نشده است. کمی بعد دوباره سر بزنید."}</p>{queryString && <button type="button" onClick={resetFilters}>دیدن همه محصولات</button>}</div>}
+      <section className="product-grid" aria-label="فهرست محصولات" aria-busy={loading}>
+        {loading && products.length === 0 ? Array.from({ length: 6 }, (_, index) => <div className="catalog-skeleton" key={index} aria-hidden="true"><div /><span /><span /><span /></div>) : !error && products.map((product) => <ProductCard key={product.id} product={product} />)}
       </section>
-      {(pageLinks.previous || pageLinks.next) && <nav className="page-navigation" aria-label="صفحه‌های محصولات"><button type="button" className="secondary" disabled={!pageLinks.previous} onClick={() => changePage(-1)}>صفحه قبل</button><span>صفحه {searchParams.get("page") ?? "1"}</span><button type="button" disabled={!pageLinks.next} onClick={() => changePage(1)}>صفحه بعد</button></nav>}
+      {!error && (catalog?.page?.previous || catalog?.page?.next) && <nav className="page-navigation" aria-label="صفحه‌های محصولات"><button type="button" className="secondary" disabled={loading || !catalog?.page?.previous} onClick={() => changePage(-1)}>صفحه قبل</button><span>صفحه {number.format(Number(searchParams.get("page") ?? "1"))}</span><button type="button" disabled={loading || !catalog?.page?.next} onClick={() => changePage(1)}>صفحه بعد</button></nav>}
+      <details className="catalog-shopping-guide"><summary>راهنمای انتخاب و خرید</summary><p>در صفحهٔ محصول، مشخصات، تصاویر و موجودی هر مدل را ببینید و رنگ یا مدل دلخواه را انتخاب کنید. برای افزودن به سبد خرید وارد حساب کاربری شوید. قیمت‌ها به ریال نمایش داده می‌شوند؛ هر ۱۰ ریال برابر با ۱ تومان است. هزینهٔ ارسال بر اساس تهران یا خارج از تهران در تسویه‌حساب مشخص می‌شود.</p></details>
     </main>
   );
 }
 
-function ProductsPageWithUrlState() {
-  const searchParams = useSearchParams();
-  return <ProductsPageContent key={searchParams.toString()} />;
-}
-
 export default function ProductsPage() {
-  return <Suspense fallback={<main className="catalog-page"><p role="status">در حال دریافت محصولات…</p></main>}><ProductsPageWithUrlState /></Suspense>;
+  return <Suspense fallback={<main className="catalog-page"><p role="status">در حال دریافت محصولات…</p></main>}><ProductsPageContent /></Suspense>;
 }

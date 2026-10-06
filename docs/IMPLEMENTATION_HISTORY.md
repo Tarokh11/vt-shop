@@ -199,7 +199,7 @@ Use `SESSION_STATE.md` for current handoff context, not historical detail.
 - Checks: Ruff, Django system check, and migration drift check passed; catalog
   migration `0006` applied. Regression tests were not run.
 
-### Product-specific stationery photos (commit pending)
+### `1c032a3` Add product-specific stationery sample photos
 
 - Added eleven representative ImageGen photos as optimized WebP sample assets
   (982 KB total), mapped by product slug. Local product images were installed.
@@ -207,3 +207,14 @@ Use `SESSION_STATE.md` for current handoff context, not historical detail.
   accessible uploads. Asset provenance and subjects are documented.
 - Checks: focused stationery seed/idempotency regression, targeted Ruff;
   eleven local files and storefront API/media responses verified.
+
+### Catalog usability refinements (commit pending)
+
+- Preserved React page state across URL filters, canceled stale requests, and
+  added removable chips, mobile filter controls, loading skeletons, retry/empty
+  guidance, accessible result announcements, and purchase/currency notes.
+- Cards expose concise specs, price from available variants, responsive image
+  sizes, and uncropped product photos. Local records use optimized WebP assets.
+- Checks: frontend lint, typecheck, production build; live page/API, eleven
+  image URLs, empty search, combined filters, pagination, invalid filter response.
+  Visual and browser interaction QA remains pending: browser connection unavailable.

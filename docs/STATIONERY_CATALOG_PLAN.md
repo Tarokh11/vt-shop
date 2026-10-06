@@ -292,6 +292,14 @@ typecheck, and build pass. The full storefront now uses a responsive stationery
 visual system, multi-image product gallery, visible product specifications, and
 reduced-motion-safe interaction; focused browser interaction smoke remains pending.
 
+Catalog usability refinement: filters now preserve the page state and scroll,
+cancel stale requests, and expose individually removable active-filter chips.
+Mobile filter controls collapse; skeletons, retry actions, empty-result guidance,
+and shopping/currency notes explain page states. Cards show two specifications,
+price from available variants, and responsive images without cropping. Lint,
+typecheck, build, and live API/media checks pass; browser visual/interaction QA
+remains pending because no browser connection is available.
+
 ### Phase 7: Stationery data
 
 - Add stationery categories, brands, attributes, collections, and products in a
