@@ -306,6 +306,11 @@ and inventory adjustments. It is idempotent. The former clothing catalog is
 archived in `backend/catalog/fixtures/clothing_catalog.json` and hidden from
 the active database because historical reservations protect some of its rows.
 
+The eleven sample products now have individual AI-generated representative
+photos, stored as optimized WebP assets under `catalog/sample_images/products/`.
+Seeding installs these assets and repairs missing sample media while preserving
+accessible uploaded images.
+
 ### Phase 8: Verification
 
 - Run migration drift and data-preservation checks.

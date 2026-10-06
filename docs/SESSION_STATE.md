@@ -23,6 +23,9 @@
   Django/migration checks, and PostgreSQL bidirectional writes/stock smoke with
   rollback pass. PostgreSQL test-database coverage remains outstanding.
 - Local preview: panel `/manage/products/` and Django Admin at port 8010;
-  storefront at port 3000. Browser connection unavailable for visual QA.
+  storefront at port 3000 with `BACKEND_ORIGIN=http://127.0.0.1:8010`.
+  Eleven individual demo product photos are stored as reusable WebP sample
+  assets; local records have product-specific images. Browser connection
+  unavailable for visual QA.
 - Next task: user-test the panel, then run backend regressions with a
   PostgreSQL role permitted to create tests.

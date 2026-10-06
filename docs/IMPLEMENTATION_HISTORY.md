@@ -198,3 +198,12 @@ Use `SESSION_STATE.md` for current handoff context, not historical detail.
   staff classification.
 - Checks: Ruff, Django system check, and migration drift check passed; catalog
   migration `0006` applied. Regression tests were not run.
+
+### Product-specific stationery photos (commit pending)
+
+- Added eleven representative ImageGen photos as optimized WebP sample assets
+  (982 KB total), mapped by product slug. Local product images were installed.
+- Seeding installs the photos and repairs missing files without replacing
+  accessible uploads. Asset provenance and subjects are documented.
+- Checks: focused stationery seed/idempotency regression, targeted Ruff;
+  eleven local files and storefront API/media responses verified.
