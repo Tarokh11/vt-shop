@@ -300,6 +300,15 @@ price from available variants, and responsive images without cropping. Lint,
 typecheck, build, and live API/media checks pass; browser visual/interaction QA
 remains pending because no browser connection is available.
 
+Shared product-detail refinement: uncropped responsive gallery with native
+image dialog, category/brand navigation, clearer purchase card, available-model
+defaults, quantity selection within the existing cart limits, and subtotal
+presentation. Cart/favorite outcomes now expose success, error, and sign-in
+actions; mobile purchase navigation, specifications, and shipping/currency
+guidance are included. Five selection/quantity tests, lint/typecheck/build,
+eleven live product API/photo checks, and representative detail routes pass.
+Browser gallery/purchase interactions and visual QA remain pending.
+
 ### Phase 7: Stationery data
 
 - Add stationery categories, brands, attributes, collections, and products in a

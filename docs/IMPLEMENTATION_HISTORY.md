@@ -218,3 +218,16 @@ Use `SESSION_STATE.md` for current handoff context, not historical detail.
 - Checks: frontend lint, typecheck, production build; live page/API, eleven
   image URLs, empty search, combined filters, pagination, invalid filter response.
   Visual and browser interaction QA remains pending: browser connection unavailable.
+
+### Shared product detail redesign (commit pending)
+
+- Redesigned all product detail pages with an uncropped responsive gallery,
+  native image dialog, breadcrumbs, purchase card, readable specs, buying
+  guidance, related links, and mobile navigation to the purchase controls.
+- Added quantity selection/subtotal using existing cart limits, available-model
+  defaults and exact option resolution, explicit cart/favorite success/error/login
+  feedback, and retry/missing-product states with canceled stale requests.
+- Checks: five selection/quantity tests, lint, typecheck, production build;
+  eleven live detail APIs/photos, three page routes, folder SKU/attributes,
+  and missing-product 404. Browser visual, gallery, and purchase checks remain
+  pending because no browser is connected; live carts were not modified.

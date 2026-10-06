@@ -1,6 +1,6 @@
 # Session State
 
-- Current phase: catalog usability refinements and staff panel ready for user testing.
+- Current phase: catalog/detail usability refinements and staff panel ready for user testing.
 - Product deletion now tracks inventory provenance; manual products without
   protected history can be removed, while imported/history-bearing products are
   archived to retain stock/order records.
@@ -31,5 +31,9 @@
   state, canceled stale requests, loading/error/empty guidance, and card specs.
   Current checks: frontend lint/typecheck/build and live catalog/filter/pagination
   and eleven WebP image URLs pass; browser interactions remain unverified.
+- Product detail: shared gallery zoom, quantity/model purchase card, explicit
+  cart/favorite feedback, mobile purchase navigation, specs and buying guidance.
+  Five selection/quantity tests, lint/typecheck/build, eleven detail API/photos,
+  and representative routes pass; visual and purchase browser checks pending.
 - Next task: user-test responsive catalog interactions and the panel, then run
   backend regressions with a PostgreSQL role permitted to create tests.
