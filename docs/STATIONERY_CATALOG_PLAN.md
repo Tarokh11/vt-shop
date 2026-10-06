@@ -308,6 +308,8 @@ actions; mobile purchase navigation, specifications, and shipping/currency
 guidance are included. Five selection/quantity tests, lint/typecheck/build,
 eleven live product API/photo checks, and representative detail routes pass.
 Browser gallery/purchase interactions and visual QA remain pending.
+Product galleries use normal document flow on all screen sizes; they do not
+stick to the viewport while scrolling.
 
 ### Phase 7: Stationery data
 

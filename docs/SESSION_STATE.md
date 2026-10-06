@@ -31,7 +31,7 @@
   state, canceled stale requests, loading/error/empty guidance, and card specs.
   Current checks: frontend lint/typecheck/build and live catalog/filter/pagination
   and eleven WebP image URLs pass; browser interactions remain unverified.
-- Product detail: shared gallery zoom, quantity/model purchase card, explicit
+- Product detail: shared non-sticky gallery with zoom, quantity/model purchase card, explicit
   cart/favorite feedback, mobile purchase navigation, specs and buying guidance.
   Five selection/quantity tests, lint/typecheck/build, eleven detail API/photos,
   and representative routes pass; visual and purchase browser checks pending.

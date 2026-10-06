@@ -231,3 +231,8 @@ Use `SESSION_STATE.md` for current handoff context, not historical detail.
   eleven live detail APIs/photos, three page routes, folder SKU/attributes,
   and missing-product 404. Browser visual, gallery, and purchase checks remain
   pending because no browser is connected; live carts were not modified.
+
+### Remove sticky product gallery (commit pending)
+
+- Product photos now remain in normal document flow on desktop and mobile.
+- Checks: reviewed gallery CSS and clean diff; browser scrolling QA unavailable.
