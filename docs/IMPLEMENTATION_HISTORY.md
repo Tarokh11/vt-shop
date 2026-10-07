@@ -264,3 +264,13 @@ Use `SESSION_STATE.md` for current handoff context, not historical detail.
 
 - Product photos now remain in normal document flow on desktop and mobile.
 - Checks: reviewed gallery CSS and clean diff; browser scrolling QA unavailable.
+
+### `429cc02` Add local development launcher
+
+- Added executable `run-dev.sh` to load the existing local environment and run
+  Django debug plus Next.js on configurable ports (8001/3000 by default), with
+  matching backend/CSRF/frontend origins and process-group cleanup.
+- Checks: Bash syntax and Git whitespace; isolated environment/port forwarding,
+  Ctrl+C and child cleanup, server-failure exit propagation, occupied/invalid
+  port checks. Live Django system check/startup passed; live Next.js startup
+  was blocked by its existing dev server, and the launcher stopped its backend.
