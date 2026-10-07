@@ -295,3 +295,10 @@ Use `SESSION_STATE.md` for current handoff context, not historical detail.
   Ctrl+C and child cleanup, server-failure exit propagation, occupied/invalid
   port checks. Live Django system check/startup passed; live Next.js startup
   was blocked by its existing dev server, and the launcher stopped its backend.
+
+### `bf385a8` Align product information with gallery top
+
+- Removed extra top padding from the shared product information column so its
+  content starts at the gallery's top edge.
+- Checks: live mechanical-pencil product page HTTP 200, updated rule in served
+  Next.js CSS, and Git whitespace check. Browser visual QA unavailable.
