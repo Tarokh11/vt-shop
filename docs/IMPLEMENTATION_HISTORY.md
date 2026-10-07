@@ -32,6 +32,14 @@ Use `SESSION_STATE.md` for current handoff context, not historical detail.
 
 ## Current History
 
+### `ca9a434` Add Docker Compose VPS deployment
+
+- Added production containers for Django/Gunicorn and Next.js, a loopback-only
+  Nginx proxy, and persistent PostgreSQL, static, and media volumes. Added an
+  SSH-based GitHub Actions deployment workflow and VPS setup guide.
+- Checks: `docker compose config --quiet` and `git diff --cached --check` pass.
+  Application image builds and a live VPS deployment were not run.
+
 ### `1bcd6a4` Build starter foundation and customer accounts
 
 - Created the Django/DRF and Next.js starter, custom customer user, same-origin
