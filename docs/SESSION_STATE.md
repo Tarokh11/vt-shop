@@ -32,6 +32,9 @@
   Eleven individual demo product photos are stored as reusable WebP sample
   assets; local records have product-specific images. Browser connection
   unavailable for visual QA.
+- Mobile navigation: Products submenu toggles on tap, stays within the viewport,
+  scrolls when long, and closes on link selection/main-menu close/Escape.
+  Frontend lint/typecheck/build and served header/CSS checks pass; browser QA pending.
 - Catalog UX: removable filter chips, mobile filter toggle, stable search/filter
   state, canceled stale requests, loading/error/empty guidance, and card specs.
   Current checks: frontend lint/typecheck/build and live catalog/filter/pagination

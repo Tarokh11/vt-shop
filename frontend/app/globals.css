@@ -44,10 +44,11 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .site-nav a:hover { color: var(--ink); }
 .site-nav a:hover::after { opacity: 1; transform: scaleX(1); }
 .products-nav { position: relative; }
+.products-toggle { display: none; }
 .products-nav > a { display: inline-flex; align-items: center; gap: .35rem; }
 .products-nav > a::before { color: var(--orange); content: "⌄"; font-size: .95rem; }
-.products-menu { position: absolute; z-index: 20; top: calc(100% + 1.25rem); right: 50%; display: grid; grid-template-columns: minmax(12rem, 1fr) minmax(11rem, .8fr); gap: 2rem; width: min(38rem, 80vw); padding: 1.4rem; border: 1px solid var(--line); border-radius: 1rem; background: rgba(255, 254, 251, .98); box-shadow: var(--shadow); opacity: 0; pointer-events: none; transform: translate(50%, -.35rem); transition: opacity .2s ease, transform .2s ease; }
-.products-nav:hover .products-menu, .products-nav:focus-within .products-menu { opacity: 1; pointer-events: auto; transform: translate(50%, 0); }
+.products-menu { position: absolute; z-index: 20; top: calc(100% + 1.25rem); right: 50%; display: grid; grid-template-columns: minmax(12rem, 1fr) minmax(11rem, .8fr); gap: 2rem; width: min(38rem, 80vw); padding: 1.4rem; border: 1px solid var(--line); border-radius: 1rem; background: rgba(255, 254, 251, .98); box-shadow: var(--shadow); opacity: 0; visibility: hidden; pointer-events: none; transform: translate(50%, -.35rem); transition: opacity .2s ease, transform .2s ease; }
+.products-nav:hover .products-menu, .products-nav:focus-within .products-menu { visibility: visible; opacity: 1; pointer-events: auto; transform: translate(50%, 0); }
 .products-menu > div:first-child { display: grid; align-content: start; gap: .55rem; }
 .products-menu strong { color: var(--ink); font-size: .78rem; }
 .products-menu a { color: var(--muted); font-size: .76rem; text-decoration: none; }
@@ -370,13 +371,18 @@ button.variant.active { border-color: var(--green); background: var(--green-ligh
   .header-actions { margin-inline-start: auto; }
   .header-account { max-width: 6rem; }
   .header-cart { padding: .55rem .75rem; }
-  .site-nav { position: absolute; z-index: 10; top: 100%; inset-inline: 0; display: none; align-items: stretch; flex-direction: column; gap: 0; padding: .5rem 1rem 1rem; border-bottom: 1px solid var(--line); background: var(--paper); box-shadow: 0 .75rem 1.5rem rgba(24, 62, 50, .1); }
+  .site-nav { position: absolute; z-index: 10; top: 100%; inset-inline: 0; display: none; align-items: stretch; flex-direction: column; gap: 0; padding: .5rem 1rem 1rem; border-bottom: 1px solid var(--line); background: var(--paper); box-shadow: 0 .75rem 1.5rem rgba(24, 62, 50, .1); max-height: calc(100dvh - 8rem); overflow-y: auto; overscroll-behavior: contain; }
   .site-nav.open { display: flex; }
   .site-nav a { padding: .85rem .25rem; border-bottom: 1px solid var(--line); }
   .site-nav a:last-child { border-bottom: 0; }
   .products-nav { width: 100%; }
-  .products-nav > a { padding: .85rem .25rem; border-bottom: 1px solid var(--line); }
-  .products-menu { position: static; grid-template-columns: 1fr; width: 100%; padding: .75rem; border: 0; border-radius: .5rem; box-shadow: none; opacity: 1; pointer-events: auto; transform: none; }
+  .products-nav > .products-desktop-link { display: none; }
+  .products-toggle { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: .85rem .25rem; border-bottom: 1px solid var(--line); border-radius: 0; background: transparent; color: var(--muted); font-size: .86rem; font-weight: 600; text-align: start; }
+  .products-toggle:hover:not(:disabled) { transform: none; box-shadow: none; }
+  .products-toggle > span { color: var(--orange); font-size: 1.1rem; }
+  .products-menu, .products-nav:hover .products-menu, .products-nav:focus-within .products-menu { display: none; position: static; grid-template-columns: minmax(0, 1fr); width: 100%; padding: .75rem; border: 0; border-radius: .5rem; box-shadow: none; opacity: 1; visibility: hidden; pointer-events: none; transform: none; }
+  .products-nav .products-menu.open { display: grid; visibility: visible; pointer-events: auto; }
+  .products-menu a { min-width: 0; overflow-wrap: anywhere; }
   .products-menu-note { display: none; }
   main { width: min(100% - 2rem, 78rem); padding-top: 3rem; padding-bottom: 4rem; }
   .home-page { padding-top: 1.5rem; }

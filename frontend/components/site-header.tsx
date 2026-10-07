@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { api, Customer } from "@/lib/api";
 import { Cart } from "@/lib/cart";
@@ -33,6 +33,8 @@ export function SiteHeader() {
   const [cartCount, setCartCount] = useState(0);
   const [categories, setCategories] = useState<Category[]>([]);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [productsOpen, setProductsOpen] = useState(false);
+  const menuToggle = useRef<HTMLButtonElement>(null);
   const [announcementIndex, setAnnouncementIndex] = useState(0);
 
   useEffect(() => {
@@ -87,23 +89,32 @@ export function SiteHeader() {
              <span><strong>نورا</strong><small>نوشت‌افزار و ابزار خلاقیت</small></span>
           </Link>
       <button
+        ref={menuToggle}
         className="menu-toggle"
         type="button"
         aria-expanded={menuOpen}
         aria-controls="main-navigation"
-        onClick={() => setMenuOpen((open) => !open)}
+        onClick={() => { setMenuOpen(!menuOpen); setProductsOpen(false); }}
       >
         <span className="sr-only">نمایش منوی اصلی</span>
         <span aria-hidden="true">☰</span>
       </button>
-          <nav id="main-navigation" className={menuOpen ? "site-nav open" : "site-nav"} aria-label="ناوبری اصلی">
+          <nav id="main-navigation" className={menuOpen ? "site-nav open" : "site-nav"} aria-label="ناوبری اصلی"
+            onClick={(event) => {
+              if ((event.target as HTMLElement).closest("a")) { setMenuOpen(false); setProductsOpen(false); }
+            }}
+            onKeyDown={(event) => {
+              if (event.key === "Escape") { setMenuOpen(false); setProductsOpen(false); menuToggle.current?.focus(); }
+            }}
+          >
             <Link href="/">خانه</Link>
             <div className="products-nav">
-              <Link href="/products">محصولات</Link>
-              {categories.length > 0 && <div className="products-menu">
+              <Link className="products-desktop-link" href="/products">محصولات</Link>
+              <button className="products-toggle" type="button" aria-expanded={productsOpen} aria-controls="products-navigation" onClick={() => setProductsOpen((open) => !open)}>محصولات<span aria-hidden="true">{productsOpen ? "−" : "+"}</span></button>
+              <div id="products-navigation" className={productsOpen ? "products-menu open" : "products-menu"}>
                 <div><strong>دسته‌بندی محصولات</strong><Link href="/products">همه محصولات</Link>{categories.map((category) => <Link href={`/products?category=${encodeURIComponent(category.slug)}`} key={category.id}>{category.parent ? `↳ ${category.name}` : category.name}</Link>)}</div>
                 <div className="products-menu-note"><span>برای میز شما</span><strong>ابزارهایی برای نوشتن،<br />ساختن و فکر کردن.</strong><Link href="/products">مشاهده کاتالوگ ←</Link></div>
-              </div>}
+              </div>
             </div>
             <Link href="/orders">پیگیری سفارش</Link>
             <Link href="/about">درباره نورا</Link>

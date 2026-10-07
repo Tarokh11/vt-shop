@@ -315,6 +315,13 @@ The product information has no extra top padding; the desktop gallery has a
 show a linked 72px primary product thumbnail, with a missing/failed-image
 placeholder. Cart responses include the ordered primary image with prefetching.
 
+Mobile navigation refinement: Products uses a tap-controlled disclosure with
+an always-available all-products link. Mobile hover/focus cannot translate the
+submenu; the open navigation scrolls within the viewport. Selecting a link,
+closing the main menu, or pressing Escape resets the disclosure. Frontend
+lint/typecheck/build and live header/CSS checks pass; browser interaction and
+visual QA remain unavailable.
+
 ### Phase 7: Stationery data
 
 - Add stationery categories, brands, attributes, collections, and products in a
