@@ -302,3 +302,13 @@ Use `SESSION_STATE.md` for current handoff context, not historical detail.
   content starts at the gallery's top edge.
 - Checks: live mechanical-pencil product page HTTP 200, updated rule in served
   Next.js CSS, and Git whitespace check. Browser visual QA unavailable.
+
+### `ccabf4d` Add cart product thumbnails and adjust gallery spacing
+
+- Cart rows show linked 72px primary product images, containing the full photo
+  and falling back for missing/failed images. Cart serialization adds the
+  ordered image URL with prefetching for read and mutation responses.
+- Moved the desktop product gallery down 1rem; stacked mobile spacing remains.
+- Checks: seven cart tests with ordered-image/null/mutation/prefetch coverage,
+  Ruff, frontend lint/typecheck/build, live cart/product routes, Git whitespace.
+  Browser visual QA remains unavailable.
