@@ -32,6 +32,16 @@ Use `SESSION_STATE.md` for current handoff context, not historical detail.
 
 ## Current History
 
+### `038ffb5` Separate local and production deployment configuration
+
+- Restored local DB-only Compose on loopback port 5432; added separate
+  `compose.production.yaml` and `.env.production` workflow configuration.
+  Generated server-only credentials without altering the local environment.
+- Checks: both Compose profiles and workflow Bash syntax pass; local
+  storefront, PostgreSQL readiness, catalog (11), API proxy, and default CSRF
+  cookie return expected results. First launch exposed SSH stdin consumption
+  after migration; follow-up fixes complete the remaining deployment steps.
+
 ### `17bee23` Support HTTP deployments and reliable container health checks
 
 - Added configurable cookie security/names and bind ports, compiled frontend

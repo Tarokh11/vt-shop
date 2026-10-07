@@ -58,5 +58,8 @@
   health probes accept production host/TLS settings. Local storefront/readiness/
   catalog return 200 with eleven products; both Compose profiles and workflow
   Bash syntax pass. No live deployment yet.
+  First workflow stopped after migration because Compose consumed SSH stdin;
+  migrations/static checks now close stdin explicitly. Two regression tests
+  simulate this behavior and verify all eight Docker steps execute.
 - Next task: run the first deployment and verify IP access on port 8084.
   Domain/TLS, merchant credentials, SMTP, and production backups remain release work.

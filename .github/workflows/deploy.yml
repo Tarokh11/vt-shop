@@ -87,9 +87,9 @@ jobs:
           docker compose --env-file .env.production -f compose.production.yaml --project-name vtshop config --quiet
           docker compose --env-file .env.production -f compose.production.yaml --project-name vtshop build
           docker compose --env-file .env.production -f compose.production.yaml --project-name vtshop up -d --wait db
-          docker compose --env-file .env.production -f compose.production.yaml --project-name vtshop run --rm backend python manage.py migrate --noinput
-          docker compose --env-file .env.production -f compose.production.yaml --project-name vtshop run --rm backend python manage.py collectstatic --noinput
+          docker compose --env-file .env.production -f compose.production.yaml --project-name vtshop run --rm -T --interactive=false backend python manage.py migrate --noinput </dev/null
+          docker compose --env-file .env.production -f compose.production.yaml --project-name vtshop run --rm -T --interactive=false backend python manage.py collectstatic --noinput </dev/null
           docker compose --env-file .env.production -f compose.production.yaml --project-name vtshop up -d --remove-orphans --wait
-          docker compose --env-file .env.production -f compose.production.yaml --project-name vtshop exec -T backend python manage.py check
+          docker compose --env-file .env.production -f compose.production.yaml --project-name vtshop exec -T backend python manage.py check </dev/null
           docker compose --env-file .env.production -f compose.production.yaml --project-name vtshop ps
           REMOTE
