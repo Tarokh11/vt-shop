@@ -1,4 +1,4 @@
-name: Deploy to VPS
+name: Deploy vt-shop
 
 on:
   push:
@@ -9,54 +9,87 @@ permissions:
   contents: read
 
 concurrency:
-  group: vps-deploy
+  group: deploy-${{ github.repository }}
   cancel-in-progress: false
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: vt-shop
     timeout-minutes: 30
     steps:
-      - name: Configure SSH
+      - name: Validate configuration and configure SSH
         env:
-          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
-          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
-          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          PRODUCTION_HOST: ${{ secrets.PRODUCTION_HOST }}
+          PRODUCTION_PORT: ${{ secrets.PRODUCTION_PORT || '22' }}
+          PRODUCTION_USER: ${{ secrets.PRODUCTION_USER }}
+          PRODUCTION_PATH: ${{ secrets.PRODUCTION_PATH }}
+          PRODUCTION_KNOWN_HOSTS: ${{ secrets.PRODUCTION_KNOWN_HOSTS }}
+          PRODUCTION_SSH_KEY: ${{ secrets.PRODUCTION_SSH_KEY }}
+        shell: bash
         run: |
           set -eu
-          test -n "$DEPLOY_HOST" || { echo "Missing DEPLOY_HOST secret"; exit 1; }
-          test -n "$DEPLOY_KNOWN_HOSTS" || { echo "Missing DEPLOY_KNOWN_HOSTS secret"; exit 1; }
-          test -n "$DEPLOY_SSH_KEY" || { echo "Missing DEPLOY_SSH_KEY secret"; exit 1; }
+          for variable in PRODUCTION_HOST PRODUCTION_USER PRODUCTION_PATH PRODUCTION_KNOWN_HOSTS PRODUCTION_SSH_KEY; do
+            if [ -z "${!variable}" ]; then
+              printf 'Missing required deployment secret: %s\n' "$variable" >&2
+              exit 1
+            fi
+          done
           install -m 700 -d "$HOME/.ssh"
-          printf '%s\n' "$DEPLOY_SSH_KEY" > "$HOME/.ssh/vt-shop-deploy"
-          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          printf '%s\n' "$PRODUCTION_SSH_KEY" > "$HOME/.ssh/vt-shop-deploy"
+          printf '%s\n' "$PRODUCTION_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
           chmod 600 "$HOME/.ssh/vt-shop-deploy" "$HOME/.ssh/known_hosts"
+          ssh-keygen -y -P '' -f "$HOME/.ssh/vt-shop-deploy" > /dev/null
 
-      - name: Pull and deploy on VPS
+      - name: Deploy over SSH
         env:
-          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
-          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          PRODUCTION_HOST: ${{ secrets.PRODUCTION_HOST }}
+          PRODUCTION_PORT: ${{ secrets.PRODUCTION_PORT || '22' }}
+          PRODUCTION_USER: ${{ secrets.PRODUCTION_USER }}
+          PRODUCTION_PATH: ${{ secrets.PRODUCTION_PATH }}
+          REPOSITORY: https://github.com/${{ github.repository }}.git
+          DEPLOY_BRANCH: ${{ github.ref_name }}
+          DEPLOY_SHA: ${{ github.sha }}
+        shell: bash
         run: |
           set -eu
-          test -n "$DEPLOY_USER" || { echo "Missing DEPLOY_USER secret"; exit 1; }
+          while [[ "$PRODUCTION_PATH" == *$'\n' || "$PRODUCTION_PATH" == *$'\r' ]]; do
+            PRODUCTION_PATH="${PRODUCTION_PATH%?}"
+          done
+          [[ "$PRODUCTION_PATH" == /* && "$PRODUCTION_PATH" != / ]] || { echo 'PRODUCTION_PATH must be an absolute application directory'; exit 1; }
+          printf -v remote_path '%q' "$PRODUCTION_PATH"
+          printf -v remote_repository '%q' "$REPOSITORY"
+          printf -v remote_branch '%q' "$DEPLOY_BRANCH"
+          printf -v remote_sha '%q' "$DEPLOY_SHA"
           ssh -i "$HOME/.ssh/vt-shop-deploy" \
             -o BatchMode=yes \
+            -o ConnectTimeout=10 \
+            -o ServerAliveInterval=30 \
+            -o ServerAliveCountMax=3 \
             -o StrictHostKeyChecking=yes \
-            "$DEPLOY_USER@$DEPLOY_HOST" 'bash -se' <<'REMOTE'
+            -p "$PRODUCTION_PORT" \
+            "$PRODUCTION_USER@$PRODUCTION_HOST" \
+            "PRODUCTION_PATH=$remote_path REPOSITORY=$remote_repository DEPLOY_BRANCH=$remote_branch DEPLOY_SHA=$remote_sha bash -se" <<'REMOTE'
           set -eu
-          APP_DIR="$HOME/vt-shop"
-          if [ ! -d "$APP_DIR/.git" ]; then
-            git clone --branch vt-shop --depth 1 https://github.com/Tarokh11/vt-shop.git "$APP_DIR"
+          test -f "$PRODUCTION_PATH/.env" || { echo "Create $PRODUCTION_PATH/.env using docs/DEPLOYMENT.md before deploying"; exit 1; }
+          cd "$PRODUCTION_PATH"
+          if [ ! -e .git ]; then
+            git init
           fi
-          cd "$APP_DIR"
-          test -f .env || { echo "Create $APP_DIR/.env using docs/DEPLOYMENT.md before deploying"; exit 1; }
-          git fetch origin vt-shop
-          git checkout vt-shop
-          git pull --ff-only origin vt-shop
-          docker compose config --quiet
-          docker compose build
-          docker compose up -d --wait db
-          docker compose run --rm backend python manage.py migrate --noinput
-          docker compose run --rm backend python manage.py collectstatic --noinput
-          docker compose up -d --remove-orphans --wait
+          if ! git remote get-url origin > /dev/null 2>&1; then
+            git remote add origin "$REPOSITORY"
+          fi
+          git remote set-url origin "$REPOSITORY"
+          git diff --quiet
+          git diff --cached --quiet
+          git fetch --prune origin "$DEPLOY_BRANCH"
+          git checkout --detach "$DEPLOY_SHA"
+          docker compose --project-name vtshop config --quiet
+          docker compose --project-name vtshop build
+          docker compose --project-name vtshop up -d --wait db
+          docker compose --project-name vtshop run --rm backend python manage.py migrate --noinput
+          docker compose --project-name vtshop run --rm backend python manage.py collectstatic --noinput
+          docker compose --project-name vtshop up -d --remove-orphans --wait
+          docker compose --project-name vtshop exec -T backend python manage.py check
+          docker compose --project-name vtshop ps
           REMOTE
