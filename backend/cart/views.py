@@ -17,7 +17,7 @@ def customer_cart(customer):
 
 
 def serialized_cart(cart):
-    cart = Cart.objects.prefetch_related("items__variant__product").get(pk=cart.pk)
+    cart = Cart.objects.prefetch_related("items__variant__product__images").get(pk=cart.pk)
     return CartSerializer(cart).data
 
 

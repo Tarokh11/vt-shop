@@ -255,6 +255,11 @@ button.variant.active { border-color: var(--green); background: var(--green-ligh
 .cart-items { margin-top: 2.2rem; border-top: 1px solid var(--line); }
 .cart-item { display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto; align-items: center; gap: 1.5rem; min-width: 0; padding: 1.35rem 0; border-bottom: 1px solid var(--line); }
 .cart-item > div:first-child { min-width: 0; }
+.cart-item-product { display: flex; align-items: center; gap: 1rem; }
+.cart-item-product > div { min-width: 0; }
+.cart-item-image { display: grid; flex: 0 0 4.5rem; width: 4.5rem; height: 4.5rem; place-items: center; overflow: hidden; border: 1px solid var(--line); border-radius: .75rem; background: #f5f0e7; }
+.cart-item-image img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.cart-image-placeholder { color: var(--muted); font-size: 1.6rem; }
 .cart-item a { color: inherit; font-weight: 800; text-decoration: none; overflow-wrap: anywhere; }
 .cart-item p { margin: .3rem 0 0; color: var(--muted); font-size: .78rem; overflow-wrap: anywhere; }
 .cart-item > strong { white-space: nowrap; color: var(--green); }
@@ -587,6 +592,7 @@ button.variant.active { border-color: var(--green); background: var(--green-ligh
 .detail-breadcrumbs a { color: var(--muted); text-decoration: none; }
 .detail-breadcrumbs [aria-current="page"] { color: var(--ink); font-weight: 600; }
 .detail-layout { gap: clamp(1.5rem, 4vw, 3.5rem); grid-template-columns: minmax(0, 1.1fr) minmax(20rem, .9fr); }
+.detail-gallery { margin-top: 1rem; }
 .detail-gallery .product-gallery-main { overflow: hidden; border: 1px solid var(--line); border-radius: 1.5rem 1.5rem 1.5rem 3rem; background: #f5f0e7; }
 .detail-image-open { position: relative; display: block; width: 100%; padding: 0; border-radius: 0; background: transparent; cursor: zoom-in; }
 .detail-image-open:hover:not(:disabled) { transform: none; box-shadow: none; }
@@ -674,7 +680,7 @@ button.variant.active { border-color: var(--green); background: var(--green-ligh
 .detail-back-link { font-size: .8rem; }
 @media (max-width: 900px) {
   .detail-layout { grid-template-columns: 1fr; gap: 1.5rem; }
-  .detail-gallery { max-width: 38rem; }
+  .detail-gallery { max-width: 38rem; margin-top: 0; }
   .detail-gallery .product-gallery-main { max-width: 100%; }
   .detail-information { grid-template-columns: 1fr; gap: 1rem; }
   .detail-loading { grid-template-columns: 1fr; gap: 1rem; }

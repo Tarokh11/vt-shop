@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -7,6 +8,13 @@ import { useEffect, useState } from "react";
 import { api, ApiError } from "@/lib/api";
 import { Cart } from "@/lib/cart";
 import { formatIrr } from "@/lib/catalog";
+
+function CartProductImage({ image }: Readonly<{ image: string | null }>) {
+  const [failedImage, setFailedImage] = useState<string | null>(null);
+  return image && failedImage !== image
+    ? <Image src={image} alt="" width={72} height={72} sizes="72px" onError={() => setFailedImage(image)} />
+    : <span className="cart-image-placeholder" role="img" aria-label="بدون تصویر">▧</span>;
+}
 
 export default function CartPage() {
   const router = useRouter();
@@ -63,7 +71,10 @@ export default function CartPage() {
       {cart.items.length === 0 ? <section className="empty-cart"><span aria-hidden="true">✎</span><h2>هنوز چیزی روی میز نیست</h2><p>از بین دفترها و ابزارهای نوشتن، اولین انتخاب را پیدا کنید.</p><Link className="button-primary" href="/products">رفتن به قفسه‌ها</Link></section> : <>
         <section className="cart-items">
           {cart.items.map((item) => <article className="cart-item" key={item.id}>
-            <div><Link href={`/products/${encodeURIComponent(item.product_slug)}`}>{item.product}</Link><p>{item.variant || item.sku}</p>{!item.available && <p className="error">این گزینه دیگر موجود نیست.</p>}</div>
+            <div className="cart-item-product">
+              <Link className="cart-item-image" href={`/products/${encodeURIComponent(item.product_slug)}`} aria-label={`دیدن ${item.product}`}><CartProductImage image={item.product_image} /></Link>
+              <div><Link href={`/products/${encodeURIComponent(item.product_slug)}`}>{item.product}</Link><p>{item.variant || item.sku}</p>{!item.available && <p className="error">این گزینه دیگر موجود نیست.</p>}</div>
+            </div>
             <strong>{formatIrr(item.line_total_irr)}</strong>
             <div className="quantity-control">
               <button type="button" aria-label="کاهش تعداد" disabled={pending === item.id || item.quantity === 1} onClick={() => updateQuantity(item.id, item.quantity - 1)}>−</button>

@@ -7,6 +7,7 @@ class CartItemSerializer(serializers.ModelSerializer):
     variant_id = serializers.IntegerField(source="variant.id", read_only=True)
     product = serializers.CharField(source="variant.product.name", read_only=True)
     product_slug = serializers.CharField(source="variant.product.slug", read_only=True)
+    product_image = serializers.SerializerMethodField()
     variant = serializers.CharField(source="variant.name", read_only=True)
     sku = serializers.CharField(source="variant.sku", read_only=True)
     price_irr = serializers.IntegerField(source="variant.price_irr", read_only=True)
@@ -20,6 +21,7 @@ class CartItemSerializer(serializers.ModelSerializer):
             "variant_id",
             "product",
             "product_slug",
+            "product_image",
             "variant",
             "sku",
             "quantity",
@@ -27,6 +29,10 @@ class CartItemSerializer(serializers.ModelSerializer):
             "line_total_irr",
             "available",
         )
+
+    def get_product_image(self, item):
+        image = next(iter(item.variant.product.images.all()), None)
+        return image.image.url if image else None
 
     def get_line_total_irr(self, item):
         return item.quantity * item.variant.price_irr

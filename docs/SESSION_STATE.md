@@ -38,8 +38,10 @@
   and eleven WebP image URLs pass; browser interactions remain unverified.
 - Product detail: shared non-sticky gallery with zoom, quantity/model purchase card, explicit
   cart/favorite feedback, mobile purchase navigation, specs and buying guidance.
-  Gallery and adjacent information now start at the same top edge; live page
-  and compiled CSS checks pass. Browser visual QA remains unavailable.
+  Desktop gallery now has a 1rem top offset; stacked mobile layout has none.
+  Cart rows show 72px product thumbnails with a fallback; primary images are
+  prefetched in cart responses. Seven cart tests, Ruff, frontend lint/typecheck,
+  and live cart/product routes pass. Browser visual QA remains unavailable.
   Gallery and adjacent information now start at the same top edge; live page
   and compiled CSS checks pass. Browser visual QA remains unavailable.
   Five selection/quantity tests, lint/typecheck/build, eleven detail API/photos,

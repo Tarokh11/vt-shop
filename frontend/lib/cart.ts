@@ -3,6 +3,7 @@ export type CartItem = {
   variant_id: number;
   product: string;
   product_slug: string;
+  product_image: string | null;
   variant: string;
   sku: string;
   quantity: number;

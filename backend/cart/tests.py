@@ -2,9 +2,10 @@ from django.test import TestCase
 from rest_framework.test import APIClient
 
 from accounts.models import User
-from catalog.models import Product, ProductVariant
+from catalog.models import Product, ProductImage, ProductVariant
 
 from .models import CartItem
+from .views import serialized_cart
 
 
 class CartApiTests(TestCase):
@@ -52,6 +53,7 @@ class CartApiTests(TestCase):
         self.assertEqual(cart["subtotal_irr"], 2_500_000)
         self.assertEqual(cart["items"][0]["price_irr"], 1_250_000)
         self.assertNotIn("stock_quantity", cart["items"][0])
+        self.assertIsNone(cart["items"][0]["product_image"])
 
         price_field_is_ignored = self.request(
             "post",
@@ -61,6 +63,29 @@ class CartApiTests(TestCase):
         self.assertEqual(price_field_is_ignored.status_code, 200)
         self.assertEqual(price_field_is_ignored.json()["items"][0]["quantity"], 3)
         self.assertEqual(price_field_is_ignored.json()["subtotal_irr"], 3_750_000)
+
+    def test_cart_uses_first_ordered_product_image_in_read_and_mutation_responses(self):
+        ProductImage.objects.create(
+            product=self.variant.product, image="catalog/later.webp", position=2
+        )
+        first = ProductImage.objects.create(
+            product=self.variant.product, image="catalog/first.webp", position=0
+        )
+        created = self.request(
+            "post", "/api/v1/cart/items/", {"variant_id": self.variant.id, "quantity": 1}
+        )
+        self.assertEqual(created.status_code, 201)
+        self.assertEqual(created.json()["items"][0]["product_image"], first.image.url)
+        self.assertEqual(
+            self.client.get("/api/v1/cart/").json()["items"][0]["product_image"], first.image.url
+        )
+        item_id = created.json()["items"][0]["id"]
+        updated = self.request("patch", f"/api/v1/cart/items/{item_id}/", {"quantity": 2})
+        self.assertEqual(updated.status_code, 200)
+        self.assertEqual(updated.json()["items"][0]["product_image"], first.image.url)
+        cart = CartItem.objects.get(pk=item_id).cart
+        with self.assertNumQueries(5):
+            self.assertEqual(serialized_cart(cart)["items"][0]["product_image"], first.image.url)
 
     def test_cart_rejects_unavailable_or_excessive_quantity_without_reserving_stock(self):
         response = self.request(
