@@ -39,7 +39,7 @@ async function csrfToken(): Promise<string> {
     cache: "no-store",
   });
   if (!response.ok) throw new Error("دریافت مجوز امنیتی ناموفق بود.");
-  const token = cookie("csrftoken");
+  const token = cookie(process.env.NEXT_PUBLIC_CSRF_COOKIE_NAME ?? "csrftoken");
   if (!token) throw new Error("کوکی امنیتی دریافت نشد.");
   return decodeURIComponent(token);
 }

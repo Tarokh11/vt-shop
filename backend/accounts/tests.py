@@ -1,6 +1,7 @@
+from django.conf import settings
 from django.contrib.auth.tokens import default_token_generator
 from django.core import mail
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from rest_framework.test import APIClient
@@ -17,7 +18,7 @@ class AccountApiTests(TestCase):
     def csrf_token(self):
         response = self.client.get("/api/v1/accounts/csrf/")
         self.assertEqual(response.status_code, 200)
-        return response.cookies["csrftoken"].value
+        return response.cookies[settings.CSRF_COOKIE_NAME].value
 
     def post_with_csrf(self, path, data):
         return self.client.post(
@@ -51,6 +52,21 @@ class AccountApiTests(TestCase):
         )
         self.assertEqual(response.status_code, 201)
 
+    @override_settings(
+        SESSION_COOKIE_NAME="vtshop_sessionid", CSRF_COOKIE_NAME="vtshop_csrftoken"
+    )
+    def test_registration_uses_store_cookies_and_retains_authentication(self):
+        response = self.post_with_csrf(
+            "/api/v1/accounts/register/",
+            {"email": "isolated@example.com", "password": "Valid-pass-904"},
+        )
+        self.assertEqual(response.status_code, 201)
+        self.assertIn("vtshop_sessionid", response.cookies)
+        self.assertIn("vtshop_csrftoken", response.cookies)
+        self.assertNotIn("sessionid", response.cookies)
+        self.assertNotIn("csrftoken", response.cookies)
+        self.assertEqual(self.client.get("/api/v1/accounts/me/").status_code, 200)
+
     def test_duplicate_email_is_rejected_case_insensitively(self):
         self.create_customer()
         response = self.post_with_csrf(
@@ -79,7 +95,7 @@ class AccountApiTests(TestCase):
                 "shipping_region": "TEHRAN",
             },
             format="json",
-            HTTP_X_CSRFTOKEN=self.client.cookies["csrftoken"].value,
+            HTTP_X_CSRFTOKEN=self.client.cookies[settings.CSRF_COOKIE_NAME].value,
         )
         self.assertEqual(update.status_code, 200)
         self.assertEqual(update.json()["first_name"], "Updated")
@@ -90,7 +106,7 @@ class AccountApiTests(TestCase):
 
         logout_response = self.client.post(
             "/api/v1/accounts/logout/",
-            HTTP_X_CSRFTOKEN=self.client.cookies["csrftoken"].value,
+            HTTP_X_CSRFTOKEN=self.client.cookies[settings.CSRF_COOKIE_NAME].value,
         )
         self.assertEqual(logout_response.status_code, 204)
         self.assertEqual(self.client.get("/api/v1/accounts/me/").status_code, 403)

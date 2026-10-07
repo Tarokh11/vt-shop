@@ -41,5 +41,10 @@
   branch `vt-shop` over SSH; VPS configuration and repository secrets remain
   to be set by the owner. Production email and real Zarinpal setup remain
   release prerequisites.
+- Deployment checks: account/core regressions (14), targeted Ruff, frontend
+  lint/typecheck/build, compiled store CSRF cookie name, Nginx syntax, Compose
+  HTTP profile, workflow shell syntax/missing-env preflight, and HTTPS/HTTP
+  settings checks pass. Cookie names/security and published port are configurable;
+  health probes accept production host/TLS settings. No live deployment yet.
 - Next task: configure the VPS `.env`, TLS proxy, and GitHub Actions secrets;
   then verify the first deployment and production payment/email integrations.

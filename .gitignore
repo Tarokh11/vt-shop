@@ -1,5 +1,6 @@
 .env
 .env.local
+/PRODUCTION*.txt
 .venv/
 __pycache__/
 *.py[cod]
