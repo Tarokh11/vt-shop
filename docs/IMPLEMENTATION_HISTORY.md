@@ -32,6 +32,17 @@ Use `SESSION_STATE.md` for current handoff context, not historical detail.
 
 ## Current History
 
+### `68fb5d4` Prevent Compose from consuming SSH deployment input
+
+- Closed stdin for migration/static/system checks so Docker cannot consume
+  later commands from the SSH heredoc. Added regression tests simulating that
+  behavior and missing-environment preflight; explicit subprocess status is checked.
+- Checks: both regression tests and targeted Ruff pass. Corrected workflow run
+  `37628643534` succeeded; all four deployed services are healthy. Installed
+  eleven sample products/photos with an inactive audit actor. Public pages,
+  readiness, all photos, Next optimization, and HTTP CSRF checks pass; local
+  storefront/API and its original CSRF cookie also pass.
+
 ### `038ffb5` Separate local and production deployment configuration
 
 - Restored local DB-only Compose on loopback port 5432; added separate

@@ -59,6 +59,7 @@ class DeploymentWorkflowTests(unittest.TestCase):
                 text=True,
                 capture_output=True,
                 timeout=10,
+                check=False,
             )
             calls = (
                 [json.loads(line) for line in log.read_text().splitlines()]

@@ -1,6 +1,6 @@
 # Session State
 
-- Current phase: local/server configurations separated; first VPS launch in progress.
+- Current phase: HTTP VPS preview deployed; local/server configurations separated.
 - Product deletion now tracks inventory provenance; manual products without
   protected history can be removed, while imported/history-bearing products are
   archived to retain stock/order records.
@@ -38,6 +38,8 @@
   and eleven WebP image URLs pass; browser interactions remain unverified.
 - Product detail: shared non-sticky gallery with zoom, quantity/model purchase card, explicit
   cart/favorite feedback, mobile purchase navigation, specs and buying guidance.
+  Gallery and adjacent information now start at the same top edge; live page
+  and compiled CSS checks pass. Browser visual QA remains unavailable.
   Five selection/quantity tests, lint/typecheck/build, eleven detail API/photos,
   and representative routes pass; visual and purchase browser checks pending.
 - Deployment: public `Tarokh11/vt-shop` is created and the current branch is
@@ -45,7 +47,7 @@
   `vt-shop`, configured `PRODUCTION_*` secrets, and exact-commit SSH deployment
   to `root@94.184.45.92:22`, directory `/opt/vt-shop`, Compose project `vtshop`.
   User approved storing the supplied SSH key in that GitHub environment.
-  HTTP-by-IP preview is planned on free port 8084 because 8080–8083 are occupied.
+  HTTP preview is live at `http://94.184.45.92:8084`; ports 8080–8083 were occupied.
   `compose.production.yaml` and server-only `.env.production` configure the
   stack; the server environment was created with generated secrets/mode 600.
   Local `compose.yaml` is restored to DB-only with loopback port 5432, and local
@@ -57,9 +59,10 @@
   settings checks pass. Cookie names/security and published port are configurable;
   health probes accept production host/TLS settings. Local storefront/readiness/
   catalog return 200 with eleven products; both Compose profiles and workflow
-  Bash syntax pass. No live deployment yet.
-  First workflow stopped after migration because Compose consumed SSH stdin;
-  migrations/static checks now close stdin explicitly. Two regression tests
-  simulate this behavior and verify all eight Docker steps execute.
-- Next task: run the first deployment and verify IP access on port 8084.
-  Domain/TLS, merchant credentials, SMTP, and production backups remain release work.
+  Bash syntax pass. All four server containers are healthy; public home/catalog/
+  detail/Admin/panel/readiness, eleven product photos, Next image optimization,
+  and HTTP CSRF validation pass. Server sample catalog was seeded using an
+  inactive staff audit account with an unusable password; no admin login created.
+  Two deployment regressions verify stdin isolation and all eight Docker steps.
+- Next task: configure an administrator account and prepare domain/TLS, merchant
+  credentials, SMTP, and production backups before customer production launch.

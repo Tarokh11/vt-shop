@@ -10,9 +10,9 @@ database, collects static assets, and waits for container health checks.
 - Host: `94.184.45.92`; SSH port: `22`; account: `root`.
 - Application directory: `/opt/vt-shop`.
 - Compose project: `vtshop`, with separate database and media volumes.
-- Planned HTTP address: `http://94.184.45.92:8084`.
+- Live HTTP preview: `http://94.184.45.92:8084`.
 - Ports 8080–8083 are already in use on this shared VPS. Port 8084 was free
-  during the read-only server check; confirm it remains free before first deploy.
+  during setup and is now assigned to vtshop.
 
 The supplied `PRODUCTION _vtshop.txt` contains a private key. It is excluded
 from Git and the Docker build context. Store its key only in GitHub Actions
@@ -87,6 +87,15 @@ existing stationery samples once, including their product photos:
 ```sh
 docker compose --env-file .env.production -f compose.production.yaml --project-name vtshop exec backend python manage.py seed_stationery
 ```
+
+The first launch already installed all eleven sample products and images using
+an inactive staff audit account with an unusable password. Create a real
+administrator with `createsuperuser` to sign into the staff interfaces.
+
+Deployment run `37628643534` passed on 2026-10-07. All four services are healthy;
+public pages, readiness, eleven image URLs, Next image optimization, and HTTP
+CSRF validation were verified. Local venv/dev servers at ports 8010/3000 were
+also checked, including their original CSRF cookie and eleven-product catalog.
 
 Back up the `vtshop_postgres_data` and `vtshop_media_data` volumes off the VPS
 regularly. Migrations run automatically on each deploy.
