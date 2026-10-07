@@ -311,7 +311,7 @@ Browser gallery/purchase interactions and visual QA remain pending.
 Product galleries use normal document flow on all screen sizes; they do not
 stick to the viewport while scrolling.
 The product information has no extra top padding; the desktop gallery has a
-small 1rem top offset, with no offset in the stacked mobile layout. Cart rows
+130px top offset, with no offset in the stacked mobile layout. Cart rows
 show a linked 72px primary product thumbnail, with a missing/failed-image
 placeholder. Cart responses include the ordered primary image with prefetching.
 

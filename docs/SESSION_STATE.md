@@ -38,7 +38,7 @@
   and eleven WebP image URLs pass; browser interactions remain unverified.
 - Product detail: shared non-sticky gallery with zoom, quantity/model purchase card, explicit
   cart/favorite feedback, mobile purchase navigation, specs and buying guidance.
-  Desktop gallery now has a 1rem top offset; stacked mobile layout has none.
+  Desktop gallery now has a 130px top offset; stacked mobile layout has none.
   Cart rows show 72px product thumbnails with a fallback; primary images are
   prefetched in cart responses. Seven cart tests, Ruff, frontend lint/typecheck,
   and live cart/product routes pass. Browser visual QA remains unavailable.

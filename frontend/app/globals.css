@@ -592,7 +592,7 @@ button.variant.active { border-color: var(--green); background: var(--green-ligh
 .detail-breadcrumbs a { color: var(--muted); text-decoration: none; }
 .detail-breadcrumbs [aria-current="page"] { color: var(--ink); font-weight: 600; }
 .detail-layout { gap: clamp(1.5rem, 4vw, 3.5rem); grid-template-columns: minmax(0, 1.1fr) minmax(20rem, .9fr); }
-.detail-gallery { margin-top: 1rem; }
+.detail-gallery { margin-top: 130px; }
 .detail-gallery .product-gallery-main { overflow: hidden; border: 1px solid var(--line); border-radius: 1.5rem 1.5rem 1.5rem 3rem; background: #f5f0e7; }
 .detail-image-open { position: relative; display: block; width: 100%; padding: 0; border-radius: 0; background: transparent; cursor: zoom-in; }
 .detail-image-open:hover:not(:disabled) { transform: none; box-shadow: none; }
