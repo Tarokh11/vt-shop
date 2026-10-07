@@ -71,7 +71,7 @@ class DeploymentWorkflowTests(unittest.TestCase):
     def test_all_commands_run_when_docker_would_consume_stdin(self):
         result, calls = self.run_script(with_environment=True)
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertEqual(len(calls), 8)
+        self.assertEqual(len(calls), 9)
         self.assertEqual(calls[-1][-1], "ps")
         self.assertTrue(any("collectstatic" in call for call in calls))
         self.assertTrue(any("check" in call for call in calls))
