@@ -20,6 +20,7 @@ stationery-specific data/configuration whenever possible.
   URL filters and grouped variant selection.
 - Phase 7 sample stationery data: complete.
 - Phase 8 current verification: complete; production configuration remains pending.
+  Deployment/data handoff and first-launch lessons: [Persian guide](DEPLOYMENT_LESSONS_FA.md).
 
 ## Current Baseline
 

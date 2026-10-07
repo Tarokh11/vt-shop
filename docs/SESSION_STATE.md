@@ -16,7 +16,8 @@
   media are still required before production.
 - Key references: `docs/PROJECT_SCOPE.md`,
   `docs/STATIONERY_CATALOG_PLAN.md`, `docs/ADMIN_GUIDE.md`,
-  `backend/catalog/management_*.py`, `docs/DEPLOYMENT.md`, and
+  `backend/catalog/management_*.py`, `docs/DEPLOYMENT.md`,
+  `docs/DEPLOYMENT_LESSONS_FA.md` (Persian deployment/data checklist), and
   `docs/IMPLEMENTATION_HISTORY.md`.
 - Checks: catalog/order tests under SQLite settings, Ruff, migration drift,
   Django system check, frontend lint/typecheck/build, and responsive catalogue

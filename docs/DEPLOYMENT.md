@@ -1,5 +1,8 @@
 # vt-shop VPS deployment
 
+For the Persian deployment checklist, data placement, and lessons from the
+first launch, read [DEPLOYMENT_LESSONS_FA.md](DEPLOYMENT_LESSONS_FA.md).
+
 The workflow follows the supplied `action-deploy.yml` SSH deployment example,
 using the current `vt-shop` branch and GitHub environment `vt-shop`. It checks
 out the exact workflow commit on the VPS, builds the application, migrates the
