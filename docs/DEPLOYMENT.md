@@ -116,3 +116,15 @@ and persistent-media backups.
 Local development uses `compose.yaml` (PostgreSQL on loopback port 5432),
 local `.env`, Python venv, and Next dev. Server deployment uses
 `compose.production.yaml` and `.env.production`; it does not replace local files.
+
+## Local development launcher
+
+Run `./run-dev.sh` from the repository root to load the existing `.env` and
+start Django with debug enabled on port 8001 and Next.js on port 3000.
+The launcher requires the existing virtual environment, frontend dependencies,
+and local PostgreSQL. It sets the frontend backend origin and local Django
+CSRF/frontend origins to match the selected ports. Override ports with
+`BACKEND_PORT=8002 FRONTEND_PORT=3001 ./run-dev.sh`.
+Occupied ports stop startup; Ctrl+C or either server exiting stops both process
+groups. Stop any existing Next.js development server for this frontend before
+using the launcher, because Next.js allows only one dev server per project.

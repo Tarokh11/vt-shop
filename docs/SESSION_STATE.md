@@ -23,6 +23,10 @@
   smoke checks pass. New panel/catalog/cart/order tests (49), Ruff, JS syntax,
   Django/migration checks, and PostgreSQL bidirectional writes/stock smoke with
   rollback pass. PostgreSQL test-database coverage remains outstanding.
+- Local launcher: `./run-dev.sh` loads `.env`, enables Django debug, and starts
+  backend/frontend on 8001/3000 (ports configurable); Ctrl+C stops both.
+  Bash syntax, isolated startup/cleanup/port checks, and live Django startup pass;
+  live Next.js launch blocked by an existing frontend dev server.
 - Local preview: panel `/manage/products/` and Django Admin at port 8010;
   storefront at port 3000 with `BACKEND_ORIGIN=http://127.0.0.1:8010`.
   Eleven individual demo product photos are stored as reusable WebP sample
