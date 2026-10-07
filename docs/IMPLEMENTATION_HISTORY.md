@@ -312,3 +312,10 @@ Use `SESSION_STATE.md` for current handoff context, not historical detail.
 - Checks: seven cart tests with ordered-image/null/mutation/prefetch coverage,
   Ruff, frontend lint/typecheck/build, live cart/product routes, Git whitespace.
   Browser visual QA remains unavailable.
+
+### `39ea9b7` Set desktop product gallery offset to 130px
+
+- Updated the shared desktop gallery top margin from 1rem to the requested
+  130px; stacked mobile layout retains its zero offset.
+- Checks: metal-desk-tray page HTTP 200, served CSS desktop/mobile rules, and
+  Git whitespace. Browser visual QA remains unavailable.
