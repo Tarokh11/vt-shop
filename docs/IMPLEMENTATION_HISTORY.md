@@ -32,6 +32,26 @@ Use `SESSION_STATE.md` for current handoff context, not historical detail.
 
 ## Current History
 
+### `17bee23` Support HTTP deployments and reliable container health checks
+
+- Added configurable cookie security/names and bind ports, compiled frontend
+  CSRF-cookie selection, production-compatible readiness checks, Nginx liveness,
+  and preserved host ports/forwarded protocol. Ignored supplied credential files.
+- Checks: account/core regressions (14), targeted Ruff, frontend lint/typecheck,
+  isolated production build with cookie-name assertion, default HTTPS and HTTP
+  settings checks, Compose profile validation, and local Nginx syntax check pass.
+
+### `2b65c00` Configure vt-shop workflow for the supplied VPS
+
+- Aligned the workflow with the provided SSH example, environment-scoped
+  `PRODUCTION_*` secrets, `/opt/vt-shop`, and Compose project `vtshop`. Added
+  an HTTP-by-IP template on free port 8084 and updated the server guide.
+- Configured the supplied VPS credentials in GitHub environment `vt-shop`
+  after explicit user approval. SSH/Docker/occupied-port checks were read-only.
+- Checks: workflow YAML/Bash, Compose profile, missing-env preflight, and staged
+  private-key exclusion pass. No VPS application changes or live deployment;
+  `/opt/vt-shop/.env` remains the first-launch prerequisite.
+
 ### `ca9a434` Add Docker Compose VPS deployment
 
 - Added production containers for Django/Gunicorn and Next.js, a loopback-only
