@@ -319,3 +319,11 @@ Use `SESSION_STATE.md` for current handoff context, not historical detail.
   130px; stacked mobile layout retains its zero offset.
 - Checks: metal-desk-tray page HTTP 200, served CSS desktop/mobile rules, and
   Git whitespace. Browser visual QA remains unavailable.
+
+### `8af2e10` Fix mobile Products navigation
+
+- Added an accessible mobile Products disclosure; mobile hover/focus no longer
+  applies desktop horizontal translation. Navigation scrolls within the viewport,
+  and link selection, main-menu toggling, or Escape resets submenu state.
+- Checks: frontend lint/typecheck/build, products page HTTP 200, served disclosure
+  markup/mobile CSS, Git whitespace. Browser touch/visual QA remains pending.
