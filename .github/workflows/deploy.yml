@@ -1,0 +1,62 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches: [vt-shop]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: vps-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Configure SSH
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+        run: |
+          set -eu
+          test -n "$DEPLOY_HOST" || { echo "Missing DEPLOY_HOST secret"; exit 1; }
+          test -n "$DEPLOY_KNOWN_HOSTS" || { echo "Missing DEPLOY_KNOWN_HOSTS secret"; exit 1; }
+          test -n "$DEPLOY_SSH_KEY" || { echo "Missing DEPLOY_SSH_KEY secret"; exit 1; }
+          install -m 700 -d "$HOME/.ssh"
+          printf '%s\n' "$DEPLOY_SSH_KEY" > "$HOME/.ssh/vt-shop-deploy"
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/vt-shop-deploy" "$HOME/.ssh/known_hosts"
+
+      - name: Pull and deploy on VPS
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        run: |
+          set -eu
+          test -n "$DEPLOY_USER" || { echo "Missing DEPLOY_USER secret"; exit 1; }
+          ssh -i "$HOME/.ssh/vt-shop-deploy" \
+            -o BatchMode=yes \
+            -o StrictHostKeyChecking=yes \
+            "$DEPLOY_USER@$DEPLOY_HOST" 'bash -se' <<'REMOTE'
+          set -eu
+          APP_DIR="$HOME/vt-shop"
+          if [ ! -d "$APP_DIR/.git" ]; then
+            git clone --branch vt-shop --depth 1 https://github.com/Tarokh11/vt-shop.git "$APP_DIR"
+          fi
+          cd "$APP_DIR"
+          test -f .env || { echo "Create $APP_DIR/.env using docs/DEPLOYMENT.md before deploying"; exit 1; }
+          git fetch origin vt-shop
+          git checkout vt-shop
+          git pull --ff-only origin vt-shop
+          docker compose config --quiet
+          docker compose build
+          docker compose up -d --wait db
+          docker compose run --rm backend python manage.py migrate --noinput
+          docker compose run --rm backend python manage.py collectstatic --noinput
+          docker compose up -d --remove-orphans --wait
+          REMOTE

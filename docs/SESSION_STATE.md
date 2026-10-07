@@ -1,6 +1,6 @@
 # Session State
 
-- Current phase: catalog/detail usability refinements and staff panel ready for user testing.
+- Current phase: VPS Docker Compose deployment setup for the public `vt-shop` repository.
 - Product deletion now tracks inventory provenance; manual products without
   protected history can be removed, while imported/history-bearing products are
   archived to retain stock/order records.
@@ -35,5 +35,11 @@
   cart/favorite feedback, mobile purchase navigation, specs and buying guidance.
   Five selection/quantity tests, lint/typecheck/build, eleven detail API/photos,
   and representative routes pass; visual and purchase browser checks pending.
-- Next task: user-test responsive catalog interactions and the panel, then run
-  backend regressions with a PostgreSQL role permitted to create tests.
+- Deployment: public `Tarokh11/vt-shop` is created and the current branch is
+  pushed. Compose defines PostgreSQL, Django/Gunicorn, Next.js, and an internal
+  Nginx proxy with persistent static/media volumes. GitHub Actions deploys
+  branch `vt-shop` over SSH; VPS configuration and repository secrets remain
+  to be set by the owner. Production email and real Zarinpal setup remain
+  release prerequisites.
+- Next task: configure the VPS `.env`, TLS proxy, and GitHub Actions secrets;
+  then verify the first deployment and production payment/email integrations.

@@ -1,0 +1,9 @@
+.git
+.next
+node_modules
+coverage
+.env
+.env.*
+!.env.example
+AGENTS.md
+CLAUDE.md
