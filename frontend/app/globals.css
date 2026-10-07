@@ -605,7 +605,7 @@ button.variant.active { border-color: var(--green); background: var(--green-ligh
 .detail-image-dialog img { display: block; width: 100%; height: min(75dvh, 54rem); object-fit: contain; }
 .detail-image-dialog p { text-align: center; font-size: .8rem; margin: .5rem 0 0; }
 .detail-dialog-close { position: absolute; z-index: 1; top: 0; inset-inline-end: 0; width: 2.75rem; padding: .25rem; background: var(--ink); font-size: 1.5rem; }
-.detail-info { padding-top: .5rem; }
+.detail-info { padding-top: 0; }
 .detail-kicker { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .75rem; font-size: .72rem; }
 .detail-kicker > a { padding: .35rem .75rem; border-radius: 999px; background: var(--green-light); color: var(--ink); text-decoration: none; font-weight: 700; }
 .detail-info h1 { margin: 1rem 0; font-size: clamp(1.8rem, 3vw, 2.75rem); line-height: 1.5; letter-spacing: -.025em; }

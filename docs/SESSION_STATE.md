@@ -40,6 +40,8 @@
   cart/favorite feedback, mobile purchase navigation, specs and buying guidance.
   Gallery and adjacent information now start at the same top edge; live page
   and compiled CSS checks pass. Browser visual QA remains unavailable.
+  Gallery and adjacent information now start at the same top edge; live page
+  and compiled CSS checks pass. Browser visual QA remains unavailable.
   Five selection/quantity tests, lint/typecheck/build, eleven detail API/photos,
   and representative routes pass; visual and purchase browser checks pending.
 - Deployment: public `Tarokh11/vt-shop` is created and the current branch is

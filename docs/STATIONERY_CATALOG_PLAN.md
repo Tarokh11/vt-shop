@@ -310,6 +310,9 @@ eleven live product API/photo checks, and representative detail routes pass.
 Browser gallery/purchase interactions and visual QA remain pending.
 Product galleries use normal document flow on all screen sizes; they do not
 stick to the viewport while scrolling.
+The adjacent product information starts flush with the gallery top; extra
+top padding is removed. Live product-page/compiled CSS and whitespace checks
+pass; browser visual QA remains unavailable.
 
 ### Phase 7: Stationery data
 
