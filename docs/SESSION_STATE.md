@@ -1,6 +1,6 @@
 # Session State
 
-- Current phase: provided-server deployment workflow configured; first VPS launch pending.
+- Current phase: local/server configurations separated; first VPS launch in progress.
 - Product deletion now tracks inventory provenance; manual products without
   protected history can be removed, while imported/history-bearing products are
   archived to retain stock/order records.
@@ -42,14 +42,17 @@
   to `root@94.184.45.92:22`, directory `/opt/vt-shop`, Compose project `vtshop`.
   User approved storing the supplied SSH key in that GitHub environment.
   HTTP-by-IP preview is planned on free port 8084 because 8080–8083 are occupied.
-  `deploy/vtshop.env.example` defines isolated cookies and persistent volumes;
-  server `.env` and the deployment directory do not exist yet. The private-key
+  `compose.production.yaml` and server-only `.env.production` configure the
+  stack; the server environment was created with generated secrets/mode 600.
+  Local `compose.yaml` is restored to DB-only with loopback port 5432, and local
+  `.env` remains separate. The private-key
   source file is ignored by Git and Docker. Production email/Zarinpal remain pending.
 - Deployment checks: account/core regressions (14), targeted Ruff, frontend
   lint/typecheck/build, compiled store CSRF cookie name, Nginx syntax, Compose
   HTTP profile, workflow shell syntax/missing-env preflight, and HTTPS/HTTP
   settings checks pass. Cookie names/security and published port are configurable;
-  health probes accept production host/TLS settings. No live deployment yet.
-- Next task: prepare `/opt/vt-shop/.env` with generated application/database
-  secrets, then run the first deployment and verify IP access on port 8084.
+  health probes accept production host/TLS settings. Local storefront/readiness/
+  catalog return 200 with eleven products; both Compose profiles and workflow
+  Bash syntax pass. No live deployment yet.
+- Next task: run the first deployment and verify IP access on port 8084.
   Domain/TLS, merchant credentials, SMTP, and production backups remain release work.

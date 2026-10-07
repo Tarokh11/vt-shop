@@ -44,11 +44,11 @@ and server-only environment file:
 ```sh
 git clone --branch vt-shop https://github.com/Tarokh11/vt-shop.git /opt/vt-shop
 cd /opt/vt-shop
-cp deploy/vtshop.env.example .env
-chmod 600 .env
+cp deploy/vtshop.env.example .env.production
+chmod 600 .env.production
 ```
 
-Edit `.env` on the VPS and fill the empty `DJANGO_SECRET_KEY` and
+Edit `.env.production` on the VPS and fill the empty `DJANGO_SECRET_KEY` and
 `POSTGRES_PASSWORD` with new random values. Generate each value on the server,
 for example with `python3 -c 'import secrets; print(secrets.token_urlsafe(64))'`.
 Keep that file out of GitHub and workflow logs.
@@ -65,8 +65,8 @@ that port in the VPS firewall when starting the preview.
 ## Deploy and operate
 
 Pushes to `vt-shop` deploy automatically after environment secrets and the
-server `.env` are ready. Manual runs use **Actions → Deploy vt-shop →
-Run workflow**. A missing server `.env` stops deployment before repository
+server `.env.production` are ready. Manual runs use **Actions → Deploy vt-shop →
+Run workflow**. A missing server `.env.production` stops deployment before repository
 or container changes on the VPS.
 
 The workflow builds, starts PostgreSQL, applies migrations, collects static
@@ -76,16 +76,16 @@ and volumes remain separate from the existing Nora deployment.
 
 ```sh
 cd /opt/vt-shop
-docker compose --project-name vtshop ps
-docker compose --project-name vtshop logs --tail=100 backend frontend proxy
-docker compose --project-name vtshop exec backend python manage.py createsuperuser
+docker compose --env-file .env.production -f compose.production.yaml --project-name vtshop ps
+docker compose --env-file .env.production -f compose.production.yaml --project-name vtshop logs --tail=100 backend frontend proxy
+docker compose --env-file .env.production -f compose.production.yaml --project-name vtshop exec backend python manage.py createsuperuser
 ```
 
 A new database starts without the local development catalog. To install the
 existing stationery samples once, including their product photos:
 
 ```sh
-docker compose --project-name vtshop exec backend python manage.py seed_stationery
+docker compose --env-file .env.production -f compose.production.yaml --project-name vtshop exec backend python manage.py seed_stationery
 ```
 
 Back up the `vtshop_postgres_data` and `vtshop_media_data` volumes off the VPS
@@ -112,3 +112,7 @@ location / {
 Customer production launch still needs a verified Zarinpal merchant setup,
 SMTP integration (email currently uses Django's console backend), HTTPS,
 and persistent-media backups.
+
+Local development uses `compose.yaml` (PostgreSQL on loopback port 5432),
+local `.env`, Python venv, and Next dev. Server deployment uses
+`compose.production.yaml` and `.env.production`; it does not replace local files.

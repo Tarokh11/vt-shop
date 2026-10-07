@@ -71,7 +71,7 @@ jobs:
             "$PRODUCTION_USER@$PRODUCTION_HOST" \
             "PRODUCTION_PATH=$remote_path REPOSITORY=$remote_repository DEPLOY_BRANCH=$remote_branch DEPLOY_SHA=$remote_sha bash -se" <<'REMOTE'
           set -eu
-          test -f "$PRODUCTION_PATH/.env" || { echo "Create $PRODUCTION_PATH/.env using docs/DEPLOYMENT.md before deploying"; exit 1; }
+          test -f "$PRODUCTION_PATH/.env.production" || { echo "Create $PRODUCTION_PATH/.env.production using docs/DEPLOYMENT.md before deploying"; exit 1; }
           cd "$PRODUCTION_PATH"
           if [ ! -e .git ]; then
             git init
@@ -84,12 +84,12 @@ jobs:
           git diff --cached --quiet
           git fetch --prune origin "$DEPLOY_BRANCH"
           git checkout --detach "$DEPLOY_SHA"
-          docker compose --project-name vtshop config --quiet
-          docker compose --project-name vtshop build
-          docker compose --project-name vtshop up -d --wait db
-          docker compose --project-name vtshop run --rm backend python manage.py migrate --noinput
-          docker compose --project-name vtshop run --rm backend python manage.py collectstatic --noinput
-          docker compose --project-name vtshop up -d --remove-orphans --wait
-          docker compose --project-name vtshop exec -T backend python manage.py check
-          docker compose --project-name vtshop ps
+          docker compose --env-file .env.production -f compose.production.yaml --project-name vtshop config --quiet
+          docker compose --env-file .env.production -f compose.production.yaml --project-name vtshop build
+          docker compose --env-file .env.production -f compose.production.yaml --project-name vtshop up -d --wait db
+          docker compose --env-file .env.production -f compose.production.yaml --project-name vtshop run --rm backend python manage.py migrate --noinput
+          docker compose --env-file .env.production -f compose.production.yaml --project-name vtshop run --rm backend python manage.py collectstatic --noinput
+          docker compose --env-file .env.production -f compose.production.yaml --project-name vtshop up -d --remove-orphans --wait
+          docker compose --env-file .env.production -f compose.production.yaml --project-name vtshop exec -T backend python manage.py check
+          docker compose --env-file .env.production -f compose.production.yaml --project-name vtshop ps
           REMOTE
