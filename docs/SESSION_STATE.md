@@ -70,6 +70,10 @@
   detail/Admin/panel/readiness, eleven product photos, Next image optimization,
   and HTTP CSRF validation pass. Server sample catalog was seeded using an
   inactive staff audit account with an unusable password; no admin login created.
-  Two deployment regressions verify stdin isolation and all eight Docker steps.
+  Two deployment regressions verify stdin isolation and all nine Docker steps.
+  Production-only Nginx bundle aliases avoid externally reset `/chunks/` paths;
+  deployment 37632609344 passed. All linked CSS/JS across home/catalog/detail,
+  runtime references, RSC, eleven photos, and image optimization return 200.
+  Local storefront/catalog still return 200; browser visual QA unavailable.
 - Next task: configure an administrator account and prepare domain/TLS, merchant
   credentials, SMTP, and production backups before customer production launch.

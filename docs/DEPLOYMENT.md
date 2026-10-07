@@ -73,6 +73,8 @@ The workflow builds, starts PostgreSQL, applies migrations, collects static
 files, starts all services, waits for healthy containers, and runs Django's
 system check. It uses Compose project `vtshop` so this application's containers
 and volumes remain separate from the existing Nora deployment.
+The proxy is recreated after application startup so updated bind-mounted Nginx
+configuration and recreated upstream containers take effect.
 
 ```sh
 cd /opt/vt-shop
@@ -99,6 +101,16 @@ also checked, including their original CSRF cookie and eleven-product catalog.
 
 Back up the `vtshop_postgres_data` and `vtshop_media_data` volumes off the VPS
 regularly. Migrations run automatically on each deploy.
+
+## Production asset paths
+
+External requests containing `/chunks/` were reset before reaching this VPS,
+although the same CSS and JavaScript files returned 200 inside the server.
+The production Nginx proxy exposes Next assets through `/_next/static/bundles/`
+and rewrites HTML, JavaScript, CSS, and React server payload references. It maps
+those requests to the unchanged Next build files internally. Upstream responses
+are uncompressed for substitution; Nginx applies gzip for clients.
+Local Next development and build output are unchanged.
 
 ## Move to domain and HTTPS
 

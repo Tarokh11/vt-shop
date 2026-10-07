@@ -327,3 +327,16 @@ Use `SESSION_STATE.md` for current handoff context, not historical detail.
   and link selection, main-menu toggling, or Escape resets submenu state.
 - Checks: frontend lint/typecheck/build, products page HTTP 200, served disclosure
   markup/mobile CSS, Git whitespace. Browser touch/visual QA remains pending.
+
+### `97e488b` Restore production CSS and JavaScript delivery
+
+- External `/chunks/` requests reset before reaching Nginx; the same assets
+  returned 200 inside the VPS. Added production bundle aliases and response
+  substitution for HTML/CSS/JS/RSC, preserving Next build/local paths and gzip.
+- Deployment now recreates only the proxy after upstream startup to remount
+  configuration and refresh upstream addresses.
+- Checks: isolated production-Nginx HTML/CSS/JS/lazy/RSC/gzip/font integration;
+  two workflow regressions, Ruff, whitespace. Deployment 37632609344 passed;
+  all linked CSS/JS on three public pages, runtime references, RSC, eleven product
+  images, and Next image optimization return 200. Local page/catalog return 200.
+  Visual browser QA remains unavailable because no browser is connected.
