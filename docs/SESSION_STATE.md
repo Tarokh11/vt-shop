@@ -28,9 +28,10 @@
   backend/frontend on 8001/3000 (ports configurable); Ctrl+C stops both.
   Bash syntax, isolated startup/cleanup/port checks, and live Django startup pass;
   live Next.js launch blocked by an existing frontend dev server.
-- Local runtime (checked 2026-10-08): project backend/frontend are stopped;
-  PostgreSQL is available. Port 8001 belongs to another project; use a free
-  backend port (e.g. 8010) when starting the local launcher.
+- Local runtime (checked 2026-10-08): `BACKEND_PORT=8010 ./run-dev.sh` is
+  running Django/Next on 8010/3000. Default port 8001 belongs to another project
+  and blocks plain launcher startup. Storefront, readiness, proxied catalog
+  (eleven published products), and Admin login return 200.
   Eleven individual demo product photos are stored as reusable WebP sample
   assets; local records have product-specific images. Browser connection
   unavailable for visual QA.
