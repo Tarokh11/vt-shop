@@ -12,7 +12,7 @@
   Product panel cards and page background now use cream tones with stronger
   borders and text contrast.
 - Blockers: PostgreSQL test-database coverage remains pending. Customer launch
-  still needs active server staff, shipping rates, domain/TLS, merchant setup,
+  still needs shipping rates, domain/TLS, merchant setup,
   SMTP, and off-server backups; production media already has a persistent volume.
 - Key references: `docs/PROJECT_SCOPE.md`,
   `docs/STATIONERY_CATALOG_PLAN.md`, `docs/ADMIN_GUIDE.md`,
@@ -72,7 +72,7 @@
   Bash syntax pass. All four server containers are healthy; public home/catalog/
   detail/Admin/panel/readiness, eleven product photos, Next image optimization,
   and HTTP CSRF validation pass. Server sample catalog was seeded using an
-  inactive staff audit account with an unusable password; no admin login created.
+  inactive staff audit account with an unusable password; a separate active superuser was subsequently created at user request. Credentials are not recorded here.
   Two deployment regressions verify stdin isolation and all nine Docker steps.
   Production-only Nginx bundle aliases avoid externally reset `/chunks/` paths;
   deployment 37632609344 passed. All linked CSS/JS across home/catalog/detail,
@@ -80,12 +80,12 @@
   Local storefront/catalog still return 200; browser visual QA unavailable.
 - Local/production comparison (2026-10-08): application source matches deployed
   `97e488b`; local committed differences are documentation. Both catalogs publish
-  eleven items; total products are 16/11, users 11/1, orders 30/0 (local/server).
+  eleven items; total products are 16/11, users 11/2, orders 30/0 (local/server).
   Five shared SKUs have different stock; eleven shared photos match byte-for-byte.
   Local has three missing image files for an unpublished clothing product;
   server photos are intact. PostgreSQL columns/indexes match (191/119), but local
   migration history has an extra absent `payments.0002_alter_paymentattempt_status`.
-  Server has no active staff or shipping rates; all four containers and external
+  Server now has one active superuser and no shipping rates; all four containers and external
   page/CSS/JS/media checks pass. No data synchronization was performed.
-- Next task: configure server administrator and shipping rates; prepare domain/TLS,
+- Next task: configure shipping rates; prepare domain/TLS,
   merchant credentials, SMTP, and off-server backups before customer launch.
