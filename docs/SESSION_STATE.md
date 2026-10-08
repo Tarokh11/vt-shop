@@ -11,9 +11,9 @@
   Reusable panel functionality and Nora branding are separate commits.
   Product panel cards and page background now use cream tones with stronger
   borders and text contrast.
-- Blockers: backend regression tests need a PostgreSQL role permitted to create
-  the test database; real Zarinpal credentials/sandbox and persistent production
-  media are still required before production.
+- Blockers: PostgreSQL test-database coverage remains pending. Customer launch
+  still needs active server staff, shipping rates, domain/TLS, merchant setup,
+  SMTP, and off-server backups; production media already has a persistent volume.
 - Key references: `docs/PROJECT_SCOPE.md`,
   `docs/STATIONERY_CATALOG_PLAN.md`, `docs/ADMIN_GUIDE.md`,
   `backend/catalog/management_*.py`, `docs/DEPLOYMENT.md`,
@@ -28,8 +28,9 @@
   backend/frontend on 8001/3000 (ports configurable); Ctrl+C stops both.
   Bash syntax, isolated startup/cleanup/port checks, and live Django startup pass;
   live Next.js launch blocked by an existing frontend dev server.
-- Local preview: panel `/manage/products/` and Django Admin at port 8010;
-  storefront at port 3000 with `BACKEND_ORIGIN=http://127.0.0.1:8010`.
+- Local runtime (checked 2026-10-08): project backend/frontend are stopped;
+  PostgreSQL is available. Port 8001 belongs to another project; use a free
+  backend port (e.g. 8010) when starting the local launcher.
   Eleven individual demo product photos are stored as reusable WebP sample
   assets; local records have product-specific images. Browser connection
   unavailable for visual QA.
@@ -76,5 +77,14 @@
   deployment 37632609344 passed. All linked CSS/JS across home/catalog/detail,
   runtime references, RSC, eleven photos, and image optimization return 200.
   Local storefront/catalog still return 200; browser visual QA unavailable.
-- Next task: configure an administrator account and prepare domain/TLS, merchant
-  credentials, SMTP, and production backups before customer production launch.
+- Local/production comparison (2026-10-08): application source matches deployed
+  `97e488b`; local committed differences are documentation. Both catalogs publish
+  eleven items; total products are 16/11, users 11/1, orders 30/0 (local/server).
+  Five shared SKUs have different stock; eleven shared photos match byte-for-byte.
+  Local has three missing image files for an unpublished clothing product;
+  server photos are intact. PostgreSQL columns/indexes match (191/119), but local
+  migration history has an extra absent `payments.0002_alter_paymentattempt_status`.
+  Server has no active staff or shipping rates; all four containers and external
+  page/CSS/JS/media checks pass. No data synchronization was performed.
+- Next task: configure server administrator and shipping rates; prepare domain/TLS,
+  merchant credentials, SMTP, and off-server backups before customer launch.
