@@ -1,0 +1,11 @@
+# Estedad typeface
+
+Source: https://github.com/aminabedi68/Estedad
+
+Pinned revision: `0dbe689787b8c2ea302373cb601d0f352f9f98e5`
+
+Original asset: `fonts/webfonts/Estedad[wght].woff2`
+
+License: SIL Open Font License 1.1; included in `OFL.txt`.
+
+SHA-256: `18a2278ad5c9c2f60e034270ea2d5856d04c4e984e47c65483aa63b41e3c5a1e`

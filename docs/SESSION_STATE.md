@@ -41,8 +41,10 @@
   Escape, outside click and category navigation pass real Chromium checks;
   mobile viewport containment, lint, and TypeScript pass. Local preview only.
 - Product Design Lab (2026-10-12): `/design-lab/products` has registry-driven
-  six full-page designs: `current`, `bento`, `studio`, `ledger`, `lookbook` and
-  `shelves`. New views use tables, alternating spreads and horizontal rails.
+  seven full-page designs: `current`, `bento`, `studio`, `ledger`, `lookbook`,
+  `shelves` and `form`. FORM is a standalone cobalt grid with new chrome, local
+  Estedad typography and search/filter UI; its chrome isolation restores other
+  designs on navigation. Light/dark and 320/390/768/1440px checks pass.
   Dropdown selection follows
   `?design=` and preserves catalog state; the parameter never reaches the API.
   Shared controller/controls avoid duplicate fetching. `/products` still selects

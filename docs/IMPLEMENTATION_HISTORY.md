@@ -384,3 +384,14 @@ Use `SESSION_STATE.md` for current handoff context, not historical detail.
 - Verification: lint/typecheck, isolated build and Chromium checks for all new
   result structures, real catalog filters/search/reset/pagination/detail links,
   320/390px controls/scrolling and intact existing designs. Production undeployed.
+
+### Independent FORM grid concept — 2026-10-12
+
+- Added a fresh cobalt/white storefront identity with independent navigation,
+  search/filter UI, flat product grid, footer and licensed self-hosted Estedad.
+- Conditional scoped chrome isolation restores the original header/footer when
+  leaving the concept; catalog behavior and product price rules remain shared.
+- Verification: lint/typecheck and isolated build; Chromium real-data search,
+  category/brand/collection/stock/repeated attributes, reset, pagination/focus,
+  product links, chrome restoration and unchanged original DOM. Reviewed light/
+  dark layouts and checked 320/390/768/1440px bounds. Production undeployed.

@@ -4,8 +4,9 @@ Preview: `http://127.0.0.1:3000/design-lab/products?design=current`.
 Work branch: `feature/product-design-lab`. Start the local application with
 `./run-dev.sh`; its local environment selects backend port 8010.
 
-The lab compares complete listing pages using the live catalog. It shares the
-site header/footer and product detail routes. Each design owns its listing
+The lab compares complete listing pages using the live catalog. Most variants
+share the site header/footer; FORM previews its own standalone visual identity.
+All variants use the existing product detail routes. Each design owns its listing
 hero, layout, search/filter placement, cards' presentation and visual palette.
 The store's `/products` route continues to select the original design.
 Do not merge/deploy experimental changes before choosing a design.
@@ -20,6 +21,7 @@ Do not merge/deploy experimental changes before choosing a design.
 | `ledger` | Comparison table: compact thumbnails, specifications, price and stock columns | `/design-lab/products?design=ledger` |
 | `lookbook` | Large alternating image/text product spreads | `/design-lab/products?design=lookbook` |
 | `shelves` | Category-grouped horizontal rails with independent scroll controls | `/design-lab/products?design=shelves` |
+| `form` | Standalone cobalt/white grid, Estedad typography, custom chrome and filter UI | `/design-lab/products?design=form` |
 
 The dropdown and description come from the registry. Changing designs preserves
 applied search, repeated attribute filters, category, brand, collection, stock
@@ -99,6 +101,21 @@ rendering your own results heading so pagination can move keyboard focus.
 Scope styles with CSS modules. A selector such as
 `.page :global(.product-card)` affects cards inside that design only. Avoid
 adding variant rules to `app/globals.css` or using cross-design selectors.
+
+## Standalone FORM experiment
+
+FORM treats the listing as a separate storefront concept. It renders its own
+header/footer, search/filter controls and product grid, using the shared model
+and result feedback/pagination. Its scoped CSS conditionally hides the original
+site chrome with `body:has(.page)` only while the FORM renderer is mounted.
+Switching designs or navigating to another store route restores original chrome.
+It does not modify the root layout, global stylesheet or production selection.
+
+Its font is self-hosted with `next/font/local`. The original Estedad font,
+SIL OFL license and pinned source/hash live in `designs/form-assets/`.
+Light/dark colors follow system preference; reduced motion disables hover motion.
+The FORM name is an experimental identity, not a change to the production brand.
+Approve real branding and metadata separately if this concept is selected.
 
 ## Promote the chosen full page
 
