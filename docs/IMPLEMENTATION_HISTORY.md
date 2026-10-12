@@ -360,3 +360,15 @@ Use `SESSION_STATE.md` for current handoff context, not historical detail.
 - Verification: original `/products` main DOM matches the captured baseline;
   lint, TypeScript and isolated production build pass. Browser checks cover
   filters, repeated attributes, pagination/focus, loading and error/retry.
+
+### Product listing Design Lab — 2026-10-12
+
+- Added an isolated lab route with a registry-driven dropdown and shareable
+  design URLs; changing views preserves filters and does not refetch products.
+- Kept the current full page alongside independent Bento and Studio layouts,
+  with scoped styles and shared real catalog behavior. Documented adding designs
+  and promoting one by changing the store adapter's renderer import.
+- Verification: lint/typecheck and isolated production build; Chromium checks
+  across all views for search, category/brand/collection/stock/repeated attributes,
+  reset, pagination/focus, detail links, direct URLs/history/reload, 320/390px
+  mobile layouts, loading/error/retry and unchanged original DOM. No deployment.

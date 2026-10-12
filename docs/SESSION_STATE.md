@@ -1,6 +1,7 @@
 # Session State
 
-- Current phase: HTTP VPS preview deployed; local/server configurations separated.
+- Current phase: Product listing Design Lab on `feature/product-design-lab`;
+  the existing production HTTP preview has not been redeployed.
 - Product deletion now tracks inventory provenance; manual products without
   protected history can be removed, while imported/history-bearing products are
   archived to retain stock/order records.
@@ -39,6 +40,13 @@
   illustrated side panel, and all-products link. Hover/click, keyboard focus,
   Escape, outside click and category navigation pass real Chromium checks;
   mobile viewport containment, lint, and TypeScript pass. Local preview only.
+- Product Design Lab (2026-10-12): `/design-lab/products` has registry-driven
+  `current`, `bento` and `studio` full-page designs. Dropdown selection follows
+  `?design=` and preserves catalog state; the parameter never reaches the API.
+  Shared controller/controls avoid duplicate fetching. `/products` still selects
+  the current renderer, with identical main DOM. Lint/typecheck/isolated build,
+  real-data filters/search/pagination, history/reload, mobile, loading/error/retry
+  and screenshots pass. Extension/promotion guide: `docs/PRODUCT_DESIGN_LAB.md`.
 - Catalog UX: removable filter chips, mobile filter toggle, stable search/filter
   state, canceled stale requests, loading/error/empty guidance, and card specs.
   Current checks: frontend lint/typecheck/build and live catalog/filter/pagination

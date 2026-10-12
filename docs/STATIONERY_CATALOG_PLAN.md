@@ -18,7 +18,8 @@ stationery-specific data/configuration whenever possible.
 - Phase 5 public API/filtering: complete.
 - Phase 6 storefront controls: complete; browser interaction smoke passes for
   URL filters and grouped variant selection. Header category navigation now uses
-  a responsive illustrated dropdown; Chromium interaction checks pass.
+  a responsive illustrated dropdown; Chromium interaction checks pass. Experimental
+  full-page Design Lab: [extension/promotion guide](PRODUCT_DESIGN_LAB.md).
 - Phase 7 sample stationery data: complete.
 - Phase 8 current verification: complete; production configuration remains pending.
   Deployment/data handoff and first-launch lessons: [Persian guide](DEPLOYMENT_LESSONS_FA.md).
