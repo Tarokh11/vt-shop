@@ -350,3 +350,13 @@ Use `SESSION_STATE.md` for current handoff context, not historical detail.
 - Verification: frontend lint/typecheck; Chromium desktop/mobile hover, click,
   keyboard/Escape, category navigation, viewport bounds and JavaScript errors.
   Reviewed desktop/mobile screenshots. Preview remains local.
+
+### Shared product-listing controller — 2026-10-12
+
+- Extracted existing catalog requests, URL filters, chips, pagination and feedback
+  into a shared hook and composable controls; preserved the original renderer.
+- The store adapter selects one full-page renderer by import. Presentation-only
+  `design` stays out of API requests and survives filter updates/reset.
+- Verification: original `/products` main DOM matches the captured baseline;
+  lint, TypeScript and isolated production build pass. Browser checks cover
+  filters, repeated attributes, pagination/focus, loading and error/retry.
