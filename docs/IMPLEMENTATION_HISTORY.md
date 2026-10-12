@@ -372,3 +372,15 @@ Use `SESSION_STATE.md` for current handoff context, not historical detail.
   across all views for search, category/brand/collection/stock/repeated attributes,
   reset, pagination/focus, detail links, direct URLs/history/reload, 320/390px
   mobile layouts, loading/error/retry and unchanged original DOM. No deployment.
+
+### Structurally different listing experiments — 2026-10-12
+
+- Added Ledger comparison tables, Lookbook alternating image/text spreads and
+  Shelves category rails; each owns its full-page layout and scoped styles.
+- Shared feedback/pagination accepts a whole-results renderer. Centralized the
+  existing price/availability/spec rules; original store DOM stays identical.
+- Fixed RTL caption containment in the mobile table, accessible rail scroll
+  controls and dark-theme stock-label contrast.
+- Verification: lint/typecheck, isolated build and Chromium checks for all new
+  result structures, real catalog filters/search/reset/pagination/detail links,
+  320/390px controls/scrolling and intact existing designs. Production undeployed.

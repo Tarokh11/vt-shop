@@ -1,20 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { formatIrr, Product } from "@/lib/catalog";
+import type { Product } from "@/lib/catalog";
+import { productPresentation } from "@/lib/product-presentation";
 
 export function ProductCard({ product }: Readonly<{ product: Product }>) {
-  const availableVariants = product.variants.filter((variant) => variant.available);
-  const prices = (availableVariants.length ? availableVariants : product.variants).map((variant) => variant.price_irr);
-  const available = product.variants.some((variant) => variant.available);
-  const image = product.images[0];
-  const specifications = [
-    ...product.attributes.map((attribute) => `${attribute.definition.name}: ${attribute.value.label}`),
-    ...product.option_definitions.map(({ definition }) => {
-      const values = [...new Set(product.variants.flatMap((variant) => variant.option_values.filter((option) => option.definition.id === definition.id).map((option) => option.value.label)))];
-      return values.length ? `${definition.name}: ${values.join("، ")}` : "";
-    }).filter(Boolean),
-  ].slice(0, 2);
+  const { available, image, specifications, priceLabel } = productPresentation(product);
 
   return (
     <article className="product-card">
@@ -31,7 +22,7 @@ export function ProductCard({ product }: Readonly<{ product: Product }>) {
         <h2><Link href={`/products/${product.slug}`}>{product.name}</Link></h2>
         {specifications.length > 0 && <ul className="product-card-specs" aria-label="مشخصات کوتاه">{specifications.map((specification) => <li key={specification}>{specification}</li>)}</ul>}
         <div className="product-meta">
-          <strong>{prices.length ? `${Math.min(...prices) !== Math.max(...prices) ? "از " : ""}${formatIrr(Math.min(...prices))}` : "بدون قیمت"}</strong>
+          <strong>{priceLabel}</strong>
           <span className={available ? "in-stock" : "out-of-stock"}>{available ? "موجود" : "ناموجود"}</span>
         </div>
         <Link className="product-card-link" href={`/products/${product.slug}`}>{product.variants.length > 1 ? "انتخاب مدل و جزئیات" : "دیدن جزئیات"} <span aria-hidden="true">←</span></Link>

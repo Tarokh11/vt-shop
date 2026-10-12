@@ -1,0 +1,32 @@
+.page { --ink: #22313c; --green: #185a82; --muted: #63727b; --line: #d9e1e6; --card: #fff; --paper: #f5f7f8; width: 100%; margin: 0; padding: 2.5rem 1.5rem 4rem; background: var(--paper); color: var(--ink); }
+.container { max-width: 88rem; margin: auto; }
+.heading { display: flex; align-items: center; justify-content: space-between; gap: 2rem; padding-bottom: 2rem; }
+.heading h1 { margin: .5rem 0 0; font-size: clamp(2rem,3vw,3rem); }
+.heading p { margin: 0; color: var(--muted); font-size: .85rem; line-height: 1.9; }
+.page :global(.catalog-filters) { margin: 0; padding: 1.25rem; border: 1px solid var(--line); border-radius: .3rem; box-shadow: none; background: #fff; }
+.page :global(.catalog-search input), .page :global(.filter-row select), .page :global(.catalog-search > button) { border-radius: .25rem; }
+.page :global(.category-pills button) { border-radius: .2rem; background: #fff; }
+.page :global(.category-pills button.active) { background: var(--green); color: #fff; }
+.results :global(.product-grid) { display: block; }
+.tableScroll { position: relative; min-width: 0; width: 100%; overflow-x: auto; border: 1px solid var(--line); border-radius: .3rem; background: #fff; }
+.table { width: 100%; min-width: 780px; border-collapse: collapse; text-align: start; }
+.table thead { background: #eaf0f4; }
+.table th, .table td { padding: 1rem 1.25rem; border-bottom: 1px solid var(--line); text-align: start; vertical-align: middle; }
+.table thead th { color: var(--muted); font-size: .74rem; font-weight: 600; }
+.table tbody tr:last-child th, .table tbody tr:last-child td { border-bottom: 0; }
+.table tbody tr:hover { background: #f7fafc; }
+.identity { display: flex; align-items: center; gap: 1rem; min-width: 16rem; text-decoration: none; color: var(--ink); }
+.identity img { width: 72px; height: 72px; object-fit: contain; border-radius: .2rem; background: #f3f6f7; }
+.identity > span { display: grid; gap: .45rem; }
+.identity strong { font-size: .9rem; }
+.identity small { color: var(--muted); font-size: .7rem; font-weight: 400; }
+.table ul { min-width: 12rem; margin: 0; padding: 0; list-style: none; font-size: .72rem; color: var(--muted); line-height: 1.9; }
+.price { white-space: nowrap; font-size: .85rem; font-weight: 700; }
+.available, .unavailable { display: inline-flex; padding: .3rem .6rem; border-radius: .25rem; background: #e7f1ed; color: #285e49; white-space: nowrap; font-size: .7rem; }
+.unavailable { background: #f5eae7; color: #8b493b; }
+.action { display: flex; gap: .75rem; color: var(--green); font-size: .8rem; text-decoration: none; white-space: nowrap; }
+.missing { display: grid; place-items: center; width: 72px; height: 72px; color: var(--muted); background: #edf1f4; font-size: .65rem; }
+.hint { margin: 1.5rem 0; color: var(--muted); font-size: .75rem; line-height: 1.9; }
+@media (max-width: 680px) { .page { padding: 1.5rem 1rem 3rem; } .heading { align-items: start; flex-direction: column; gap: .8rem; } .table th, .table td { padding: .8rem; } .identity { min-width: 13rem; gap: .65rem; } }
+
+.tableScroll:focus-visible { outline: 2px solid #185a82; outline-offset: 4px; }

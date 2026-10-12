@@ -17,6 +17,9 @@ Do not merge/deploy experimental changes before choosing a design.
 | `current` | Existing Nora listing; baseline for comparison | `/design-lab/products?design=current` |
 | `bento` | Green canvas, asymmetric product grid, top search/filter board | `/design-lab/products?design=bento` |
 | `studio` | Violet studio, category tabs, sidebar search/filters | `/design-lab/products?design=studio` |
+| `ledger` | Comparison table: compact thumbnails, specifications, price and stock columns | `/design-lab/products?design=ledger` |
+| `lookbook` | Large alternating image/text product spreads | `/design-lab/products?design=lookbook` |
+| `shelves` | Category-grouped horizontal rails with independent scroll controls | `/design-lab/products?design=shelves` |
 
 The dropdown and description come from the registry. Changing designs preserves
 applied search, repeated attribute filters, category, brand, collection, stock
@@ -32,6 +35,7 @@ Clearing filters retains the chosen design and the lab route.
 | --- | --- |
 | `frontend/features/product-listing/use-product-listing.ts` | Existing API requests, abort handling, metadata, URL filters, retry and pagination |
 | `frontend/features/product-listing/catalog-controls.tsx` | Reusable search, filter fields, category navigation, chips, results/feedback and buying guide |
+| `frontend/lib/product-presentation.ts` | Shared variant price, availability and short-spec rules |
 | `frontend/features/product-listing/designs/` | Independent page renderers and scoped CSS modules |
 | `frontend/features/product-listing/designs/registry.ts` | One list of design IDs, labels, descriptions and components |
 | `frontend/app/design-lab/products/` | Lab dropdown and query-parameter selection; no indexing |
@@ -39,8 +43,8 @@ Clearing filters retains the chosen design and the lab route.
 
 The original listing logic was moved into the shared hook, and the original
 markup into `CurrentDesign`. No new catalog endpoint, data copy or backend
-change is needed. The original product cards still calculate availability and
-prices from existing variants; all links open the existing product detail page.
+change is needed. All renderers use the shared product-presentation rules for
+variant pricing, availability and short specs; all links open the existing detail page.
 
 ## Add an independent full-page design
 
@@ -83,7 +87,12 @@ export function GalleryDesign({ listing }: { listing: ProductListingModel }) {
 Use the typed `listing` model directly when a design needs different filter or
 result markup. Do not duplicate API fetching or URL mutation logic.
 `CatalogResults` also accepts an optional `Card` component with a `product`
-prop when a design needs independent card markup. Keep loading, errors, empty
+prop when a design needs independent card markup. For a completely different result
+structure, pass `Products`, a component accepting `{ products: Product[] }`,
+into `CatalogResults`. It replaces the whole results collection while preserving
+loading/error/empty feedback and pagination. Ledger uses a real table, Lookbook
+uses large alternating spreads, and Shelves uses grouped horizontal rails.
+Shelf groups and counts cover the current API page, not the entire catalog. Keep loading, errors, empty
 results and pagination accessible. Preserve the `resultsHeading` ref when
 rendering your own results heading so pagination can move keyboard focus.
 

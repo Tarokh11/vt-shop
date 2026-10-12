@@ -41,7 +41,9 @@
   Escape, outside click and category navigation pass real Chromium checks;
   mobile viewport containment, lint, and TypeScript pass. Local preview only.
 - Product Design Lab (2026-10-12): `/design-lab/products` has registry-driven
-  `current`, `bento` and `studio` full-page designs. Dropdown selection follows
+  six full-page designs: `current`, `bento`, `studio`, `ledger`, `lookbook` and
+  `shelves`. New views use tables, alternating spreads and horizontal rails.
+  Dropdown selection follows
   `?design=` and preserves catalog state; the parameter never reaches the API.
   Shared controller/controls avoid duplicate fetching. `/products` still selects
   the current renderer, with identical main DOM. Lint/typecheck/isolated build,

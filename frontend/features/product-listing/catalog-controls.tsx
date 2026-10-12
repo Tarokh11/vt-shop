@@ -60,7 +60,11 @@ export function CatalogChips({ listing }: { listing: ProductListingModel }) {
   </>;
 }
 
-export function CatalogResults({ listing, Card = ProductCard }: { listing: ProductListingModel; Card?: ComponentType<{ product: Product }> }) {
+export function CatalogResults({ listing, Card = ProductCard, Products }: {
+  listing: ProductListingModel;
+  Card?: ComponentType<{ product: Product }>;
+  Products?: ComponentType<{ products: Product[] }>;
+}) {
   const { catalog, resultsHeading, loading, error, products, totalCount, resetFilters, changePage, chips, searchParams, queryString, setRetry } = listing;
   return <>
       <div className="catalog-result-count">
@@ -70,7 +74,7 @@ export function CatalogResults({ listing, Card = ProductCard }: { listing: Produ
       {error && <div className="catalog-notice catalog-feedback error" role="alert"><h3>دریافت محصولات ممکن نشد</h3><p>{error}</p><div><button type="button" onClick={() => setRetry((value) => value + 1)}>تلاش مجدد</button>{queryString && <button className="secondary" type="button" onClick={resetFilters}>بازگشت به همه محصولات</button>}</div></div>}
       {!loading && !error && products.length === 0 && <div className="catalog-notice catalog-feedback"><span className="catalog-empty-icon" aria-hidden="true">⌕</span><h3>محصولی با این انتخاب‌ها پیدا نشد</h3><p>{chips.length ? "واژهٔ کوتاه‌تری جستجو کنید یا یکی از فیلترها را بردارید." : "هنوز محصولی برای نمایش منتشر نشده است. کمی بعد دوباره سر بزنید."}</p>{queryString && <button type="button" onClick={resetFilters}>دیدن همه محصولات</button>}</div>}
       <section className="product-grid" aria-label="فهرست محصولات" aria-busy={loading}>
-        {loading && products.length === 0 ? Array.from({ length: 6 }, (_, index) => <div className="catalog-skeleton" key={index} aria-hidden="true"><div /><span /><span /><span /></div>) : !error && products.map((product) => <Card key={product.id} product={product} />)}
+        {loading && products.length === 0 ? Array.from({ length: 6 }, (_, index) => <div className="catalog-skeleton" key={index} aria-hidden="true"><div /><span /><span /><span /></div>) : !error && (Products ? products.length > 0 && <Products products={products} /> : products.map((product) => <Card key={product.id} product={product} />))}
       </section>
       {!error && (catalog?.page?.previous || catalog?.page?.next) && <nav className="page-navigation" aria-label="صفحه‌های محصولات"><button type="button" className="secondary" disabled={loading || !catalog?.page?.previous} onClick={() => changePage(-1)}>صفحه قبل</button><span>صفحه {number.format(Number(searchParams.get("page") ?? "1"))}</span><button type="button" disabled={loading || !catalog?.page?.next} onClick={() => changePage(1)}>صفحه بعد</button></nav>}
   </>;
