@@ -28,16 +28,17 @@
   backend/frontend on 8001/3000 (ports configurable); Ctrl+C stops both.
   Bash syntax, isolated startup/cleanup/port checks, and live Django startup pass;
   live Next.js launch blocked by an existing frontend dev server.
-- Local runtime (checked 2026-10-08): `BACKEND_PORT=8010 ./run-dev.sh` is
-  running Django/Next on 8010/3000. Default port 8001 belongs to another project
-  and blocks plain launcher startup. Storefront, readiness, proxied catalog
-  (eleven published products), and Admin login return 200.
+- Local runtime (checked 2026-10-12): `./run-dev.sh` runs Django/Next on
+  8010/3000; local `.env` sets `BACKEND_PORT=8010`. Port 8001 belongs to another
+  project. Storefront, readiness and the proxied catalog return 200.
   Eleven individual demo product photos are stored as reusable WebP sample
   assets; local records have product-specific images. Browser connection
   unavailable for visual QA.
-- Mobile navigation: Products submenu toggles on tap, stays within the viewport,
-  scrolls when long, and closes on link selection/main-menu close/Escape.
-  Frontend lint/typecheck/build and served header/CSS checks pass; browser QA pending.
+- Product navigation (2026-10-12): redesigned desktop dropdown and mobile
+  disclosure with grouped live categories, stationery icons, readable descriptions,
+  illustrated side panel, and all-products link. Hover/click, keyboard focus,
+  Escape, outside click and category navigation pass real Chromium checks;
+  mobile viewport containment, lint, and TypeScript pass. Local preview only.
 - Catalog UX: removable filter chips, mobile filter toggle, stable search/filter
   state, canceled stale requests, loading/error/empty guidance, and card specs.
   Current checks: frontend lint/typecheck/build and live catalog/filter/pagination

@@ -340,3 +340,13 @@ Use `SESSION_STATE.md` for current handoff context, not historical detail.
   all linked CSS/JS on three public pages, runtime references, RSC, eleven product
   images, and Next image optimization return 200. Local page/catalog return 200.
   Visual browser QA remains unavailable because no browser is connected.
+
+### Product navigation redesign — 2026-10-12
+
+- Replaced the header category list with grouped category links, stationery icons,
+  descriptions, an illustrated side panel and a clear all-products action.
+- Unified desktop/mobile disclosure, added outside-click and focus handling,
+  and prevented hover/click timing conflicts; removed obsolete menu decoration.
+- Verification: frontend lint/typecheck; Chromium desktop/mobile hover, click,
+  keyboard/Escape, category navigation, viewport bounds and JavaScript errors.
+  Reviewed desktop/mobile screenshots. Preview remains local.
